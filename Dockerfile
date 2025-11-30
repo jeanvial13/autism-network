@@ -20,6 +20,7 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV DATABASE_URL "postgresql://postgres:postgres@localhost:5432/autism_network"
 
 RUN npx prisma generate
 RUN npm run build
