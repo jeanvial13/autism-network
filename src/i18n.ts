@@ -2,7 +2,7 @@ import { getRequestConfig } from 'next-intl/server';
 import { headers } from 'next/headers';
 
 // Supported locales
-export const locales = ['en', 'es', 'fr', 'de', 'pt', 'zh', 'ja', 'ar'] as const;
+export const locales = ['en', 'es'] as const;
 export type Locale = typeof locales[number];
 
 // Default locale
