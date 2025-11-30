@@ -30,12 +30,13 @@ const MOCK_ARTICLES: Record<string, any> = {
     },
 };
 
-export default function ArticleDetailPage({
+export default async function ArticleDetailPage({
     params,
 }: {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }) {
-    const article = MOCK_ARTICLES[params.slug];
+    const { slug } = await params;
+    const article = MOCK_ARTICLES[slug];
 
     if (!article) {
         notFound();

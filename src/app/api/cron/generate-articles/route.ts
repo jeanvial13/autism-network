@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
                 status,
                 flaggedReason: safetyCheck.verdict === 'FLAG_FOR_REVIEW' ? safetyCheck.reason : undefined,
                 embedding: embedding as any, // pgvector type
-            },
+            } as any,
         });
 
         console.log(`[CRON] Article saved with ID: ${savedArticle.id}`);

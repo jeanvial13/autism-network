@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { PSEUDOSCIENCE_CLASSIFIER_PROMPT, CREDIBILITY_SCORING_PROMPT, fillPromptTemplate, parseAIResponse } from './prompts';
+import { PSEUDOSCIENCE_CLASSIFIER_PROMPT, CREDIBILITY_SCORING_PROMPT, fillPromptTemplate, parseAIResponse } from '../prompts';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,

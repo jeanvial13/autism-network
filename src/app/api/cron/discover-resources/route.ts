@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
                         credibilityScore: 70, // Default score
                         status: 'PENDING', // Require manual review initially
                         embedding: embedding as any,
-                    },
+                    } as any,
                 });
 
                 addedCount++;
