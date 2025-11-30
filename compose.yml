@@ -1,0 +1,53 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/autism_network
+      - REDIS_URL=redis://redis:6379
+      - MEILISEARCH_HOST=http://meilisearch:7700
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=changeme_in_production
+    depends_on:
+      - postgres
+      - redis
+      - meilisearch
+
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=autism_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.10
+    restart: always
+    environment:
+      - MEILI_MASTER_KEY=masterKey123
+    volumes:
+      - meili_data:/meili_data
+    ports:
+      - "7700:7700"
+
+volumes:
+  postgres_data:
+  redis_data:
+  meili_data:

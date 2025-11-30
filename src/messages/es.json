@@ -1,0 +1,69 @@
+{
+    "navigation": {
+        "brand": "T-Conecta Autismo",
+        "globalMap": "Mapa Global",
+        "resources": "Recursos",
+        "articles": "Artículos",
+        "signIn": "Iniciar sesión",
+        "getStarted": "Comenzar"
+    },
+    "home": {
+        "hero": {
+            "title1": "Encuentra Apoyo.",
+            "title2": "Encuentra Respuestas.",
+            "title3": "Encuentra Comunidad.",
+            "subtitle": "Una red global impulsada por IA que conecta a personas autistas, familias y profesionales verificados con información basada en evidencia y apoyo confiable.",
+            "exploreMap": "Explorar el Mapa",
+            "browseResources": "Ver Recursos"
+        },
+        "dailyBrief": {
+            "title": "Noticias de Autismo de Hoy",
+            "heading": "Resumen Científico Diario",
+            "description": "Obtén las últimas investigaciones sobre autismo, actualizaciones clínicas y noticias basadas en evidencia resumidas por IA y revisadas por expertos. Actualizado todos los días.",
+            "readUpdate": "Leer Actualización de Hoy"
+        },
+        "features": {
+            "title": "Todo lo que Necesitas, en Un Solo Lugar",
+            "subtitle": "Información basada en evidencia, conexiones globales y apoyo impulsado por IA.",
+            "globalMap": {
+                "title": "Mapa Global",
+                "description": "Encuentra centros de autismo verificados, terapeutas y profesionales cerca de ti. Filtra por servicios, idiomas y seguros."
+            },
+            "resourceLibrary": {
+                "title": "Biblioteca de Recursos",
+                "description": "Explora nuestra biblioteca curada de artículos basados en evidencia, guías, videos y herramientas para familias y profesionales."
+            },
+            "network": {
+                "title": "Únete a la Red",
+                "description": "Conéctate con profesionales verificados, otras familias y adultos autistas. Comparte experiencias y encuentra apoyo."
+            }
+        },
+        "mapPreview": {
+            "title": "Centros Cerca de Ti",
+            "heading": "Mapa Interactivo",
+            "description": "El mapa interactivo mostrará centros de autismo verificados y profesionales en todo el mundo.",
+            "openMap": "Abrir Mapa Completo"
+        },
+        "cta": {
+            "title": "¿Listo para Comenzar?",
+            "subtitle": "Únete a miles de familias y profesionales en la comunidad global de autismo.",
+            "button": "Crear Cuenta Gratuita"
+        }
+    },
+    "resources": {
+        "title": "Biblioteca de Conocimiento Científico",
+        "subtitle": "Explora nuestra colección curada de artículos, guías y herramientas basadas en evidencia. Todo el contenido está verificado para precisión científica.",
+        "readMore": "Leer Más",
+        "credibility": "Credibilidad"
+    },
+    "articles": {
+        "title": "Noticias Diarias de Autismo",
+        "subtitle": "Resúmenes generados por IA de las últimas investigaciones sobre autismo, actualizaciones clínicas y noticias basadas en evidencia. Todo el contenido es revisado por expertos y cita fuentes confiables.",
+        "source": "Fuente",
+        "readFull": "Leer Artículo Completo",
+        "disclaimer": {
+            "title": "Aviso Importante",
+            "text": "Esta plataforma proporciona información únicamente, no consejo médico. Los artículos son resúmenes generados por IA de investigaciones científicas y son revisados para precisión. Siempre consulte a un profesional de la salud calificado para decisiones médicas."
+        }
+    }
+}

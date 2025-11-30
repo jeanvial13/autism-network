@@ -1,0 +1,69 @@
+{
+    "navigation": {
+        "brand": "T-Conecta Autismo",
+        "globalMap": "Global Map",
+        "resources": "Resources",
+        "articles": "Articles",
+        "signIn": "Sign in",
+        "getStarted": "Get Started"
+    },
+    "home": {
+        "hero": {
+            "title1": "Find Support.",
+            "title2": "Find Answers.",
+            "title3": "Find Community.",
+            "subtitle": "A global, smart network connecting autistic individuals, families, and verified professionals with evidence-based information and trusted support.",
+            "exploreMap": "Explore the Map",
+            "browseResources": "Browse Resources"
+        },
+        "dailyBrief": {
+            "title": "Today's Autism News",
+            "heading": "Daily Scientific Digest",
+            "description": "Get the latest autism research, clinical updates, and evidence-based news summarized automatically and reviewed by experts. Updated every day.",
+            "readUpdate": "Read Today's Update"
+        },
+        "features": {
+            "title": "Everything You Need, All in One Place",
+            "subtitle": "Evidence-based information, global connections, and smart support.",
+            "globalMap": {
+                "title": "Global Map",
+                "description": "Find verified autism centers, therapists, and professionals near you. Filter by services, languages, and insurance."
+            },
+            "resourceLibrary": {
+                "title": "Resource Library",
+                "description": "Explore our curated library of evidence-based articles, guides, videos, and tools for families and professionals."
+            },
+            "network": {
+                "title": "Join the Network",
+                "description": "Connect with verified professionals, other families, and autistic adults. Share experiences and find support."
+            }
+        },
+        "mapPreview": {
+            "title": "Centers Near You",
+            "heading": "Interactive Map",
+            "description": "The interactive map will show verified autism centers and professionals worldwide.",
+            "openMap": "Open Full Map"
+        },
+        "cta": {
+            "title": "Ready to Get Started?",
+            "subtitle": "Join thousands of families and professionals in the global autism community.",
+            "button": "Create Free Account"
+        }
+    },
+    "resources": {
+        "title": "Scientific Knowledge Library",
+        "subtitle": "Explore our curated collection of evidence-based articles, guides, and tools. All content is vetted for scientific accuracy.",
+        "readMore": "Read More",
+        "credibility": "Credibility"
+    },
+    "articles": {
+        "title": "Daily Autism News",
+        "subtitle": "Automated summaries of the latest autism research, clinical updates, and evidence-based news. All content is reviewed by experts and cites trusted sources.",
+        "source": "Source",
+        "readFull": "Read Full Article",
+        "disclaimer": {
+            "title": "Important Notice",
+            "text": "This platform provides information only, not medical advice. Articles are automated summaries of scientific research and are reviewed for accuracy. Always consult a qualified healthcare professional for medical decisions."
+        }
+    }
+}

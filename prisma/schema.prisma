@@ -1,0 +1,299 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector")]
+}
+
+enum UserRole {
+  USER
+  PROFESSIONAL
+  ADMIN
+  MODERATOR
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum AppointmentStatus {
+  REQUESTED
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String?
+  name         String?
+  image        String?
+  role         UserRole @default(USER)
+  preferences  Json? // { low_stim: bool, language: 'en', user_type: 'parent' }
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  professionalProfile    ProfessionalProfile?
+  appointmentsAsSeeker   Appointment[]        @relation("SeekerAppointments")
+  appointmentsAsProvider Appointment[]        @relation("ProviderAppointments")
+
+  accounts Account[]
+  sessions Session[]
+}
+
+model ProfessionalProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  licenseNumber      String
+  licenseCountry     String
+  verificationStatus VerificationStatus @default(PENDING)
+  specialties        String[]
+  bio                String?
+  locationLat        Float?
+  locationLng        Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Resource {
+  id               String  @id @default(uuid())
+  title            String
+  slug             String  @unique
+  contentMarkdown  String
+  summarySimple    String?
+  summaryTechnical String?
+  sourceUrl        String?
+  credibilityScore Int     @default(0)
+
+  // Vector embedding for RAG (using pgvector Unsupported type if needed, or mapped via extension)
+  // Prisma supports Unsupported("vector(1536)") for now, or native with extensions preview
+  embedding Unsupported("vector(1536)")?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Appointment {
+  id         String @id @default(uuid())
+  seekerId   String
+  seeker     User   @relation("SeekerAppointments", fields: [seekerId], references: [id])
+  providerId String
+  provider   User   @relation("ProviderAppointments", fields: [providerId], references: [id])
+
+  status    AppointmentStatus @default(REQUESTED)
+  startTime DateTime
+  endTime   DateTime
+  notes     String? // Encrypted in app logic
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// AI Content System Models
+
+enum ArticleStatus {
+  PENDING // Awaiting review
+  APPROVED // Ready to publish
+  FLAGGED // Needs manual review
+  REJECTED // Not suitable
+  ARCHIVED // Outdated
+}
+
+enum ResourceStatus {
+  ACTIVE // Link verified, content good
+  PENDING // Needs review
+  UNAVAILABLE // Dead link
+  FLAGGED // Quality concern
+}
+
+model Article {
+  id   String @id @default(uuid())
+  slug String @unique
+
+  // Content
+  title            String
+  tldrSummary      String  @db.Text // Plain language for families
+  backgroundText   String  @db.Text
+  findingsText     String  @db.Text
+  whyItMatters     String  @db.Text
+  practicalTips    String  @db.Text
+  technicalSection String? @db.Text // For professionals
+
+  // Metadata
+  tags         String[] // topic, audience, age group, study type
+  topics       String[] // diagnosis, intervention, education, etc.
+  audience     String[] // parents, autistic_adults, professionals, educators
+  ageGroups    String[] // early_childhood, kids, teens, adults
+  evidenceType String // RCT, systematic_review, case_study, guidelines, etc.
+
+  // Sources
+  sourceUrls            String[]
+  sourceName            String?
+  originalPublishedDate DateTime?
+
+  // AI & Quality
+  aiGeneratedDate  DateTime      @default(now())
+  credibilityScore Int           @default(0) // 0-100
+  status           ArticleStatus @default(PENDING)
+  flaggedReason    String?
+
+  // Recency
+  lastVerifiedDate DateTime @default(now())
+  version          Int      @default(1)
+
+  // Vector for RAG
+  embedding Unsupported("vector(1536)")?
+
+  // Relations
+  translations ArticleTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([aiGeneratedDate])
+  @@index([credibilityScore])
+  @@index([tags])
+}
+
+model ArticleTranslation {
+  id        String  @id @default(uuid())
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  language         String // en, es, pt, etc.
+  title            String
+  tldrSummary      String  @db.Text
+  backgroundText   String  @db.Text
+  findingsText     String  @db.Text
+  whyItMatters     String  @db.Text
+  practicalTips    String  @db.Text
+  technicalSection String? @db.Text
+
+  isHumanReviewed Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([articleId, language])
+}
+
+model EducationalResource {
+  id String @id @default(uuid())
+
+  // Core Info
+  title         String
+  description   String   @db.Text // AI-generated, user-friendly
+  suggestedUses String[] // How to use it
+
+  // Access
+  url             String
+  fileType        String // PDF, DOC, image, webpage, etc.
+  isDownloadable  Boolean @default(false)
+  requiresAccount Boolean @default(false)
+
+  // Classification
+  targetAge String[] // early_childhood, elementary, teens, adults
+  audience  String[] // parent, teacher, therapist, autistic_individual
+  topics    String[] // communication, math, reading, behavior, sensory, etc.
+  format    String[] // worksheet, coloring, visual_schedule, guide, etc.
+  language  String   @default("en")
+
+  // Licensing
+  licenseNote String? // e.g., "Free for personal and classroom use"
+
+  // Source
+  sourceName String // Website/organization name
+  sourceUrl  String // Homepage or about page
+
+  // Quality & Recency
+  credibilityScore Int            @default(0) // 0-100
+  lastCheckedDate  DateTime       @default(now())
+  status           ResourceStatus @default(ACTIVE)
+  deadLink         Boolean        @default(false)
+
+  // Vector for RAG
+  embedding Unsupported("vector(1536)")?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([targetAge])
+  @@index([topics])
+  @@index([language])
+  @@index([status])
+  @@index([lastCheckedDate])
+}
+
+model SourceCredibility {
+  id String @id @default(uuid())
+
+  domain String @unique
+  name   String
+  type   String // academic, government, nonprofit, commercial, etc.
+
+  credibilityScore   Int     @default(50) // 0-100
+  isPeerReviewed     Boolean @default(false)
+  isGovtOrg          Boolean @default(false)
+  isMajorInstitution Boolean @default(false)
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DailyArticle {
+  id            String   @id @default(uuid())
+  title         String
+  content       String
+  source        String?
+  publishedAt   DateTime @default(now())
+  isAiGenerated Boolean  @default(true)
+}
+
+// NextAuth Models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

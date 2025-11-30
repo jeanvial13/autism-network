@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Autism — AI Powered Global Autism Network
 
-## Getting Started
+A global, AI-powered platform connecting people with autism support, trusted information, and verified professionals—safely, ethically, and accessibly.
 
-First, run the development server:
+## Features
+
+- 🤖 **AI Chat Assistant** - Evidence-based Q&A powered by GPT-4
+- 📚 **Resource Library** - Curated scientific articles and guides
+- 🗺️ **Global Map** - Find autism centers and professionals worldwide
+- 👨‍⚕️ **Professional Directory** - Verified therapists and specialists
+- 📰 **Daily Research** - AI-generated summaries of latest autism research
+- 🌍 **Multilingual** - Support for multiple languages
+- ♿ **Accessible** - WCAG 2.1 AA compliant, autism-friendly design
+
+## Tech Stack
+
+- **Frontend:** Next.js 15, React 18, TailwindCSS, ShadCN UI
+- **Backend:** Node.js, Prisma ORM
+- **Database:** PostgreSQL with pgvector
+- **AI:** OpenAI GPT-4, Vercel AI SDK
+- **Auth:** NextAuth v5
+- **Deployment:** Docker, Portainer
+
+## Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your API keys
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Docker Compose
 
-## Learn More
+```bash
+docker-compose up -d
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+autism-network/
+├── src/
+│   ├── app/              # Next.js App Router pages
+│   │   ├── api/          # API routes
+│   │   ├── map/          # Global map page
+│   │   └── resources/    # Resource library
+│   ├── components/       # React components
+│   │   ├── ai/           # Chat interface
+│   │   ├── map/          # Map components
+│   │   └── resources/    # Resource components
+│   └── lib/              # Utilities
+├── prisma/               # Database schema
+├── public/               # Static assets
+└── compose.yml           # Docker configuration
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment Variables
 
-## Deploy on Vercel
+Required:
+- `DATABASE_URL` - PostgreSQL connection string
+- `NEXTAUTH_SECRET` - Random secret for auth
+- `OPENAI_API_KEY` - OpenAI API key
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Optional:
+- `GOOGLE_PLACES_API_KEY` - For map features
+- `NEXT_PUBLIC_MAPBOX_TOKEN` - For map visualization
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+This is a private project. For questions or suggestions, please contact the maintainer.
+
+## License
+
+Proprietary - All rights reserved
+
+## Support
+
+For deployment issues, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+For technical details, see [specification.md](./specification.md)
