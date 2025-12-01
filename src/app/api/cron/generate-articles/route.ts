@@ -5,6 +5,8 @@ import { translateArticleMultiple, getSupportedLanguages } from '@/lib/ai/transl
 import { classifyContent } from '@/lib/ai/safety-classifier';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Daily Article Generation Cron Job
  * 

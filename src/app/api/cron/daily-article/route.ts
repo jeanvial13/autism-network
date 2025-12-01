@@ -5,6 +5,8 @@ import { generateText } from 'ai';
 // This route would be triggered by a cron job service (e.g. Vercel Cron, GitHub Actions)
 // For security, checking a secret header is recommended in production.
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     // 1. Check Auth (Skip for MVP demo)
     // const authHeader = req.headers.get('Authorization');

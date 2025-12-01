@@ -3,6 +3,8 @@ import { discoverAutismResources, extractSourceName } from '@/lib/ai/resource-di
 import { generateEmbedding } from '@/lib/ai/article-generator';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Resource Discovery Cron Job
  * 
