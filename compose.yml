@@ -12,8 +12,11 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/autism_network
       - REDIS_URL=redis://redis:6379
       - MEILISEARCH_HOST=http://meilisearch:7700
-      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_URL=http://192.168.1.74:3000
       - NEXTAUTH_SECRET=changeme_in_production
+      - NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1IjoiamVhbnZpYWw4NCIsImEiOiJjbWlqOG5uOHgwMmV4M2txM2V5YTEwNWlmIn0.tARK4zCotUJtNAZIdoFtOQ
+      - OPENAI_API_KEY=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
+      - GOOGLE_PLACES_API_KEY=AIzaSyDwWkcf9xbalhuK7lLlR6PtqpSztQ6L73Q
     depends_on:
       - postgres
       - redis
