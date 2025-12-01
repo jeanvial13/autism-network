@@ -4,49 +4,23 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
 
-// Mock data until database is migrated
-const MOCK_ARTICLES = [
-    {
-        id: '1',
-        slug: 'early-intervention-outcomes-2025',
-        title: 'New Study Shows Early Intervention Improves Outcomes in 90% of Cases',
-        tldrSummary: 'Researchers from Stanford University found that children who received intervention before age 3 showed significant improvements in communication and social skills.',
-        topics: ['intervention', 'early_childhood', 'research'],
-        audience: ['parents', 'professionals'],
-        evidenceType: 'RCT',
-        sourceName: 'Journal of Autism and Developmental Disorders',
-        credibilityScore: 95,
-        aiGeneratedDate: new Date('2025-11-29'),
-    },
-    {
-        id: '2',
-        slug: 'neurodiversity-hiring-microsoft-2025',
-        title: 'Tech Giant Launches Neurodiversity Hiring Program',
-        tldrSummary: 'Microsoft announces new initiative to hire 10,000 autistic adults over the next 5 years, focusing on tech roles and providing workplace accommodations.',
-        topics: ['inclusion', 'employment', 'technology'],
-        audience: ['autistic_adults', 'professionals'],
-        evidenceType: 'news',
-        sourceName: 'Tech Industry News',
-        credibilityScore: 85,
-        aiGeneratedDate: new Date('2025-11-28'),
-    },
-    {
-        id: '3',
-        slug: 'cdc-autism-prevalence-2025',
-        title: 'CDC Updates Autism Prevalence Statistics for 2025',
-        tldrSummary: 'Latest data shows 1 in 36 children are diagnosed with autism spectrum disorder, highlighting the need for increased support services.',
-        topics: ['diagnosis', 'research', 'statistics'],
-        audience: ['parents', 'professionals', 'educators'],
-        evidenceType: 'guidelines',
-        sourceName: 'CDC Morbidity and Mortality Weekly Report',
-        credibilityScore: 98,
-        aiGeneratedDate: new Date('2025-11-27'),
-    },
-];
-
-export default function ArticlesPage() {
-    const articles = MOCK_ARTICLES;
+export default async function ArticlesPage() {
+    // Fetch articles from database
+    const articles = await prisma?.article.findMany({
+        take: 20,
+        orderBy: {
+            aiGeneratedDate: 'desc'
+        },
+        include: {
+            translations: {
+                where: {
+                    language: 'en'
+                }
+            }
+        }
+    }) || [];
 
     return (
         <main className="min-h-screen bg-background py-12">
@@ -61,11 +35,13 @@ export default function ArticlesPage() {
                         Evidence-based articles updated daily. All content is scientifically reviewed, cites trusted sources,
                         and uses autism-affirming language.
                     </p>
-                    <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded-lg">
-                        <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                            <strong>Demo Mode:</strong> Showing sample articles. Run database migration to enable full functionality.
-                        </p>
-                    </div>
+                    {articles.length === 0 && (
+                        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
+                            <p className="text-sm text-blue-800 dark:text-blue-200">
+                                <strong>No articles yet.</strong> Run the AI generation cron job to populate articles.
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Filters & Search */}

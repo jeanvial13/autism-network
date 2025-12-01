@@ -3,55 +3,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { prisma } from '@/lib/prisma';
 
-// Mock data until database is migrated
-const MOCK_RESOURCES = [
-    {
-        id: '1',
-        title: 'Daily Visual Schedule - Printable',
-        description: 'A customizable visual schedule template to help autistic children understand daily routines. Includes morning, afternoon, and evening sections with picture cards.',
-        fileType: 'PDF',
-        isDownloadable: true,
-        targetAge: ['early_childhood', 'elementary'],
-        audience: ['parent', 'teacher'],
-        topics: ['daily_living', 'executive_function'],
-        format: ['visual_schedule', 'worksheet'],
-        url: 'https://example.com/visual-schedule.pdf',
-        sourceName: 'Autism Speaks',
-        lastCheckedDate: new Date('2025-11-25'),
-    },
-    {
-        id: '2',
-        title: 'Emotions Chart - Feelings Faces',
-        description: 'Colorable chart showing different emotions with facial expressions. Perfect for teaching emotional recognition and regulation.',
-        fileType: 'PDF',
-        isDownloadable: true,
-        targetAge: ['early_childhood', 'elementary'],
-        audience: ['parent', 'teacher', 'therapist'],
-        topics: ['emotional_regulation', 'social_skills'],
-        format: ['coloring', 'worksheet'],
-        url: 'https://example.com/emotions-chart.pdf',
-        sourceName: 'Teachers Pay Teachers',
-        lastCheckedDate: new Date('2025-11-28'),
-    },
-    {
-        id: '3',
-        title: 'Social Story: Going to the Doctor',
-        description: 'A simple social story to prepare children for doctor visits. Includes pictures and clear steps to reduce anxiety.',
-        fileType: 'PDF',
-        isDownloadable: true,
-        targetAge: ['early_childhood', 'elementary'],
-        audience: ['parent', 'therapist'],
-        topics: ['social_skills', 'daily_living'],
-        format: ['social_story'],
-        url: 'https://example.com/doctor-social-story.pdf',
-        sourceName: 'Autism Little Learners',
-        lastCheckedDate: new Date('2025-11-29'),
-    },
-];
-
-export default function ResourcesPage() {
-    const resources = MOCK_RESOURCES;
+export default async function ResourcesPage() {
+    // Fetch resources from database
+    const resources = await prisma?.educationalResource.findMany({
+        take: 50,
+        orderBy: {
+            lastCheckedDate: 'desc'
+        }
+    }) || [];
 
     const getFileIcon = (fileType: string) => {
         if (fileType === 'PDF') return FileText;
@@ -72,11 +33,13 @@ export default function ResourcesPage() {
                         Free downloadable worksheets, visual schedules, social stories, communication boards, and activities.
                         All resources are curated for autism support.
                     </p>
-                    <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded-lg">
-                        <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                            <strong>Demo Mode:</strong> Showing sample resources. Run database migration to enable full functionality.
-                        </p>
-                    </div>
+                    {resources.length === 0 && (
+                        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
+                            <p className="text-sm text-blue-800 dark:text-blue-200">
+                                <strong>No resources yet.</strong> Run the resource discovery cron job to populate resources.
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Search */}
@@ -147,7 +110,7 @@ export default function ResourcesPage() {
                 {/* Resources Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {resources.map((resource) => {
-                        const FileIcon = getFileIcon(resource.fileType);
+                        const FileIcon = getFileIcon(resource.fileType || 'PDF');
 
                         return (
                             <Card
@@ -179,7 +142,7 @@ export default function ResourcesPage() {
                                         </div>
                                         <div className="text-xs text-muted-foreground space-y-1">
                                             <div>Age: {resource.targetAge.join(', ').replace(/_/g, ' ')}</div>
-                                            <div>Format: {resource.fileType}</div>
+                                            <div>Format: {resource.fileType || 'PDF'}</div>
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
