@@ -8,19 +8,28 @@ import { prisma } from '@/lib/prisma';
 
 export default async function ArticlesPage() {
     // Fetch articles from database
-    const articles = await prisma?.article.findMany({
-        take: 20,
-        orderBy: {
-            aiGeneratedDate: 'desc'
-        },
-        include: {
-            translations: {
-                where: {
-                    language: 'en'
+    let articles = [];
+
+    try {
+        if (prisma) {
+            articles = await prisma.article.findMany({
+                take: 20,
+                orderBy: {
+                    aiGeneratedDate: 'desc'
+                },
+                include: {
+                    translations: {
+                        where: {
+                            language: 'en'
+                        }
+                    }
                 }
-            }
+            });
         }
-    }) || [];
+    } catch (error) {
+        console.error('Failed to fetch articles:', error);
+        // Return empty array if database is not ready
+    }
 
     return (
         <main className="min-h-screen bg-background py-12">

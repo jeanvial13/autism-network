@@ -7,12 +7,21 @@ import { prisma } from '@/lib/prisma';
 
 export default async function ResourcesPage() {
     // Fetch resources from database
-    const resources = await prisma?.educationalResource.findMany({
-        take: 50,
-        orderBy: {
-            lastCheckedDate: 'desc'
+    let resources = [];
+
+    try {
+        if (prisma) {
+            resources = await prisma.educationalResource.findMany({
+                take: 50,
+                orderBy: {
+                    lastCheckedDate: 'desc'
+                }
+            });
         }
-    }) || [];
+    } catch (error) {
+        console.error('Failed to fetch resources:', error);
+        // Return empty array if database is not ready
+    }
 
     const getFileIcon = (fileType: string) => {
         if (fileType === 'PDF') return FileText;

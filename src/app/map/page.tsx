@@ -3,22 +3,31 @@ import MapClient from '@/components/map/MapClient';
 
 export default async function MapPage() {
     // Fetch professional profiles from database (these are the providers)
-    const professionals = await prisma?.professionalProfile.findMany({
-        where: {
-            verificationStatus: 'VERIFIED'
-        },
-        include: {
-            user: {
-                select: {
-                    name: true,
-                    email: true
+    let professionals = [];
+
+    try {
+        if (prisma) {
+            professionals = await prisma.professionalProfile.findMany({
+                where: {
+                    verificationStatus: 'VERIFIED'
+                },
+                include: {
+                    user: {
+                        select: {
+                            name: true,
+                            email: true
+                        }
+                    }
+                },
+                orderBy: {
+                    createdAt: 'desc'
                 }
-            }
-        },
-        orderBy: {
-            createdAt: 'desc'
+            });
         }
-    }) || [];
+    } catch (error) {
+        console.error('Failed to fetch professionals:', error);
+        // Return empty array if database is not ready
+    }
 
     // Transform database professionals to match expected format
     const formattedProviders = professionals.map(p => ({
