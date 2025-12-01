@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { validateResourceLink } from '@/lib/ai/resource-discovery';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Link Validation Cron Job
  * 

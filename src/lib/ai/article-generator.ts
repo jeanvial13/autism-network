@@ -1,9 +1,14 @@
 import OpenAI from 'openai';
 import { ARTICLE_GENERATION_PROMPT, fillPromptTemplate, parseAIResponse } from '../prompts';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+const getOpenAI = () => {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+        console.warn('OPENAI_API_KEY is not set');
+        throw new Error('OPENAI_API_KEY is not set');
+    }
+    return new OpenAI({ apiKey });
+};
 
 export interface ResearchFinding {
     title: string;
@@ -53,7 +58,7 @@ export async function generateArticle(
     });
 
     try {
-        const response = await openai.chat.completions.create({
+        const response = await getOpenAI().chat.completions.create({
             model: 'gpt-4o',
             messages: [
                 {
@@ -95,7 +100,7 @@ export async function generateArticle(
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
     try {
-        const response = await openai.embeddings.create({
+        const response = await getOpenAI().embeddings.create({
             model: 'text-embedding-3-small',
             input: text.slice(0, 8000), // Limit input length
         });

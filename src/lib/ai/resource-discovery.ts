@@ -1,9 +1,15 @@
 import OpenAI from 'openai';
 import { RESOURCE_DESCRIPTION_PROMPT, fillPromptTemplate, parseAIResponse } from '../prompts';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+const getOpenAI = () => {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+        console.warn('OPENAI_API_KEY is not set');
+        // Return a dummy object or throw depending on usage, but for build safety just return null or throw at runtime
+        throw new Error('OPENAI_API_KEY is not set');
+    }
+    return new OpenAI({ apiKey });
+};
 
 export interface DiscoveredResource {
     title: string;
@@ -75,7 +81,7 @@ export async function generateResourceDescription(
     });
 
     try {
-        const response = await openai.chat.completions.create({
+        const response = await getOpenAI().chat.completions.create({
             model: 'gpt-4o-mini',
             messages: [
                 {
