@@ -2,9 +2,14 @@ import OpenAI from 'openai';
 import { TRANSLATION_PROMPT, fillPromptTemplate, parseAIResponse } from '../prompts';
 import { GeneratedArticle } from './article-generator';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+const getOpenAI = () => {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+        console.warn('OPENAI_API_KEY is not set');
+        throw new Error('OPENAI_API_KEY is not set');
+    }
+    return new OpenAI({ apiKey });
+};
 
 export interface TranslatedArticle {
     language: string;
@@ -40,7 +45,7 @@ export async function translateArticle(
     });
 
     try {
-        const response = await openai.chat.completions.create({
+        const response = await getOpenAI().chat.completions.create({
             model: 'gpt-4o',
             messages: [
                 {

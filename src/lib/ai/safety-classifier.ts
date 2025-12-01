@@ -1,9 +1,14 @@
 import OpenAI from 'openai';
 import { PSEUDOSCIENCE_CLASSIFIER_PROMPT, CREDIBILITY_SCORING_PROMPT, fillPromptTemplate, parseAIResponse } from '../prompts';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+const getOpenAI = () => {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+        console.warn('OPENAI_API_KEY is not set');
+        throw new Error('OPENAI_API_KEY is not set');
+    }
+    return new OpenAI({ apiKey });
+};
 
 export interface SafetyVerdict {
     verdict: 'APPROVE' | 'REJECT' | 'FLAG_FOR_REVIEW';
@@ -37,7 +42,7 @@ export async function classifyContent(
     });
 
     try {
-        const response = await openai.chat.completions.create({
+        const response = await getOpenAI().chat.completions.create({
             model: 'gpt-4o-mini',
             messages: [
                 {
@@ -84,7 +89,7 @@ export async function evaluateSourceCredibility(
     });
 
     try {
-        const response = await openai.chat.completions.create({
+        const response = await getOpenAI().chat.completions.create({
             model: 'gpt-4o-mini',
             messages: [
                 {
