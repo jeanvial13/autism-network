@@ -21,9 +21,14 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV DATABASE_URL "postgresql://postgres:postgres@localhost:5432/autism_network"
+# Skip database connection during build (database not available yet)
+ENV SKIP_DATABASE_CONNECTION true
 
 RUN npx prisma generate
 RUN npm run build
+
+# Unset the skip flag for runtime (database will be available)
+ENV SKIP_DATABASE_CONNECTION false
 
 # Production image, copy all the files and run next
 FROM base AS runner
