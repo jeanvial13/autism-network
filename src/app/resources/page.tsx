@@ -135,7 +135,7 @@ export default async function ResourcesPage() {
 
                                     <div className="mt-auto">
                                         <div className="flex flex-wrap gap-1 mb-4">
-                                            {resource.topics.slice(0, 2).map((topic, idx) => (
+                                            {resource.topics.slice(0, 2).map((topic: string, idx: number) => (
                                                 <Badge key={idx} variant="outline" className="text-xs border-border/50">
                                                     {topic.replace('_', ' ')}
                                                 </Badge>

@@ -56,7 +56,7 @@ export function useRobustGeolocation() {
             // Persist to localStorage
             try {
                 localStorage.setItem('last_known_location', JSON.stringify({ latitude: lat, longitude: lng }));
-            } catch (e) {
+            } catch {
                 // Ignore storage errors
             }
 
@@ -87,7 +87,7 @@ export function useRobustGeolocation() {
             return false;
         };
 
-        const useFallbackLocation = () => {
+        const applyFallbackLocation = () => {
             // Try localStorage first
             try {
                 const saved = localStorage.getItem('last_known_location');
@@ -97,7 +97,7 @@ export function useRobustGeolocation() {
                     setLocation(latitude, longitude, 'default');
                     return;
                 }
-            } catch (e) {
+            } catch {
                 // Ignore
             }
 
@@ -110,7 +110,7 @@ export function useRobustGeolocation() {
         if (!navigator.geolocation) {
             // Layer 2: IP Geolocation
             tryIpGeolocation().then(success => {
-                if (!success) useFallbackLocation(); // Layer 3: Default
+                if (!success) applyFallbackLocation(); // Layer 3: Default
             });
             return;
         }
@@ -126,7 +126,7 @@ export function useRobustGeolocation() {
                 const ipSuccess = await tryIpGeolocation();
                 if (!ipSuccess) {
                     // Layer 3: Default
-                    useFallbackLocation();
+                    applyFallbackLocation();
                 }
             },
             {

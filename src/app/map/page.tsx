@@ -3,7 +3,7 @@ import MapClient from '@/components/map/MapClient';
 
 export default async function MapPage() {
     // Fetch professional profiles from database (these are the providers)
-    let professionals = [];
+    let professionals: any[] = [];
 
     try {
         if (prisma) {

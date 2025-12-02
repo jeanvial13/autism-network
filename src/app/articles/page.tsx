@@ -12,7 +12,7 @@ export default async function ArticlesPage() {
     const t = await getTranslations('articles');
 
     // Fetch articles from database
-    let articles = [];
+    let articles: any[] = [];
 
     try {
         if (prisma) {
@@ -140,7 +140,7 @@ export default async function ArticlesPage() {
                                     </div>
 
                                     <div className="flex flex-wrap gap-2 mt-2">
-                                        {article.topics.slice(0, 3).map((topic, idx) => (
+                                        {article.topics.slice(0, 3).map((topic: string, idx: number) => (
                                             <Badge key={idx} variant="outline" className="text-xs bg-transparent border-border/50">
                                                 {topic}
                                             </Badge>
