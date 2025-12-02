@@ -112,9 +112,17 @@ export async function GET(request: NextRequest) {
                 credibilityScore: safetyCheck.credibilityScore,
                 status,
                 flaggedReason: safetyCheck.verdict === 'FLAG_FOR_REVIEW' ? safetyCheck.reason : undefined,
-                embedding: embedding as any, // pgvector type
+                // embedding: embedding as any, // Unsupported type, updated via raw query below
             } as any,
         });
+
+        // Update embedding using raw query (required for Unsupported vector type)
+        const embeddingString = `[${embedding.join(',')}]`;
+        await prisma.$executeRaw`
+            UPDATE "Article"
+            SET "embedding" = ${embeddingString}::vector
+            WHERE "id" = ${savedArticle.id}
+        `;
 
         console.log(`[CRON] Article saved with ID: ${savedArticle.id}`);
 

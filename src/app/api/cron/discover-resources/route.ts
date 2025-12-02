@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
                 const isDownloadable = ['PDF', 'DOC', 'image'].includes(resource.fileType);
 
                 // Save to database
-                await prisma.educationalResource.create({
+                const savedResource = await prisma.educationalResource.create({
                     data: {
                         title: resource.title,
                         description: resource.description,
@@ -86,9 +86,17 @@ export async function GET(request: NextRequest) {
                         sourceUrl: resource.url,
                         credibilityScore: 70, // Default score
                         status: 'PENDING', // Require manual review initially
-                        embedding: embedding as any,
+                        // embedding: embedding as any, // Unsupported type, updated via raw query below
                     } as any,
                 });
+
+                // Update embedding using raw query (required for Unsupported vector type)
+                const embeddingString = `[${embedding.join(',')}]`;
+                await prisma.$executeRaw`
+                    UPDATE "EducationalResource"
+                    SET "embedding" = ${embeddingString}::vector
+                    WHERE "id" = ${savedResource.id}
+                `;
 
                 addedCount++;
                 console.log(`[CRON] Added resource: ${resource.title}`);
