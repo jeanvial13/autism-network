@@ -138,6 +138,43 @@ export async function discoverAutismResources(): Promise<
         allResources.push(...resources);
     }
 
+    // FALLBACK: If no resources found (e.g. API keys missing), use curated list
+    if (allResources.length === 0) {
+        console.log('No resources found via API, using fallback curated list');
+        allResources.push(
+            {
+                title: 'Autism Speaks Tool Kits',
+                url: 'https://www.autismspeaks.org/tool-kit',
+                fileType: 'webpage',
+                rawDescription: 'A comprehensive collection of tool kits for families and adults.'
+            },
+            {
+                title: 'National Autistic Society Resources',
+                url: 'https://www.autism.org.uk/advice-and-guidance/topics',
+                fileType: 'webpage',
+                rawDescription: 'Advice and guidance on a wide range of autism-related topics.'
+            },
+            {
+                title: 'Visual Schedule Printable',
+                url: 'https://www.teacherspayteachers.com/Browse/Price-Range/Free/Search:visual+schedule+autism',
+                fileType: 'PDF',
+                rawDescription: 'Free printable visual schedules for daily routines.'
+            },
+            {
+                title: 'Social Stories Creator',
+                url: 'https://www.autism.org.uk/advice-and-guidance/topics/communication/communication-tools/social-stories-and-comic-strip-conversations',
+                fileType: 'guide',
+                rawDescription: 'Guide on how to create and use social stories.'
+            },
+            {
+                title: 'Sensory Processing Guide',
+                url: 'https://childmind.org/article/sensory-processing-issues-explained/',
+                fileType: 'webpage',
+                rawDescription: 'Understanding sensory processing issues in children.'
+            }
+        );
+    }
+
     // Deduplicate by URL
     const uniqueUrls = new Set<string>();
     const uniqueResources: DiscoveredResource[] = [];
