@@ -111,13 +111,14 @@ export default function PictogramasPage() {
                         <p className="text-muted-foreground">{t('subtitle')}</p>
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-4">
                         <GlassButton
-                            variant="secondary"
+                            variant="primary"
                             onClick={() => document.getElementById('file-upload')?.click()}
+                            className="w-14 h-14 rounded-full p-0 flex items-center justify-center bg-gradient-to-br from-cyan-400 to-blue-600 hover:scale-110 transition-all shadow-lg hover:shadow-cyan-500/25 border-none"
+                            title={t('upload')}
                         >
-                            <Upload className="w-4 h-4 mr-2" />
-                            {t('upload')}
+                            <Upload className="w-6 h-6 text-white" />
                         </GlassButton>
                         <input
                             id="file-upload"
@@ -131,18 +132,22 @@ export default function PictogramasPage() {
                         <GlassButton
                             variant="primary"
                             onClick={() => setShowGenerateModal(true)}
-                            className="bg-gradient-to-r from-indigo-500 to-purple-500 border-none text-white"
+                            className="w-14 h-14 rounded-full p-0 flex items-center justify-center bg-gradient-to-br from-violet-500 to-fuchsia-600 hover:scale-110 transition-all shadow-lg hover:shadow-purple-500/25 border-none"
+                            title={t('generate')}
                         >
-                            <Sparkles className="w-4 h-4 mr-2" />
-                            {t('generate')}
+                            <Sparkles className="w-6 h-6 text-white" />
                         </GlassButton>
 
                         <GlassButton
-                            variant={isDeleteMode ? "destructive" : "outline"}
+                            variant="primary"
                             onClick={() => setIsDeleteMode(!isDeleteMode)}
+                            className={`w-14 h-14 rounded-full p-0 flex items-center justify-center transition-all shadow-lg border-none hover:scale-110 ${isDeleteMode
+                                    ? "bg-gradient-to-br from-red-500 to-orange-500 hover:shadow-red-500/25 ring-4 ring-red-500/30"
+                                    : "bg-gradient-to-br from-slate-700 to-slate-900 hover:shadow-slate-500/25"
+                                }`}
+                            title={isDeleteMode ? t('done') : t('delete')}
                         >
-                            {isDeleteMode ? <X className="w-4 h-4 mr-2" /> : <Trash2 className="w-4 h-4 mr-2" />}
-                            {isDeleteMode ? t('done') : t('delete')}
+                            {isDeleteMode ? <X className="w-6 h-6 text-white" /> : <Trash2 className="w-6 h-6 text-white" />}
                         </GlassButton>
                     </div>
                 </div>
