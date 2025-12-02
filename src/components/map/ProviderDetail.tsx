@@ -1,19 +1,75 @@
-'use client';
-
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, MapPin, Calendar, Phone, Mail, Globe, CheckCircle, Star } from 'lucide-react';
+import { X, MapPin, Phone, Navigation, Save, FileText, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Textarea } from '@/components/ui/textarea';
+import { calculateDistance, formatDistance } from '@/lib/geolocation';
+import { toast } from 'sonner';
 
 interface ProviderDetailProps {
     provider: any;
-    distance?: string;
+    userLocation?: any;
     onClose: () => void;
 }
 
-export default function ProviderDetail({ provider, distance, onClose }: ProviderDetailProps) {
+export default function ProviderDetail({ provider, userLocation, onClose }: ProviderDetailProps) {
+    const [note, setNote] = useState('');
+    const [isSaved, setIsSaved] = useState(false);
+
+    const distance = userLocation?.latitude && userLocation?.longitude
+        ? formatDistance(calculateDistance(
+            userLocation.latitude,
+            userLocation.longitude,
+            provider.lat,
+            provider.lng
+        ))
+        : null;
+
+    // Load state from localStorage
+    useEffect(() => {
+        const savedNotes = JSON.parse(localStorage.getItem('provider_notes') || '{}');
+        const savedProviders = JSON.parse(localStorage.getItem('saved_providers') || '[]');
+
+        if (savedNotes[provider.id]) {
+            setNote(savedNotes[provider.id]);
+        }
+        setIsSaved(savedProviders.includes(provider.id));
+    }, [provider.id]);
+
+    // Save Note
+    const handleSaveNote = () => {
+        const savedNotes = JSON.parse(localStorage.getItem('provider_notes') || '{}');
+        savedNotes[provider.id] = note;
+        localStorage.setItem('provider_notes', JSON.stringify(savedNotes));
+        toast.success('Note saved locally');
+    };
+
+    // Toggle Save Provider
+    const handleToggleSave = () => {
+        const savedProviders = JSON.parse(localStorage.getItem('saved_providers') || '[]');
+        let newSaved;
+        if (isSaved) {
+            newSaved = savedProviders.filter((id: string) => id !== provider.id);
+            toast.info('Provider removed from saved list');
+        } else {
+            newSaved = [...savedProviders, provider.id];
+            toast.success('Provider saved to your list');
+        }
+        localStorage.setItem('saved_providers', JSON.stringify(newSaved));
+        setIsSaved(!isSaved);
+    };
+
+    const handleCall = () => {
+        window.location.href = `tel:${provider.phone || ''}`;
+    };
+
+    const handleNavigate = () => {
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${provider.lat},${provider.lng}`;
+        window.open(url, '_blank');
+    };
+
     return (
         <motion.div
             initial={{ y: '100%' }}
@@ -45,7 +101,7 @@ export default function ProviderDetail({ provider, distance, onClose }: Provider
                             </AvatarFallback>
                         </Avatar>
 
-                        <div className="text-center">
+                        <div className="text-center mb-6">
                             <h2 className="text-2xl font-bold text-foreground flex items-center justify-center gap-2">
                                 {provider.name}
                                 {provider.verified && (
@@ -59,60 +115,39 @@ export default function ProviderDetail({ provider, distance, onClose }: Provider
                             </p>
                         </div>
 
-                        <div className="flex gap-2 mt-4">
-                            <Button className="rounded-full px-6">
-                                <Calendar className="mr-2 h-4 w-4" />
-                                Book Appointment
+                        {/* Action Buttons */}
+                        <div className="flex gap-3 mb-8 w-full justify-center">
+                            <Button onClick={handleCall} className="flex-1 max-w-[120px] rounded-full" variant="outline">
+                                <Phone className="h-4 w-4 mr-2" />
+                                Call
                             </Button>
-                            <Button variant="outline" size="icon" className="rounded-full">
-                                <Star className="h-4 w-4" />
+                            <Button onClick={handleNavigate} className="flex-1 max-w-[120px] rounded-full" variant="default">
+                                <Navigation className="h-4 w-4 mr-2" />
+                                Go
+                            </Button>
+                            <Button onClick={handleToggleSave} className="flex-1 max-w-[120px] rounded-full" variant={isSaved ? "secondary" : "outline"}>
+                                <Save className={`h-4 w-4 mr-2 ${isSaved ? 'fill-current' : ''}`} />
+                                {isSaved ? 'Saved' : 'Save'}
                             </Button>
                         </div>
-                    </div>
 
-                    <div className="space-y-6 max-w-2xl mx-auto">
-                        {/* Services */}
-                        <section>
-                            <h3 className="font-semibold text-lg mb-3">Services Offered</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {provider.services.map((service: string, idx: number) => (
-                                    <Badge key={idx} variant="secondary" className="px-3 py-1 text-sm">
-                                        {service}
-                                    </Badge>
-                                ))}
+                        {/* Notes Section */}
+                        <div className="w-full max-w-md bg-muted/30 p-4 rounded-xl border border-border">
+                            <div className="flex items-center gap-2 mb-2 text-sm font-medium text-foreground">
+                                <FileText className="h-4 w-4 text-primary" />
+                                Personal Notes
                             </div>
-                        </section>
-
-                        {/* About */}
-                        <section>
-                            <h3 className="font-semibold text-lg mb-3">About</h3>
-                            <p className="text-muted-foreground leading-relaxed">
-                                {provider.bio || "Dedicated professional providing specialized care and support for individuals on the autism spectrum. Committed to evidence-based practices and family-centered care."}
-                            </p>
-                        </section>
-
-                        {/* Contact Info */}
-                        <section className="bg-muted/30 rounded-xl p-4 space-y-3">
-                            <h3 className="font-semibold text-lg mb-2">Contact Information</h3>
-                            <div className="flex items-center gap-3 text-sm">
-                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                    <Phone className="h-4 w-4" />
-                                </div>
-                                <span>+1 (555) 123-4567</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-sm">
-                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                    <Mail className="h-4 w-4" />
-                                </div>
-                                <span>contact@{provider.name.toLowerCase().replace(/\s+/g, '')}.com</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-sm">
-                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                    <Globe className="h-4 w-4" />
-                                </div>
-                                <span>www.{provider.name.toLowerCase().replace(/\s+/g, '')}.com</span>
-                            </div>
-                        </section>
+                            <Textarea
+                                placeholder="Add private notes about this provider..."
+                                value={note}
+                                onChange={(e) => setNote(e.target.value)}
+                                className="bg-background resize-none mb-2"
+                                rows={3}
+                            />
+                            <Button size="sm" onClick={handleSaveNote} className="w-full">
+                                Save Note
+                            </Button>
+                        </div>
                     </div>
                 </ScrollArea>
             </div>

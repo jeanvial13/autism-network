@@ -263,6 +263,34 @@ model DailyArticle {
   isAiGenerated Boolean  @default(true)
 }
 
+model Resource {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  url         String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactNote {
+  id        String   @id @default(cuid())
+  providerId String
+  userId    String?  // Optional for now, can be linked to auth later
+  note      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SavedProvider {
+  id        String   @id @default(cuid())
+  providerId String
+  userId    String?
+  createdAt DateTime @default(now())
+
+  @@unique([providerId, userId])
+}
+
 // NextAuth Models
 model Account {
   id                String  @id @default(cuid())

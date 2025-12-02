@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MapPin, Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,7 @@ import FilterBar from '@/components/map/FilterBar';
 import ProviderCard from '@/components/map/ProviderCard';
 import ProviderDetail from '@/components/map/ProviderDetail';
 import MapboxMap from '@/components/map/MapboxMap';
-import { useGeolocation, calculateDistance } from '@/lib/geolocation';
+import { useRobustGeolocation, calculateDistance } from '@/lib/geolocation';
 
 interface MapClientProps {
     providers: Array<{
@@ -26,6 +26,7 @@ interface MapClientProps {
 
 export default function MapClient({ providers }: MapClientProps) {
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [selectedProvider, setSelectedProvider] = useState<any>(null);
     const [filters, setFilters] = useState({
         services: [] as string[],
@@ -33,16 +34,24 @@ export default function MapClient({ providers }: MapClientProps) {
         distance: 50 // Default 50km
     });
 
-    const userLocation = useGeolocation();
+    const userLocation = useRobustGeolocation(); // Uses robust 3-layer logic
     const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
+
+    // Debounce search query
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     // Filter and Sort Providers
     const filteredProviders = useMemo(() => {
         let result = providers.filter(center => {
             // Search Query
             const matchesSearch =
-                center.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                center.city.toLowerCase().includes(searchQuery.toLowerCase());
+                center.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                center.city.toLowerCase().includes(debouncedSearch.toLowerCase());
 
             // Service Filter
             const matchesServices = filters.services.length === 0 ||
@@ -66,17 +75,25 @@ export default function MapClient({ providers }: MapClientProps) {
             return matchesSearch && matchesServices && matchesVerified && matchesDistance;
         });
 
-        // Sort by distance if user location available
-        if (userLocation.latitude && userLocation.longitude) {
-            result.sort((a, b) => {
-                const distA = calculateDistance(userLocation.latitude!, userLocation.longitude!, a.lat, a.lng);
-                const distB = calculateDistance(userLocation.latitude!, userLocation.longitude!, b.lat, b.lng);
+        // Sort Providers
+        result.sort((a, b) => {
+            // 1. Verified First (if enabled in sort) - Optional, but good UX
+            if (a.verified && !b.verified) return -1;
+            if (!a.verified && b.verified) return 1;
+
+            // 2. Nearest First (if location available)
+            if (userLocation.latitude && userLocation.longitude) {
+                const distA = calculateDistance(userLocation.latitude, userLocation.longitude, a.lat, a.lng);
+                const distB = calculateDistance(userLocation.latitude, userLocation.longitude, b.lat, b.lng);
                 return distA - distB;
-            });
-        }
+            }
+
+            // 3. Alphabetical Fallback
+            return a.name.localeCompare(b.name);
+        });
 
         return result;
-    }, [providers, searchQuery, filters, userLocation]);
+    }, [providers, debouncedSearch, filters, userLocation]);
 
     return (
         <main className="h-[calc(100vh-4rem)] flex flex-col lg:flex-row bg-background overflow-hidden relative">
@@ -92,9 +109,11 @@ export default function MapClient({ providers }: MapClientProps) {
                     <div className="flex items-center gap-2 mb-4">
                         <MapPin className="h-6 w-6 text-primary" />
                         <h1 className="text-2xl font-bold text-foreground">Global Map</h1>
+                        {userLocation.loading && <span className="text-xs text-muted-foreground animate-pulse">(Locating...)</span>}
                     </div>
                     <p className="text-sm text-muted-foreground mb-4">
                         {filteredProviders.length} result{filteredProviders.length !== 1 ? 's' : ''}
+                        {userLocation.source === 'ip' && <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">Approx Location</span>}
                     </p>
 
                     {/* Search */}
@@ -110,7 +129,7 @@ export default function MapClient({ providers }: MapClientProps) {
                     </div>
 
                     {/* Filters */}
-                    <FilterBar filters={filters} setFilters={setFilters} />
+                    <FilterBar filters={filters} onFilterChange={setFilters} />
                 </div>
 
                 {/* Provider List */}
@@ -141,9 +160,10 @@ export default function MapClient({ providers }: MapClientProps) {
                 <MapboxMap
                     providers={filteredProviders}
                     selectedProvider={selectedProvider}
-                    onProviderSelect={setSelectedProvider}
+                    onSelectProvider={setSelectedProvider}
                     userLocation={userLocation}
                     mapboxToken={mapboxToken}
+                    distance={filters.distance}
                 />
             </div>
 
@@ -173,6 +193,6 @@ export default function MapClient({ providers }: MapClientProps) {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </main>
+        </main >
     );
 }

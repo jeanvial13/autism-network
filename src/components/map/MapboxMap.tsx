@@ -1,11 +1,12 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
-import Map, { Marker, Popup, NavigationControl, GeolocateControl } from 'react-map-gl/mapbox';
+import { useRef, useEffect, useMemo } from 'react';
+import Map, { Marker, Popup, NavigationControl, GeolocateControl, Source, Layer, MapRef } from 'react-map-gl/mapbox';
 import { MapPin } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import ProviderPopup from './ProviderPopup';
 import { calculateDistance, formatDistance } from '@/lib/geolocation';
+import mapboxgl from 'mapbox-gl';
 
 interface MapboxMapProps {
     providers: any[];
@@ -13,38 +14,129 @@ interface MapboxMapProps {
     selectedProvider: any;
     onSelectProvider: (provider: any) => void;
     mapboxToken: string;
+    distance: number;
 }
+
+// Helper to create a GeoJSON circle
+const createGeoJSONCircle = (center: [number, number], radiusInKm: number, points = 64) => {
+    const coords = {
+        latitude: center[1],
+        longitude: center[0]
+    };
+
+    const km = radiusInKm;
+
+    const ret = [];
+    const distanceX = km / (111.32 * Math.cos((coords.latitude * Math.PI) / 180));
+    const distanceY = km / 110.574;
+
+    let theta, x, y;
+    for (let i = 0; i < points; i++) {
+        theta = (i / points) * (2 * Math.PI);
+        x = distanceX * Math.cos(theta);
+        y = distanceY * Math.sin(theta);
+
+        ret.push([coords.longitude + x, coords.latitude + y]);
+    }
+    ret.push(ret[0]);
+
+    return {
+        type: 'Feature',
+        geometry: {
+            type: 'Polygon',
+            coordinates: [ret]
+        },
+        properties: {}
+    };
+};
 
 export default function MapboxMap({
     providers,
     userLocation,
     selectedProvider,
     onSelectProvider,
-    mapboxToken
+    mapboxToken,
+    distance
 }: MapboxMapProps) {
-    const mapRef = useRef<any>(null);
+    const mapRef = useRef<MapRef>(null);
+
+    // Convert providers to GeoJSON for clustering
+    const providersGeoJSON = useMemo(() => ({
+        type: 'FeatureCollection',
+        features: providers.map(p => ({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [p.lng, p.lat] },
+            properties: { ...p, id: p.id } // Ensure ID is passed
+        }))
+    }), [providers]);
+
+    // Create radius circle GeoJSON
+    const radiusGeoJSON = useMemo(() => {
+        if (!userLocation.latitude || !userLocation.longitude) return null;
+        return createGeoJSONCircle([userLocation.longitude, userLocation.latitude], distance);
+    }, [userLocation, distance]);
+
+    // Auto-Zoom to fit providers
+    useEffect(() => {
+        if (providers.length > 0 && mapRef.current) {
+            const bounds = new mapboxgl.LngLatBounds();
+
+            // Include user location in bounds if available
+            if (userLocation.longitude && userLocation.latitude) {
+                bounds.extend([userLocation.longitude, userLocation.latitude]);
+            }
+
+            providers.forEach(p => {
+                bounds.extend([p.lng, p.lat]);
+            });
+
+            mapRef.current.fitBounds(bounds, {
+                padding: 100,
+                maxZoom: 14,
+                duration: 2000
+            });
+        }
+    }, [providers, userLocation]);
 
     // Fly to selected provider
     useEffect(() => {
         if (selectedProvider && mapRef.current) {
             mapRef.current.flyTo({
                 center: [selectedProvider.lng, selectedProvider.lat],
-                zoom: 14,
-                duration: 2000
+                zoom: 15,
+                duration: 2000,
+                essential: true
             });
         }
     }, [selectedProvider]);
 
-    // Fly to user location on load if available
-    useEffect(() => {
-        if (userLocation.latitude && userLocation.longitude && mapRef.current && !selectedProvider) {
-            mapRef.current.flyTo({
-                center: [userLocation.longitude, userLocation.latitude],
-                zoom: 12,
-                duration: 2000
+    // Handle cluster click
+    const onClick = (event: any) => {
+        const feature = event.features?.[0];
+        if (!feature) return;
+
+        const clusterId = feature.properties.cluster_id;
+        const mapboxSource = mapRef.current?.getSource('providers') as any;
+
+        if (clusterId) {
+            mapboxSource.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
+                if (err) return;
+
+                mapRef.current?.easeTo({
+                    center: feature.geometry.coordinates,
+                    zoom,
+                    duration: 500
+                });
             });
+        } else {
+            // Clicked on a single point
+            const providerId = feature.properties.id;
+            const provider = providers.find(p => p.id === providerId || p.id === String(providerId));
+            if (provider) {
+                onSelectProvider(provider);
+            }
         }
-    }, [userLocation, selectedProvider]);
+    };
 
     if (!mapboxToken) {
         return (
@@ -69,9 +161,96 @@ export default function MapboxMap({
             style={{ width: '100%', height: '100%' }}
             mapStyle="mapbox://styles/mapbox/streets-v12"
             mapboxAccessToken={mapboxToken}
+            interactiveLayerIds={['clusters', 'unclustered-point']}
+            onClick={onClick}
         >
             <NavigationControl position="bottom-right" />
             <GeolocateControl position="bottom-right" />
+
+            {/* Radius Circle Layer */}
+            {radiusGeoJSON && (
+                <Source id="radius" type="geojson" data={radiusGeoJSON as any}>
+                    <Layer
+                        id="radius-fill"
+                        type="fill"
+                        paint={{
+                            'fill-color': '#3b82f6',
+                            'fill-opacity': 0.1
+                        }}
+                    />
+                    <Layer
+                        id="radius-line"
+                        type="line"
+                        paint={{
+                            'line-color': '#3b82f6',
+                            'line-width': 2,
+                            'line-dasharray': [2, 2]
+                        }}
+                    />
+                </Source>
+            )}
+
+            {/* Providers Clustering Source */}
+            <Source
+                id="providers"
+                type="geojson"
+                data={providersGeoJSON as any}
+                cluster={true}
+                clusterMaxZoom={14}
+                clusterRadius={50}
+            >
+                {/* Clusters Layer */}
+                <Layer
+                    id="clusters"
+                    type="circle"
+                    filter={['has', 'point_count']}
+                    paint={{
+                        'circle-color': [
+                            'step',
+                            ['get', 'point_count'],
+                            '#51bbd6',
+                            10,
+                            '#f1f075',
+                            30,
+                            '#f28cb1'
+                        ],
+                        'circle-radius': [
+                            'step',
+                            ['get', 'point_count'],
+                            20,
+                            10,
+                            30,
+                            30,
+                            40
+                        ]
+                    }}
+                />
+
+                {/* Cluster Count Text */}
+                <Layer
+                    id="cluster-count"
+                    type="symbol"
+                    filter={['has', 'point_count']}
+                    layout={{
+                        'text-field': '{point_count_abbreviated}',
+                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                        'text-size': 12
+                    }}
+                />
+
+                {/* Unclustered Points (Individual Providers) */}
+                <Layer
+                    id="unclustered-point"
+                    type="circle"
+                    filter={['!', ['has', 'point_count']]}
+                    paint={{
+                        'circle-color': '#11b4da',
+                        'circle-radius': 8,
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#fff'
+                    }}
+                />
+            </Source>
 
             {/* User Location Marker */}
             {userLocation.latitude && userLocation.longitude && (
@@ -87,30 +266,7 @@ export default function MapboxMap({
                 </Marker>
             )}
 
-            {/* Provider Markers */}
-            {providers.map((provider) => (
-                <Marker
-                    key={provider.id}
-                    longitude={provider.lng}
-                    latitude={provider.lat}
-                    anchor="bottom"
-                    onClick={(e: any) => {
-                        e.originalEvent.stopPropagation();
-                        onSelectProvider(provider);
-                    }}
-                >
-                    <div className={`group cursor-pointer transition-transform hover:scale-110 ${selectedProvider?.id === provider.id ? 'scale-125 z-10' : ''}`}>
-                        <MapPin
-                            className={`h-8 w-8 drop-shadow-md ${selectedProvider?.id === provider.id
-                                ? 'text-primary fill-primary/20'
-                                : 'text-primary/80 fill-background'
-                                }`}
-                        />
-                    </div>
-                </Marker>
-            ))}
-
-            {/* Popup */}
+            {/* Popup for Selected Provider */}
             {selectedProvider && (
                 <Popup
                     longitude={selectedProvider.lng}
@@ -133,7 +289,7 @@ export default function MapboxMap({
                                 ))
                                 : undefined
                         }
-                        onClose={() => { }} // Detail view handles full details
+                        onClose={() => { }}
                     />
                 </Popup>
             )}

@@ -6,14 +6,25 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
+import { calculateDistance, formatDistance } from '@/lib/geolocation';
+
 interface ProviderCardProps {
     provider: any;
-    distance?: string;
+    userLocation?: any;
     isSelected?: boolean;
     onClick: () => void;
 }
 
-export default function ProviderCard({ provider, distance, isSelected, onClick }: ProviderCardProps) {
+export default function ProviderCard({ provider, userLocation, isSelected, onClick }: ProviderCardProps) {
+    const distance = userLocation?.latitude && userLocation?.longitude
+        ? formatDistance(calculateDistance(
+            userLocation.latitude,
+            userLocation.longitude,
+            provider.lat,
+            provider.lng
+        ))
+        : null;
+
     return (
         <motion.div
             layout
