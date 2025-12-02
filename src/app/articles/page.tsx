@@ -1,12 +1,16 @@
 import { Calendar, Brain, Filter, Search } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { GlassCard } from '@/components/ui/glass-card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { GlassButton } from '@/components/ui/glass-button';
+import { GlassPill } from '@/components/ui/glass-pill';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { getTranslations } from 'next-intl/server';
 
 export default async function ArticlesPage() {
+    const t = await getTranslations('articles');
+
     // Fetch articles from database
     let articles = [];
 
@@ -20,7 +24,7 @@ export default async function ArticlesPage() {
                 include: {
                     translations: {
                         where: {
-                            language: 'en'
+                            language: 'es' // Prefer Spanish translations if available
                         }
                     }
                 }
@@ -28,69 +32,61 @@ export default async function ArticlesPage() {
         }
     } catch (error) {
         console.error('Failed to fetch articles:', error);
-        // Return empty array if database is not ready
     }
 
     return (
-        <main className="min-h-screen bg-background py-12">
+        <main className="min-h-screen bg-background py-12 pt-24">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-12">
                     <div className="flex items-center gap-3 mb-4">
-                        <Calendar className="h-10 w-10 text-primary" />
-                        <h1 className="text-4xl font-bold text-foreground">Latest Autism Research</h1>
+                        <div className="p-3 rounded-xl bg-primary/10 text-primary">
+                            <Calendar className="h-8 w-8" />
+                        </div>
+                        <h1 className="text-4xl font-bold text-foreground">{t('title')}</h1>
                     </div>
-                    <p className="text-lg text-muted-foreground max-w-3xl">
-                        Evidence-based articles updated daily. All content is scientifically reviewed, cites trusted sources,
-                        and uses autism-affirming language.
+                    <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
+                        {t('subtitle')}
                     </p>
                     {articles.length === 0 && (
-                        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
+                        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-xl">
                             <p className="text-sm text-blue-800 dark:text-blue-200">
-                                <strong>No articles yet.</strong> Run the AI generation cron job to populate articles.
+                                <strong>{t('noArticles.title')}</strong> {t('noArticles.description')}
                             </p>
                         </div>
                     )}
                 </div>
 
                 {/* Filters & Search */}
-                <div className="mb-8 space-y-4">
+                <div className="mb-8 space-y-6">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="text"
-                            placeholder="Search articles..."
-                            className="pl-10 rounded-full"
+                            placeholder={t('searchPlaceholder')}
+                            className="pl-10 rounded-full bg-white/50 border-white/20 focus:bg-white transition-all h-12"
                             disabled
                         />
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
-                        <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <div className="flex items-center gap-2 mr-2">
                             <Filter className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm font-medium">Topic:</span>
+                            <span className="text-sm font-medium">{t('filters.topic')}</span>
                         </div>
-                        {['diagnosis', 'intervention', 'education', 'technology', 'inclusion'].map((t) => (
-                            <Badge
-                                key={t}
-                                variant="outline"
-                                className="capitalize opacity-50 cursor-not-allowed"
-                            >
-                                {t}
-                            </Badge>
+                        {['diagnosis', 'intervention', 'education', 'technology', 'inclusion'].map((topic) => (
+                            <GlassPill key={topic} active={false} className="opacity-50 cursor-not-allowed">
+                                {topic}
+                            </GlassPill>
                         ))}
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
-                        <span className="text-sm font-medium">Audience:</span>
-                        {['parents', 'professionals', 'autistic_adults', 'educators'].map((a) => (
-                            <Badge
-                                key={a}
-                                variant="outline"
-                                className="capitalize opacity-50 cursor-not-allowed"
-                            >
-                                {a.replace('_', ' ')}
-                            </Badge>
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <span className="text-sm font-medium mr-2">{t('filters.audience')}</span>
+                        {['parents', 'professionals', 'autistic_adults', 'educators'].map((audience) => (
+                            <GlassPill key={audience} active={false} className="opacity-50 cursor-not-allowed">
+                                {audience.replace('_', ' ')}
+                            </GlassPill>
                         ))}
                     </div>
                 </div>
@@ -103,69 +99,80 @@ export default async function ArticlesPage() {
                         );
                         const isNew = daysAgo < 3;
 
+                        // Use Spanish translation if available, fallback to English
+                        const title = article.translations?.[0]?.title || article.title;
+                        const summary = article.translations?.[0]?.tldrSummary || article.tldrSummary;
+
                         return (
-                            <Card
+                            <GlassCard
                                 key={article.id}
-                                className="hover:shadow-lg transition-all border-border hover:border-primary/50"
+                                className="hover:border-primary/50 transition-all duration-300"
                             >
-                                <CardHeader>
-                                    <div className="flex items-start justify-between mb-3 flex-wrap gap-2">
+                                <div className="flex flex-col gap-4">
+                                    <div className="flex items-start justify-between flex-wrap gap-2">
                                         <div className="flex items-center gap-2 flex-wrap">
                                             {isNew && (
-                                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200">NEW</Badge>
+                                                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-none">
+                                                    {t('card.new')}
+                                                </Badge>
                                             )}
-                                            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                                                {article.credibilityScore}% Credibility
+                                            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
+                                                {article.credibilityScore}% {t('card.credibility')}
                                             </Badge>
-                                            <Badge variant="secondary">{article.evidenceType}</Badge>
-                                            <span className="text-sm text-muted-foreground">
+                                            <Badge variant="secondary" className="bg-secondary/20 text-secondary-foreground">
+                                                {article.evidenceType}
+                                            </Badge>
+                                            <span className="text-sm text-muted-foreground ml-2">
                                                 {daysAgo === 0
-                                                    ? 'Today'
+                                                    ? t('card.today')
                                                     : daysAgo === 1
-                                                        ? 'Yesterday'
-                                                        : `${daysAgo} days ago`}
+                                                        ? t('card.yesterday')
+                                                        : t('card.daysAgo', { days: daysAgo })}
                                             </span>
                                         </div>
                                     </div>
-                                    <CardTitle className="text-2xl mb-2">{article.title}</CardTitle>
-                                    <CardDescription className="text-muted-foreground text-base leading-relaxed">
-                                        <strong>TL;DR:</strong> {article.tldrSummary}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex flex-wrap gap-2 mb-4">
+
+                                    <div>
+                                        <h2 className="text-2xl font-bold mb-3 text-foreground">{title}</h2>
+                                        <div className="text-muted-foreground text-base leading-relaxed bg-white/40 dark:bg-black/20 p-4 rounded-xl border border-white/10">
+                                            <strong className="text-foreground">{t('card.tldr')}</strong> {summary}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2 mt-2">
                                         {article.topics.slice(0, 3).map((topic, idx) => (
-                                            <Badge key={idx} variant="outline" className="text-xs">
+                                            <Badge key={idx} variant="outline" className="text-xs bg-transparent border-border/50">
                                                 {topic}
                                             </Badge>
                                         ))}
                                     </div>
-                                    <div className="flex items-center justify-between">
+
+                                    <div className="flex items-center justify-between mt-2 pt-4 border-t border-border/30">
                                         <p className="text-sm text-muted-foreground">
-                                            Source: <span className="font-medium text-foreground">{article.sourceName}</span>
+                                            {t('card.source')} <span className="font-medium text-foreground">{article.sourceName}</span>
                                         </p>
                                         <Link href={`/articles/${article.slug}`}>
-                                            <Button variant="default" className="rounded-full">
-                                                Read Full Article
-                                            </Button>
+                                            <GlassButton variant="primary" size="sm" className="rounded-full px-6">
+                                                {t('card.readFull')}
+                                            </GlassButton>
                                         </Link>
                                     </div>
-                                </CardContent>
-                            </Card>
+                                </div>
+                            </GlassCard>
                         );
                     })}
                 </div>
 
                 {/* Disclaimer */}
-                <div className="mt-12 rounded-2xl bg-muted/30 p-6 border border-border">
-                    <div className="flex items-start gap-3">
-                        <Brain className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <div className="mt-12 rounded-2xl bg-muted/30 p-6 border border-border/50 backdrop-blur-sm">
+                    <div className="flex items-start gap-4">
+                        <div className="p-2 rounded-lg bg-background/50">
+                            <Brain className="h-6 w-6 text-primary flex-shrink-0" />
+                        </div>
                         <div>
-                            <h3 className="font-semibold mb-2 text-foreground">For Informational Purposes Only</h3>
+                            <h3 className="font-semibold mb-2 text-foreground">{t('disclaimer.title')}</h3>
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                This platform provides information only, not medical advice. Articles are AI-generated summaries
-                                of peer-reviewed research and are reviewed for scientific accuracy. Always consult a qualified
-                                healthcare professional for medical decisions.
+                                {t('disclaimer.text')}
                             </p>
                         </div>
                     </div>

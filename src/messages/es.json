@@ -131,41 +131,19 @@
                     "button": "Crear Cuenta Gratuita"
                 }
             },
-            "resources": {
-                "title": "Biblioteca de Conocimiento Científico",
-                "subtitle": "Explora nuestra colección curada de artículos, guías y herramientas basadas en evidencia. Todo el contenido es revisado por su precisión científica.",
-                "readMore": "Leer Más",
-                "credibility": "Credibilidad"
+            "noResults": "No se encontraron proveedores",
+            "tryAdjusting": "Intenta ajustar tus filtros",
+            "filters": {
+                "title": "Filtros",
+                "verifiedOnly": "Solo Verificados",
+                "reset": "Restablecer Filtros",
+                "services": "Servicios",
+                "distance": "Distancia"
             },
-            "articles": {
-                "title": "Noticias Diarias sobre Autismo",
-                "subtitle": "Resúmenes automatizados de las últimas investigaciones sobre autismo, actualizaciones clínicas y noticias basadas en evidencia. Todo el contenido es revisado por expertos y cita fuentes confiables.",
-                "source": "Fuente",
-                "readFull": "Leer Artículo Completo",
-                "disclaimer": {
-                    "title": "Aviso Importante",
-                    "text": "Esta plataforma proporciona solo información, no asesoramiento médico. Los artículos son resúmenes automatizados de investigaciones científicas y son revisados para verificar su precisión. Consulte siempre a un profesional de la salud calificado para decisiones médicas."
-                }
-            },
-            "map": {
-                "title": "Mapa Global",
-                "locating": "Localizando...",
-                "results": "{count} resultado{s}",
-                "approxLocation": "Ubicación Aprox",
-                "searchPlaceholder": "Buscar proveedores...",
-                "noResults": "No se encontraron proveedores",
-                "tryAdjusting": "Intenta ajustar tus filtros",
-                "filters": {
-                    "title": "Filtros",
-                    "verifiedOnly": "Solo Verificados",
-                    "reset": "Restablecer Filtros",
-                    "services": "Servicios",
-                    "distance": "Distancia"
-                },
-                "card": {
-                    "verified": "Verificado",
-                    "viewProfile": "Ver Perfil",
-                    "more": "más"
-                }
+            "card": {
+                "verified": "Verificado",
+                "viewProfile": "Ver Perfil",
+                "more": "más"
             }
         }
+    }
