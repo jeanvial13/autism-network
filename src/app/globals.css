@@ -44,103 +44,125 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  
-  /* Calm Blue Palette */
-  --background: #FAFBFF; /* Cotton White */
-  --foreground: #1F3A60; /* Deep Blue */
-  
-  --card: #E8EEF3; /* Cloud Gray */
-  --card-foreground: #1F3A60;
-  
-  --popover: #FAFBFF;
-  --popover-foreground: #1F3A60;
-  
-  --primary: #4A90E2; /* Sereno Blue */
-  --primary-foreground: #FAFBFF;
-  
-  --secondary: #6FB6FF; /* Soft Blue */
-  --secondary-foreground: #FAFBFF;
-  
-  --muted: #E8EEF3;
-  --muted-foreground: #5A6B80; /* Slate Blue */
-  
-  --accent: #A8E6CF; /* Calm Mint */
-  --accent-foreground: #1F3A60;
-  
-  --destructive: #FF8C94; /* Soft Coral */
-  --destructive-foreground: #1F3A60;
-  
-  --border: #E8EEF3;
-  --input: #E8EEF3;
-  --ring: #4A90E2;
-  
-  --chart-1: #4A90E2;
-  --chart-2: #6FB6FF;
-  --chart-3: #A3D8FF;
-  --chart-4: #A8E6CF;
-  --chart-5: #FFF8C6;
-  
-  --sidebar: #E8EEF3;
-  --sidebar-foreground: #1F3A60;
-  --sidebar-primary: #4A90E2;
-  --sidebar-primary-foreground: #FAFBFF;
-  --sidebar-accent: #A8E6CF;
-  --sidebar-accent-foreground: #1F3A60;
-  --sidebar-border: #D1D9E0;
-  --sidebar-ring: #4A90E2;
+  --radius: 0.75rem;
+
+  /* Liquid Glass Palette - Light Mode (Soft & Airy) */
+  --background: #F0F9FF;
+  /* Sky 50 */
+  --foreground: #0F172A;
+  /* Slate 900 */
+
+  --card: rgba(255, 255, 255, 0.6);
+  --card-foreground: #0F172A;
+
+  --popover: rgba(255, 255, 255, 0.8);
+  --popover-foreground: #0F172A;
+
+  --primary: #0EA5E9;
+  /* Sky 500 */
+  --primary-foreground: #F0F9FF;
+
+  --secondary: #E0F2FE;
+  /* Sky 100 */
+  --secondary-foreground: #0F172A;
+
+  --muted: #F1F5F9;
+  /* Slate 100 */
+  --muted-foreground: #64748B;
+  /* Slate 500 */
+
+  --accent: #E0F2FE;
+  --accent-foreground: #0F172A;
+
+  --destructive: #EF4444;
+  --destructive-foreground: #F0F9FF;
+
+  --border: rgba(14, 165, 233, 0.2);
+  --input: rgba(255, 255, 255, 0.6);
+  --ring: #0EA5E9;
+
+  --chart-1: #0EA5E9;
+  --chart-2: #38BDF8;
+  --chart-3: #7DD3FC;
+  --chart-4: #BAE6FD;
+  --chart-5: #E0F2FE;
+
+  --sidebar: rgba(255, 255, 255, 0.7);
+  --sidebar-foreground: #0F172A;
+  --sidebar-primary: #0EA5E9;
+  --sidebar-primary-foreground: #F0F9FF;
+  --sidebar-accent: #E0F2FE;
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: rgba(14, 165, 233, 0.1);
+  --sidebar-ring: #0EA5E9;
+
+  /* Glass Effect Tokens */
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-highlight: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
 
 .dark {
-  /* Dark Mode Palette (Inverted/Adapted) */
-  --background: #1F3A60; /* Deep Blue */
-  --foreground: #FAFBFF; /* Cotton White */
-  
-  --card: #2A4B7C;
-  --card-foreground: #FAFBFF;
-  
-  --popover: #1F3A60;
-  --popover-foreground: #FAFBFF;
-  
-  --primary: #6FB6FF; /* Soft Blue (Brighter for dark mode) */
-  --primary-foreground: #1F3A60;
-  
-  --secondary: #4A90E2;
-  --secondary-foreground: #FAFBFF;
-  
-  --muted: #2A4B7C;
-  --muted-foreground: #A3D8FF;
-  
-  --accent: #2A4B7C;
-  --accent-foreground: #FAFBFF;
-  
-  --destructive: #FF8C94;
-  --destructive-foreground: #1F3A60;
-  
-  --border: #2A4B7C;
-  --input: #2A4B7C;
-  --ring: #6FB6FF;
-  
-  --chart-1: #6FB6FF;
-  --chart-2: #4A90E2;
-  --chart-3: #A3D8FF;
-  --chart-4: #A8E6CF;
-  --chart-5: #FFF8C6;
-  
-  --sidebar: #1F3A60;
-  --sidebar-foreground: #FAFBFF;
-  --sidebar-primary: #6FB6FF;
-  --sidebar-primary-foreground: #1F3A60;
-  --sidebar-accent: #2A4B7C;
-  --sidebar-accent-foreground: #FAFBFF;
-  --sidebar-border: #2A4B7C;
-  --sidebar-ring: #6FB6FF;
+  /* Liquid Glass Palette - Dark Mode (Deep & Glowing) */
+  --background: #0F172A;
+  /* Slate 900 */
+  --foreground: #F0F9FF;
+  /* Sky 50 */
+
+  --card: rgba(15, 23, 42, 0.6);
+  --card-foreground: #F0F9FF;
+
+  --popover: rgba(15, 23, 42, 0.8);
+  --popover-foreground: #F0F9FF;
+
+  --primary: #38BDF8;
+  /* Sky 400 */
+  --primary-foreground: #0F172A;
+
+  --secondary: #1E293B;
+  /* Slate 800 */
+  --secondary-foreground: #F0F9FF;
+
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  /* Slate 400 */
+
+  --accent: #1E293B;
+  --accent-foreground: #F0F9FF;
+
+  --destructive: #EF4444;
+  --destructive-foreground: #F0F9FF;
+
+  --border: rgba(56, 189, 248, 0.2);
+  --input: rgba(15, 23, 42, 0.6);
+  --ring: #38BDF8;
+
+  --chart-1: #38BDF8;
+  --chart-2: #0EA5E9;
+  --chart-3: #0284C7;
+  --chart-4: #0369A1;
+  --chart-5: #075985;
+
+  --sidebar: rgba(15, 23, 42, 0.7);
+  --sidebar-foreground: #F0F9FF;
+  --sidebar-primary: #38BDF8;
+  --sidebar-primary-foreground: #0F172A;
+  --sidebar-accent: #1E293B;
+  --sidebar-accent-foreground: #F0F9FF;
+  --sidebar-border: rgba(56, 189, 248, 0.1);
+  --sidebar-ring: #38BDF8;
+
+  /* Glass Effect Tokens */
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
