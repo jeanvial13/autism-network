@@ -14,6 +14,12 @@ services:
       - MEILISEARCH_HOST=http://meilisearch:7700
       - NEXTAUTH_URL=http://localhost:3000
       - NEXTAUTH_SECRET=changeme_in_production
+      - AUTH_TRUST_HOST=true
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GOOGLE_CUSTOM_SEARCH_API_KEY=${GOOGLE_CUSTOM_SEARCH_API_KEY}
+      - GOOGLE_SEARCH_ENGINE_ID=${GOOGLE_SEARCH_ENGINE_ID}
+      - GOOGLE_PLACES_API_KEY=${GOOGLE_PLACES_API_KEY}
+      - NEXT_PUBLIC_MAPBOX_TOKEN=${NEXT_PUBLIC_MAPBOX_TOKEN}
     depends_on:
       - postgres
       - redis
