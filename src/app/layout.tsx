@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ChatInterface from "@/components/ai/ChatInterface";
 import Navigation from "@/components/Navigation";
+import { Footer } from "@/components/layout/Footer";
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 
@@ -27,6 +28,7 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Navigation />
           {children}
+          <Footer />
           <ChatInterface />
         </NextIntlClientProvider>
       </body>

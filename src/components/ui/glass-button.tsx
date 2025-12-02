@@ -15,10 +15,10 @@ export function GlassButton({
     ...props
 }: GlassButtonProps) {
     const variants = {
-        primary: 'bg-primary/80 hover:bg-primary text-primary-foreground shadow-lg hover:shadow-xl border-transparent',
-        secondary: 'bg-white/10 hover:bg-white/20 text-foreground border-white/30 backdrop-blur-md',
-        ghost: 'hover:bg-white/10 text-foreground border-transparent',
-        outline: 'border-white/30 hover:bg-white/10 text-foreground backdrop-blur-sm'
+        primary: 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-lg hover:shadow-xl hover:scale-[1.02] border-transparent',
+        secondary: 'bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--glass-border)] hover:bg-[var(--glass-highlight)]',
+        ghost: 'hover:bg-[var(--glass-highlight)] text-foreground border-transparent',
+        outline: 'border-[var(--glass-border)] hover:bg-[var(--glass-highlight)] text-foreground'
     };
 
     const sizes = {
@@ -32,6 +32,7 @@ export function GlassButton({
             className={cn(
                 'rounded-full font-medium transition-all duration-300 border',
                 'active:scale-95 flex items-center justify-center gap-2',
+                'backdrop-blur-md',
                 variants[variant],
                 sizes[size],
                 className

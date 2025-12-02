@@ -19,47 +19,76 @@ async function main() {
     console.log('👥 Creating professional profiles...');
 
     const professionals = [
-        { name: 'Dr. Sarah Chen', email: 'sarah.chen@example.com', specialty: 'ABA Therapy', city: 'New York', lat: 40.7128, lng: -74.0060, country: 'USA' },
-        { name: 'Dr. Michael Thompson', email: 'michael.t@example.com', specialty: 'Speech Therapy', city: 'London', lat: 51.5074, lng: -0.1278, country: 'UK' },
-        { name: 'Dr. Maria Rodriguez', email: 'maria.r@example.com', specialty: 'Occupational Therapy', city: 'Madrid', lat: 40.4168, lng: -3.7038, country: 'Spain' },
-        { name: 'Dr. James Wilson', email: 'james.w@example.com', specialty: 'Diagnostic Assessment', city: 'Toronto', lat: 43.6532, lng: -79.3832, country: 'Canada' },
-        { name: 'Dr. Emma Brown', email: 'emma.b@example.com', specialty: 'ABA Therapy', city: 'Sydney', lat: -33.8688, lng: 151.2093, country: 'Australia' },
-        { name: 'Dr. Li Wei', email: 'li.wei@example.com', specialty: 'Behavioral Support', city: 'Singapore', lat: 1.3521, lng: 103.8198, country: 'Singapore' },
-        { name: 'Dr. Anna Kowalski', email: 'anna.k@example.com', specialty: 'Speech Therapy', city: 'Berlin', lat: 52.5200, lng: 13.4050, country: 'Germany' },
-        { name: 'Dr. Carlos Santos', email: 'carlos.s@example.com', specialty: 'Occupational Therapy', city: 'São Paulo', lat: -23.5505, lng: -46.6333, country: 'Brazil' },
-        { name: 'Dr. Yuki Tanaka', email: 'yuki.t@example.com', specialty: 'Diagnostic Assessment', city: 'Tokyo', lat: 35.6762, lng: 139.6503, country: 'Japan' },
-        { name: 'Dr. Sofia Andersson', email: 'sofia.a@example.com', specialty: 'Social Skills Training', city: 'Stockholm', lat: 59.3293, lng: 18.0686, country: 'Sweden' },
-        { name: 'Dr. David Kim', email: 'david.k@example.com', specialty: 'ABA Therapy', city: 'Seoul', lat: 37.5665, lng: 126.9780, country: 'South Korea' },
-        { name: 'Dr. Fatima Al-Rashid', email: 'fatima.r@example.com', specialty: 'Speech Therapy', city: 'Dubai', lat: 25.2048, lng: 55.2708, country: 'UAE' },
-        { name: 'Dr. Pierre Dubois', email: 'pierre.d@example.com', specialty: 'Behavioral Support', city: 'Paris', lat: 48.8566, lng: 2.3522, country: 'France' },
-        { name: 'Dr. Rachel Goldstein', email: 'rachel.g@example.com', specialty: 'Occupational Therapy', city: 'Tel Aviv', lat: 32.0853, lng: 34.7818, country: 'Israel' },
-        { name: 'Dr. Marco Rossi', email: 'marco.r@example.com', specialty: 'Social Skills Training', city: 'Rome', lat: 41.9028, lng: 12.4964, country: 'Italy' },
-        { name: 'Dr. Amara Okafor', email: 'amara.o@example.com', specialty: 'ABA Therapy', city: 'Lagos', lat: 6.5244, lng: 3.3792, country: 'Nigeria' },
-        { name: 'Dr. Lars Hansen', email: 'lars.h@example.com', specialty: 'Diagnostic Assessment', city: 'Copenhagen', lat: 55.6761, lng: 12.5683, country: 'Denmark' },
-        { name: 'Dr. Priya Patel', email: 'priya.p@example.com', specialty: 'Speech Therapy', city: 'Mumbai', lat: 19.0760, lng: 72.8777, country: 'India' },
-        { name: 'Dr. Juan Martinez', email: 'juan.m@example.com', specialty: 'Behavioral Support', city: 'Mexico City', lat: 19.4326, lng: -99.1332, country: 'Mexico' },
-        { name: 'Dr. Nina Volkov', email: 'nina.v@example.com', specialty: 'Occupational Therapy', city: 'Moscow', lat: 55.7558, lng: 37.6173, country: 'Russia' },
+        {
+            id: "1764523423537",
+            name: "Mari Rodríguez",
+            email: "mari.rodriguez@t-conecta.com",
+            city: "Apizaco",
+            lat: 19.410992226111134,
+            lng: 98.15360954686092,
+            country: "Mexico",
+            verified: true,
+            services: [
+                "Diagnóstico",
+                "Terapia Ocupacional",
+                "Apoyo Familiar",
+                "Investigación",
+                "Grupos de Apoyo",
+                "Terapia ABA",
+                "Terapia de Lenguaje",
+                "Educación",
+                "Intervención Temprana"
+            ]
+        },
+        {
+            id: "1764523519507",
+            name: "Pamela Pichardo",
+            email: "pamela.pichardo@t-conecta.com",
+            city: "Apizaco",
+            lat: 19.41589332491111,
+            lng: 98.15119658806802,
+            country: "Mexico",
+            verified: true,
+            services: [
+                "Diagnóstico",
+                "Terapia Ocupacional",
+                "Apoyo Familiar",
+                "Investigación",
+                "Grupos de Apoyo",
+                "Terapia ABA",
+                "Terapia de Lenguaje",
+                "Educación",
+                "Intervención Temprana"
+            ]
+        },
+        // Keep some existing dummy data for variety, but translated
+        { name: 'Dr. Sarah Chen', email: 'sarah.chen@example.com', services: ['Terapia ABA'], city: 'New York', lat: 40.7128, lng: -74.0060, country: 'USA' },
+        { name: 'Dr. Michael Thompson', email: 'michael.t@example.com', services: ['Terapia de Lenguaje'], city: 'London', lat: 51.5074, lng: -0.1278, country: 'UK' },
+        { name: 'Dr. Maria Rodriguez', email: 'maria.r@example.com', services: ['Terapia Ocupacional'], city: 'Madrid', lat: 40.4168, lng: -3.7038, country: 'Spain' },
     ];
 
     for (const prof of professionals) {
         const user = await prisma.user.create({
             data: {
+                id: prof.id, // Use provided ID if available (will auto-generate if undefined)
                 name: prof.name,
                 email: prof.email,
                 role: 'PROFESSIONAL',
             },
         });
 
+        const isVerified = 'verified' in prof ? (prof as { verified: boolean }).verified : false;
+
         await prisma.professionalProfile.create({
             data: {
                 userId: user.id,
-                bio: `Experienced ${prof.specialty} specialist with ${Math.floor(Math.random() * 15) + 5} years of experience providing evidence-based autism support services. Speaks English and accepts most insurance plans.`,
-                specialties: [prof.specialty, 'Family Support', 'Individualized Care'],
+                bio: `Especialista en ${prof.services[0]} con experiencia en apoyo basado en evidencia.`,
+                specialties: prof.services,
                 licenseNumber: `LIC${Math.floor(Math.random() * 100000)}`,
                 licenseCountry: prof.country,
                 locationLat: prof.lat,
                 locationLng: prof.lng,
-                verificationStatus: 'VERIFIED',
+                verificationStatus: isVerified ? 'VERIFIED' : 'VERIFIED',
             },
         });
     }

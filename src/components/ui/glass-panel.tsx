@@ -28,12 +28,18 @@ export function GlassPanel({
     };
 
     return (
-        <div className={cn(
-            'rounded-2xl border shadow-lg',
-            variants[variant],
-            blurs[blur],
-            className
-        )}>
+        <div
+            className={cn(
+                'rounded-[var(--radius)] border border-[var(--glass-border)] shadow-[var(--glass-shadow)]',
+                'transition-all duration-300',
+                className
+            )}
+            style={{
+                backgroundColor: 'var(--glass-bg)',
+                backdropFilter: 'var(--glass-blur)',
+                WebkitBackdropFilter: 'var(--glass-blur)',
+            }}
+        >
             {children}
         </div>
     );

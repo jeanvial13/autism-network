@@ -4,6 +4,7 @@
         "globalMap": "Mapa Global",
         "resources": "Recursos",
         "articles": "Artículos",
+        "pictograms": "Pictogramas",
         "signIn": "Iniciar Sesión",
         "getStarted": "Comenzar"
     },
@@ -139,5 +140,24 @@
             "viewProfile": "Ver Perfil",
             "more": "más"
         }
+    },
+    "pictograms": {
+        "title": "Mis Pictogramas",
+        "subtitle": "Crea y organiza tu colección personal de pictogramas.",
+        "upload": "Subir Imagen",
+        "delete": "Eliminar",
+        "noPictograms": "Aún no tienes pictogramas. ¡Sube el primero!",
+        "dragDrop": "Arrastra y suelta o haz clic para subir"
+    },
+    "services": {
+        "diagnosis": "Diagnóstico",
+        "occupational_therapy": "Terapia Ocupacional",
+        "family_support": "Apoyo Familiar",
+        "research": "Investigación",
+        "support_groups": "Grupos de Apoyo",
+        "aba_therapy": "Terapia ABA",
+        "speech_therapy": "Terapia de Lenguaje",
+        "education": "Educación",
+        "early_intervention": "Intervención Temprana"
     }
 }

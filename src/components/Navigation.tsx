@@ -25,11 +25,19 @@ export default function Navigation() {
             "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 py-4",
             scrolled ? "py-2" : "py-4"
         )}>
-            <nav className={cn(
-                "mx-auto max-w-7xl rounded-full px-6 py-3 transition-all duration-300",
-                "bg-white/10 dark:bg-black/10 backdrop-blur-lg border border-white/20 shadow-glass-sm",
-                "flex items-center justify-between"
-            )} aria-label="Global">
+            <nav
+                className={cn(
+                    "mx-auto max-w-7xl rounded-full px-6 py-3 transition-all duration-300",
+                    "border border-[var(--glass-border)] shadow-[var(--glass-shadow)]",
+                    "flex items-center justify-between"
+                )}
+                style={{
+                    backgroundColor: 'var(--glass-bg)',
+                    backdropFilter: 'var(--glass-blur)',
+                    WebkitBackdropFilter: 'var(--glass-blur)',
+                }}
+                aria-label="Global"
+            >
                 <div className="flex lg:flex-1">
                     <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-sm shadow-lg">
