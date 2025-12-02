@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+'use client';
+
 import { motion } from 'framer-motion';
-import { X, MapPin, Phone, Navigation, Save, FileText, CheckCircle } from 'lucide-react';
+import { X, MapPin, Calendar, Phone, Mail, Globe, CheckCircle, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Textarea } from '@/components/ui/textarea';
+
 import { calculateDistance, formatDistance } from '@/lib/geolocation';
-import { toast } from 'sonner';
 
 interface ProviderDetailProps {
     provider: any;
@@ -15,9 +16,6 @@ interface ProviderDetailProps {
 }
 
 export default function ProviderDetail({ provider, userLocation, onClose }: ProviderDetailProps) {
-    const [note, setNote] = useState('');
-    const [isSaved, setIsSaved] = useState(false);
-
     const distance = userLocation?.latitude && userLocation?.longitude
         ? formatDistance(calculateDistance(
             userLocation.latitude,
@@ -26,49 +24,6 @@ export default function ProviderDetail({ provider, userLocation, onClose }: Prov
             provider.lng
         ))
         : null;
-
-    // Load state from localStorage
-    useEffect(() => {
-        const savedNotes = JSON.parse(localStorage.getItem('provider_notes') || '{}');
-        const savedProviders = JSON.parse(localStorage.getItem('saved_providers') || '[]');
-
-        if (savedNotes[provider.id]) {
-            setNote(savedNotes[provider.id]);
-        }
-        setIsSaved(savedProviders.includes(provider.id));
-    }, [provider.id]);
-
-    // Save Note
-    const handleSaveNote = () => {
-        const savedNotes = JSON.parse(localStorage.getItem('provider_notes') || '{}');
-        savedNotes[provider.id] = note;
-        localStorage.setItem('provider_notes', JSON.stringify(savedNotes));
-        toast.success('Note saved locally');
-    };
-
-    // Toggle Save Provider
-    const handleToggleSave = () => {
-        const savedProviders = JSON.parse(localStorage.getItem('saved_providers') || '[]');
-        let newSaved;
-        if (isSaved) {
-            newSaved = savedProviders.filter((id: string) => id !== provider.id);
-            toast.info('Provider removed from saved list');
-        } else {
-            newSaved = [...savedProviders, provider.id];
-            toast.success('Provider saved to your list');
-        }
-        localStorage.setItem('saved_providers', JSON.stringify(newSaved));
-        setIsSaved(!isSaved);
-    };
-
-    const handleCall = () => {
-        window.location.href = `tel:${provider.phone || ''}`;
-    };
-
-    const handleNavigate = () => {
-        const url = `https://www.google.com/maps/dir/?api=1&destination=${provider.lat},${provider.lng}`;
-        window.open(url, '_blank');
-    };
 
     return (
         <motion.div
@@ -101,7 +56,7 @@ export default function ProviderDetail({ provider, userLocation, onClose }: Prov
                             </AvatarFallback>
                         </Avatar>
 
-                        <div className="text-center mb-6">
+                        <div className="text-center">
                             <h2 className="text-2xl font-bold text-foreground flex items-center justify-center gap-2">
                                 {provider.name}
                                 {provider.verified && (
@@ -115,37 +70,13 @@ export default function ProviderDetail({ provider, userLocation, onClose }: Prov
                             </p>
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex gap-3 mb-8 w-full justify-center">
-                            <Button onClick={handleCall} className="flex-1 max-w-[120px] rounded-full" variant="outline">
-                                <Phone className="h-4 w-4 mr-2" />
-                                Call
+                        <div className="flex gap-2 mt-4">
+                            <Button className="rounded-full px-6">
+                                <Calendar className="mr-2 h-4 w-4" />
+                                Book Appointment
                             </Button>
-                            <Button onClick={handleNavigate} className="flex-1 max-w-[120px] rounded-full" variant="default">
-                                <Navigation className="h-4 w-4 mr-2" />
-                                Go
-                            </Button>
-                            <Button onClick={handleToggleSave} className="flex-1 max-w-[120px] rounded-full" variant={isSaved ? "secondary" : "outline"}>
-                                <Save className={`h-4 w-4 mr-2 ${isSaved ? 'fill-current' : ''}`} />
-                                {isSaved ? 'Saved' : 'Save'}
-                            </Button>
-                        </div>
-
-                        {/* Notes Section */}
-                        <div className="w-full max-w-md bg-muted/30 p-4 rounded-xl border border-border">
-                            <div className="flex items-center gap-2 mb-2 text-sm font-medium text-foreground">
-                                <FileText className="h-4 w-4 text-primary" />
-                                Personal Notes
-                            </div>
-                            <Textarea
-                                placeholder="Add private notes about this provider..."
-                                value={note}
-                                onChange={(e) => setNote(e.target.value)}
-                                className="bg-background resize-none mb-2"
-                                rows={3}
-                            />
-                            <Button size="sm" onClick={handleSaveNote} className="w-full">
-                                Save Note
+                            <Button variant="outline" size="icon" className="rounded-full">
+                                <Star className="h-4 w-4" />
                             </Button>
                         </div>
                     </div>
