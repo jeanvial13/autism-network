@@ -77,6 +77,10 @@ export default function Navigation() {
                         {t('articles')}
                         <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all group-hover:w-full"></span>
                     </Link>
+                    <Link href="/pictogramas" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group">
+                        {t('pictograms')}
+                        <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all group-hover:w-full"></span>
+                    </Link>
                 </div>
 
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
@@ -118,6 +122,13 @@ export default function Navigation() {
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 {t('articles')}
+                            </Link>
+                            <Link
+                                href="/pictogramas"
+                                className="block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-foreground hover:bg-white/10"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                {t('pictograms')}
                             </Link>
                             <div className="mt-6 space-y-2 pt-4 border-t border-white/10">
                                 <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>

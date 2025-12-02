@@ -146,7 +146,14 @@
         "subtitle": "Crea y organiza tu colección personal de pictogramas.",
         "upload": "Subir Imagen",
         "delete": "Eliminar",
-        "noPictograms": "Aún no tienes pictogramas. ¡Sube el primero!",
+        "deleteMode": "Modo Borrar",
+        "done": "Listo",
+        "generate": "Generar (IA)",
+        "generating": "Generando...",
+        "promptPlaceholder": "¿Qué pictograma necesitas? (ej. Comer manzana)",
+        "generateButton": "Crear Pictograma",
+        "cancel": "Cancelar",
+        "noPictograms": "Aún no tienes pictogramas. ¡Sube el primero o genera uno con IA!",
         "dragDrop": "Arrastra y suelta o haz clic para subir"
     },
     "services": {

@@ -104,7 +104,7 @@ async function main() {
         {
             title: 'Visual Schedule for Morning Routine',
             description: 'A printable visual schedule with picture cards to help children follow their morning routine independently.',
-            suggestedUses: 'Use at home or school to promote independence and reduce anxiety during transitions.',
+            suggestedUses: ['Use at home or school to promote independence and reduce anxiety during transitions.'],
             url: 'https://example.com/resources/visual-schedule-morning',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary'],
@@ -115,7 +115,7 @@ async function main() {
         {
             title: 'Social Stories: Making Friends at School',
             description: 'A social story template to help autistic children understand and navigate social situations at school.',
-            suggestedUses: 'Read together before school or social events to prepare for interactions.',
+            suggestedUses: ['Read together before school or social events to prepare for interactions.'],
             url: 'https://example.com/resources/social-story-friends',
             fileType: 'PDF',
             targetAge: ['elementary', 'teens'],
@@ -126,7 +126,7 @@ async function main() {
         {
             title: 'Emotion Cards for Identification',
             description: 'Colorful emotion identification cards featuring diverse faces expressing different feelings.',
-            suggestedUses: 'Practice emotion recognition and help children communicate their feelings.',
+            suggestedUses: ['Practice emotion recognition and help children communicate their feelings.'],
             url: 'https://example.com/resources/emotion-cards',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary'],
@@ -137,7 +137,7 @@ async function main() {
         {
             title: 'Sensory Break Activity Cards',
             description: 'Quick sensory break activities that can be done at home or in the classroom.',
-            suggestedUses: 'Use when a child shows signs of sensory overload or needs a break.',
+            suggestedUses: ['Use when a child shows signs of sensory overload or needs a break.'],
             url: 'https://example.com/resources/sensory-breaks',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary', 'teens'],
@@ -148,7 +148,7 @@ async function main() {
         {
             title: 'Math Worksheets with Visual Supports',
             description: 'Math practice worksheets designed with visual supports for learners who benefit from concrete examples.',
-            suggestedUses: 'Use for homework or classroom practice to build math skills.',
+            suggestedUses: ['Use for homework or classroom practice to build math skills.'],
             url: 'https://example.com/resources/math-visual',
             fileType: 'PDF',
             targetAge: ['elementary'],
@@ -159,7 +159,7 @@ async function main() {
         {
             title: 'Communication Board - Basic Needs',
             description: 'A printable communication board with symbols for basic needs and wants.',
-            suggestedUses: 'Ideal for non-speaking or minimally speaking individuals to express needs.',
+            suggestedUses: ['Ideal for non-speaking or minimally speaking individuals to express needs.'],
             url: 'https://example.com/resources/comm-board-basic',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary', 'teens', 'adults'],
@@ -170,7 +170,7 @@ async function main() {
         {
             title: 'Calm Down Corner Setup Guide',
             description: 'A comprehensive guide for creating a sensory-friendly calm down space at home or school.',
-            suggestedUses: 'Reference when setting up a designated space for self-regulation.',
+            suggestedUses: ['Reference when setting up a designated space for self-regulation.'],
             url: 'https://example.com/resources/calm-down-corner',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary'],
@@ -181,7 +181,7 @@ async function main() {
         {
             title: 'Transition Timers - Visual Countdown',
             description: 'Printable visual timers to help with transitions between activities.',
-            suggestedUses: 'Display before transitions to prepare children for changes in routine.',
+            suggestedUses: ['Display before transitions to prepare children for changes in routine.'],
             url: 'https://example.com/resources/transition-timers',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary'],
@@ -192,7 +192,7 @@ async function main() {
         {
             title: 'Job Skills Checklist for Teens',
             description: 'A checklist to teach and track job-related skills for autistic teenagers.',
-            suggestedUses: 'Use in transition planning or life skills programs.',
+            suggestedUses: ['Use in transition planning or life skills programs.'],
             url: 'https://example.com/resources/job-skills-teens',
             fileType: 'PDF',
             targetAge: ['teens'],
@@ -203,7 +203,7 @@ async function main() {
         {
             title: 'Self-Advocacy Scripts',
             description: 'Practice scripts for autistic individuals to advocate for their needs in various settings.',
-            suggestedUses: 'Role-play and practice before real-life situations.',
+            suggestedUses: ['Role-play and practice before real-life situations.'],
             url: 'https://example.com/resources/self-advocacy',
             fileType: 'PDF',
             targetAge: ['teens', 'adults'],
@@ -214,7 +214,7 @@ async function main() {
         {
             title: 'Fine Motor Skills Practice Sheets',
             description: 'Tracing and cutting activities to develop fine motor skills.',
-            suggestedUses: 'Daily practice for children working on handwriting and coordination.',
+            suggestedUses: ['Daily practice for children working on handwriting and coordination.'],
             url: 'https://example.com/resources/fine-motor',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary'],
@@ -225,7 +225,7 @@ async function main() {
         {
             title: 'Birthday Party Social Story',
             description: 'A social story explaining what to expect at a birthday party.',
-            suggestedUses: 'Read before attending parties to reduce anxiety and prepare.',
+            suggestedUses: ['Read before attending parties to reduce anxiety and prepare.'],
             url: 'https://example.com/resources/birthday-party-story',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary'],
@@ -236,7 +236,7 @@ async function main() {
         {
             title: 'Bedtime Routine Visual Schedule',
             description: 'Step-by-step visual guide for a consistent bedtime routine.',
-            suggestedUses: 'Display in bedroom to promote independent bedtime preparation.',
+            suggestedUses: ['Display in bedroom to promote independent bedtime preparation.'],
             url: 'https://example.com/resources/bedtime-schedule',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary'],
@@ -247,7 +247,7 @@ async function main() {
         {
             title: 'Healthy vs Unhealthy Foods Sorting Activity',
             description: 'A fun sorting activity to teach nutrition concepts.',
-            suggestedUses: 'Use during meal planning or nutrition education.',
+            suggestedUses: ['Use during meal planning or nutrition education.'],
             url: 'https://example.com/resources/food-sorting',
             fileType: 'PDF',
             targetAge: ['elementary'],
@@ -258,7 +258,7 @@ async function main() {
         {
             title: 'Playground Safety Rules Visual',
             description: 'Visual reminders of playground safety rules and social expectations.',
-            suggestedUses: 'Display at playgrounds or review before outdoor play.',
+            suggestedUses: ['Display at playgrounds or review before outdoor play.'],
             url: 'https://example.com/resources/playground-safety',
             fileType: 'PDF',
             targetAge: ['early_childhood', 'elementary'],
@@ -279,7 +279,7 @@ async function main() {
                 gen_random_uuid(),
                 ${resource.title},
                 ${resource.description},
-                ${resource.suggestedUses},
+                ${resource.suggestedUses}::text[],
                 ${resource.url},
                 ${resource.fileType},
                 true,

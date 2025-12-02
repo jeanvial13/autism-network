@@ -3,7 +3,7 @@ import React from "react";
 
 interface GlassButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: React.ReactNode;
-    variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
+    variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'destructive';
     size?: 'sm' | 'md' | 'lg';
 }
 
@@ -18,7 +18,8 @@ export function GlassButton({
         primary: 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-lg hover:shadow-xl hover:scale-[1.02] border-transparent',
         secondary: 'bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--glass-border)] hover:bg-[var(--glass-highlight)]',
         ghost: 'hover:bg-[var(--glass-highlight)] text-foreground border-transparent',
-        outline: 'border-[var(--glass-border)] hover:bg-[var(--glass-highlight)] text-foreground'
+        outline: 'border-[var(--glass-border)] hover:bg-[var(--glass-highlight)] text-foreground',
+        destructive: 'bg-red-500/80 text-white border-red-600/50 hover:bg-red-600/90 shadow-lg hover:shadow-red-500/20'
     };
 
     const sizes = {

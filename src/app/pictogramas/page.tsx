@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
-import { Plus, Trash2, Upload, Image as ImageIcon } from "lucide-react";
+import { Trash2, Upload, Image as ImageIcon, Sparkles, X } from "lucide-react";
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from "framer-motion";
 import NextImage from "next/image";
+import { generatePictogram } from "@/app/actions/generate-pictogram";
 
 interface Pictogram {
     id: string;
@@ -14,14 +15,14 @@ interface Pictogram {
     name: string;
     createdAt: number;
 }
-// ... (rest of file)
-// Inside component:
-
 
 export default function PictogramasPage() {
     const t = useTranslations('pictograms');
     const [pictograms, setPictograms] = useState<Pictogram[]>([]);
-    const [isDragging, setIsDragging] = useState(false);
+    const [isDeleteMode, setIsDeleteMode] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [showGenerateModal, setShowGenerateModal] = useState(false);
+    const [prompt, setPrompt] = useState("");
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -53,7 +54,7 @@ export default function PictogramasPage() {
                     const newPic: Pictogram = {
                         id: Date.now().toString() + Math.random().toString(),
                         url: result,
-                        name: file.name,
+                        name: file.name.split('.')[0], // Remove extension for name
                         createdAt: Date.now()
                     };
                     setPictograms(prev => [newPic, ...prev]);
@@ -63,39 +64,61 @@ export default function PictogramasPage() {
         });
     };
 
+    const handleGenerate = async () => {
+        if (!prompt.trim()) return;
+        setIsGenerating(true);
+        try {
+            const imageUrl = await generatePictogram(prompt);
+            const newPic: Pictogram = {
+                id: Date.now().toString(),
+                url: imageUrl,
+                name: prompt,
+                createdAt: Date.now()
+            };
+            setPictograms(prev => [newPic, ...prev]);
+            setShowGenerateModal(false);
+            setPrompt("");
+        } catch (error) {
+            console.error("Generation failed", error);
+            alert("Error generating pictogram. Please try again.");
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
     const handleDelete = (id: string) => {
         setPictograms(prev => prev.filter(p => p.id !== id));
+    };
+
+    const speak = (text: string) => {
+        if (isDeleteMode) return;
+
+        window.speechSynthesis.cancel(); // Stop previous speech
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-MX'; // Mexican Spanish preferred
+        utterance.rate = 0.8; // Slower for children
+        utterance.pitch = 1.1; // Slightly higher/friendlier
+        window.speechSynthesis.speak(utterance);
     };
 
     return (
         <main className="min-h-screen pt-24 pb-20 px-4 md:px-6 bg-background">
             <div className="container mx-auto max-w-6xl">
-                {/* Header */}
-                <div className="mb-10 text-center">
-                    <h1 className="text-4xl font-bold text-foreground mb-4">{t('title')}</h1>
-                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        {t('subtitle')}
-                    </p>
-                </div>
+                {/* Header & Controls */}
+                <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
+                    <div>
+                        <h1 className="text-4xl font-bold text-foreground mb-2">{t('title')}</h1>
+                        <p className="text-muted-foreground">{t('subtitle')}</p>
+                    </div>
 
-                {/* Upload Area */}
-                <GlassCard className={`mb-12 border-2 border-dashed transition-colors ${isDragging ? 'border-primary bg-primary/5' : 'border-border'}`}>
-                    <div
-                        className="flex flex-col items-center justify-center py-12 cursor-pointer"
-                        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-                        onDragLeave={() => setIsDragging(false)}
-                        onDrop={(e) => {
-                            e.preventDefault();
-                            setIsDragging(false);
-                            handleFileUpload(e.dataTransfer.files);
-                        }}
-                        onClick={() => document.getElementById('file-upload')?.click()}
-                    >
-                        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
-                            <Upload className="w-8 h-8" />
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">{t('upload')}</h3>
-                        <p className="text-muted-foreground mb-6">{t('dragDrop')}</p>
+                    <div className="flex gap-3">
+                        <GlassButton
+                            variant="secondary"
+                            onClick={() => document.getElementById('file-upload')?.click()}
+                        >
+                            <Upload className="w-4 h-4 mr-2" />
+                            {t('upload')}
+                        </GlassButton>
                         <input
                             id="file-upload"
                             type="file"
@@ -104,12 +127,25 @@ export default function PictogramasPage() {
                             className="hidden"
                             onChange={(e) => handleFileUpload(e.target.files)}
                         />
-                        <GlassButton size="sm" variant="secondary">
-                            <Plus className="w-4 h-4 mr-2" />
-                            {t('upload')}
+
+                        <GlassButton
+                            variant="primary"
+                            onClick={() => setShowGenerateModal(true)}
+                            className="bg-gradient-to-r from-indigo-500 to-purple-500 border-none text-white"
+                        >
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            {t('generate')}
+                        </GlassButton>
+
+                        <GlassButton
+                            variant={isDeleteMode ? "destructive" : "outline"}
+                            onClick={() => setIsDeleteMode(!isDeleteMode)}
+                        >
+                            {isDeleteMode ? <X className="w-4 h-4 mr-2" /> : <Trash2 className="w-4 h-4 mr-2" />}
+                            {isDeleteMode ? t('done') : t('delete')}
                         </GlassButton>
                     </div>
-                </GlassCard>
+                </div>
 
                 {/* Grid */}
                 {pictograms.length === 0 ? (
@@ -128,9 +164,11 @@ export default function PictogramasPage() {
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
                                     transition={{ duration: 0.3 }}
+                                    onClick={() => !isDeleteMode && speak(pic.name)}
+                                    className={`cursor-pointer ${isDeleteMode ? 'cursor-default' : ''}`}
                                 >
-                                    <GlassCard className="group relative aspect-square p-2 flex items-center justify-center overflow-hidden">
-                                        <div className="relative w-full h-full">
+                                    <GlassCard className={`group relative aspect-square p-4 flex flex-col items-center justify-center overflow-hidden transition-all duration-300 ${!isDeleteMode && 'hover:scale-105 hover:shadow-xl active:scale-95'}`}>
+                                        <div className="relative w-full h-full mb-2">
                                             <NextImage
                                                 src={pic.url}
                                                 alt={pic.name}
@@ -139,20 +177,75 @@ export default function PictogramasPage() {
                                                 unoptimized
                                             />
                                         </div>
-                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                                            <button
-                                                onClick={() => handleDelete(pic.id)}
-                                                className="p-3 rounded-full bg-destructive text-white hover:scale-110 transition-transform"
-                                            >
-                                                <Trash2 className="w-5 h-5" />
-                                            </button>
-                                        </div>
+                                        <p className="text-center font-bold text-lg text-foreground capitalize truncate w-full">
+                                            {pic.name}
+                                        </p>
+
+                                        {/* Delete Overlay */}
+                                        {isDeleteMode && (
+                                            <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px] flex items-center justify-center z-10 animate-in fade-in">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDelete(pic.id);
+                                                    }}
+                                                    className="p-4 rounded-full bg-destructive text-white hover:scale-110 transition-transform shadow-lg"
+                                                >
+                                                    <Trash2 className="w-6 h-6" />
+                                                </button>
+                                            </div>
+                                        )}
                                     </GlassCard>
                                 </motion.div>
                             ))}
                         </AnimatePresence>
                     </div>
                 )}
+
+                {/* Generate Modal */}
+                <AnimatePresence>
+                    {showGenerateModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                className="w-full max-w-md"
+                            >
+                                <GlassCard className="p-6">
+                                    <h2 className="text-2xl font-bold mb-4">{t('generate')}</h2>
+                                    <input
+                                        type="text"
+                                        value={prompt}
+                                        onChange={(e) => setPrompt(e.target.value)}
+                                        placeholder={t('promptPlaceholder')}
+                                        className="w-full p-4 rounded-xl bg-secondary/20 border border-border mb-6 focus:outline-none focus:ring-2 focus:ring-primary text-lg"
+                                        autoFocus
+                                    />
+                                    <div className="flex justify-end gap-3">
+                                        <GlassButton variant="ghost" onClick={() => setShowGenerateModal(false)}>
+                                            {t('cancel')}
+                                        </GlassButton>
+                                        <GlassButton
+                                            variant="primary"
+                                            onClick={handleGenerate}
+                                            disabled={isGenerating || !prompt.trim()}
+                                        >
+                                            {isGenerating ? (
+                                                <>
+                                                    <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                                                    {t('generating')}
+                                                </>
+                                            ) : (
+                                                t('generateButton')
+                                            )}
+                                        </GlassButton>
+                                    </div>
+                                </GlassCard>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
             </div>
         </main>
     );
