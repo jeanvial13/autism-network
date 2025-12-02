@@ -64,86 +64,80 @@
         "title": "Biblioteca de Conocimiento Científico",
         "subtitle": "Explora nuestra colección curada de artículos, guías y herramientas basadas en evidencia. Todo el contenido es revisado por su precisión científica.",
         "readMore": "Leer Más",
-        "credibility": "Credibilidad"
+        "credibility": "Credibilidad",
+        "noResources": {
+            "title": "Aún no hay recursos.",
+            "description": "Ejecute el trabajo cron de descubrimiento de recursos para poblar recursos."
+        },
+        "searchPlaceholder": "Buscar recursos...",
+        "filters": {
+            "topic": "Tema",
+            "age": "Edad",
+            "format": "Formato"
+        },
+        "card": {
+            "recentlyVerified": "Verificado Recientemente",
+            "age": "Edad",
+            "format": "Formato",
+            "download": "Descargar",
+            "view": "Ver Recurso",
+            "license": "Recurso externo gratuito • Verifique la licencia en el sitio"
+        },
+        "disclaimer": {
+            "title": "Sobre Estos Recursos",
+            "text": "Todos los recursos están curados de fuentes externas confiables y son de acceso gratuito. Verificamos los enlaces regularmente, pero verifique la licencia en el sitio original antes de uso comercial. Estos materiales están destinados a apoyar la educación, la terapia y las habilidades de la vida diaria para personas autistas y sus familias."
+        }
     },
     "articles": {
         "title": "Noticias Diarias sobre Autismo",
         "subtitle": "Resúmenes automatizados de las últimas investigaciones sobre autismo, actualizaciones clínicas y noticias basadas en evidencia. Todo el contenido es revisado por expertos y cita fuentes confiables.",
-        {
-            "navigation": {
-                "brand": "T-Conecta Autismo",
-                "globalMap": "Mapa Global",
-                "resources": "Recursos",
-                "articles": "Artículos",
-                "signIn": "Iniciar Sesión",
-                "getStarted": "Comenzar"
-            },
-            "home": {
-                "hero": {
-                    "title1": "Conocimiento global sobre autismo.",
-                    "title2": "Apoyo local para tu familia.",
-                    "subtitle": "Encuentra especialistas cercanos, explora materiales educativos gratuitos y lee las investigaciones más actualizadas sobre autismo — todo en un espacio tranquilo y confiable.",
-                    "findSupport": "Buscar apoyo cercano",
-                    "exploreResources": "Explorar recursos",
-                    "trust": {
-                        "families": "10k+ Familias",
-                        "countries": "50+ Países"
-                    },
-                    "cards": {
-                        "specialists": {
-                            "title": "Especialistas",
-                            "subtitle": "Terapeutas y centros verificados cerca"
-                        },
-                        "article": {
-                            "tag": "Nuevo Artículo",
-                            "readTime": "5 min lectura",
-                            "title": "Estrategias de Intervención Temprana",
-                            "subtitle": "Enfoques basados en evidencia para apoyar la comunicación...",
-                            "readMore": "Leer más"
-                        }
-                    }
-                },
-                "dailyBrief": {
-                    "title": "Noticias de Autismo de Hoy",
-                    "heading": "Resumen Científico Diario",
-                    "description": "Recibe las últimas investigaciones sobre autismo, actualizaciones clínicas y noticias basadas en evidencia revisadas por expertos. Actualizado todos los días para mantenerte informado.",
-                    "readUpdate": "Leer Actualización de Hoy"
-                },
-                "features": {
-                    "title": "Todo lo que Necesitas",
-                    "subtitle": "Información basada en evidencia, conexiones globales y apoyo experto, todo en un solo lugar.",
-                    "globalMap": {
-                        "title": "Mapa Global",
-                        "description": "Encuentra centros de autismo, terapeutas y profesionales verificados cerca de ti. Filtra por servicios, idiomas y seguros."
-                    },
-                    "resourceLibrary": {
-                        "title": "Biblioteca de Recursos",
-                        "description": "Explora nuestra biblioteca curada de artículos, guías, videos y herramientas basadas en evidencia para familias y profesionales."
-                    },
-                    "network": {
-                        "title": "Únete a la Red",
-                        "description": "Conéctate con profesionales verificados, otras familias y adultos autistas. Comparte experiencias y encuentra apoyo."
-                    }
-                },
-                "cta": {
-                    "title": "¿Listo para Comenzar?",
-                    "subtitle": "Únete a miles de familias y profesionales en la comunidad global de autismo.",
-                    "button": "Crear Cuenta Gratuita"
-                }
-            },
-            "noResults": "No se encontraron proveedores",
-            "tryAdjusting": "Intenta ajustar tus filtros",
-            "filters": {
-                "title": "Filtros",
-                "verifiedOnly": "Solo Verificados",
-                "reset": "Restablecer Filtros",
-                "services": "Servicios",
-                "distance": "Distancia"
-            },
-            "card": {
-                "verified": "Verificado",
-                "viewProfile": "Ver Perfil",
-                "more": "más"
-            }
+        "source": "Fuente",
+        "readFull": "Leer Artículo Completo",
+        "noArticles": {
+            "title": "Aún no hay artículos.",
+            "description": "Ejecute el trabajo cron de generación de IA para poblar artículos."
+        },
+        "searchPlaceholder": "Buscar artículos...",
+        "filters": {
+            "topic": "Tema",
+            "audience": "Audiencia"
+        },
+        "card": {
+            "new": "NUEVO",
+            "credibility": "Credibilidad",
+            "today": "Hoy",
+            "yesterday": "Ayer",
+            "daysAgo": "hace {days} días",
+            "tldr": "Resumen:",
+            "source": "Fuente:",
+            "readFull": "Leer Artículo Completo"
+        },
+        "disclaimer": {
+            "title": "Aviso Importante",
+            "text": "Esta plataforma proporciona solo información, no asesoramiento médico. Los artículos son resúmenes automatizados de investigaciones científicas y son revisados para verificar su precisión. Consulte siempre a un profesional de la salud calificado para decisiones médicas."
+        }
+    },
+    "map": {
+        "title": "Mapa Global",
+        "locating": "Localizando...",
+        "results": "{count} resultado{s}",
+        "approxLocation": "Ubicación Aprox",
+        "searchPlaceholder": "Buscar proveedores...",
+        "noResults": "No se encontraron proveedores",
+        "tryAdjusting": "Intenta ajustar tus filtros",
+        "filters": {
+            "title": "Filtros",
+            "verifiedOnly": "Solo Verificados",
+            "reset": "Restablecer Filtros",
+            "services": "Servicios",
+            "distance": "Distancia",
+            "age": "Edad",
+            "format": "Formato"
+        },
+        "card": {
+            "verified": "Verificado",
+            "viewProfile": "Ver Perfil",
+            "more": "más"
         }
     }
+}
