@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
  * 2. Generate comprehensive articles
  * 3. Run safety classification
  * 4. Translate to supported languages
- * 5. Generate vector embeddings
+ * 5. Generate vector embedding
  * 6. Save to database
  */
 export async function GET(request: NextRequest) {

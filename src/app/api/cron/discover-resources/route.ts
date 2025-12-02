@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
  * Steps:
  * 1. Search for free autism resources
  * 2. Generate AI descriptions
- * 3. Create vector embeddings
+ * 3. Create vector embedding
  * 4. Save to database
  */
 export async function GET(request: NextRequest) {
