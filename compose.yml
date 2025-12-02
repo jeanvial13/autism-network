@@ -5,6 +5,10 @@ services:
       dockerfile: Dockerfile
       args:
         SKIP_DATABASE_CONNECTION: "true"
+        NEXT_PUBLIC_MAPBOX_TOKEN: ${NEXT_PUBLIC_MAPBOX_TOKEN}
+        GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY}
+        GOOGLE_CUSTOM_SEARCH_API_KEY: ${GOOGLE_CUSTOM_SEARCH_API_KEY}
+        GOOGLE_SEARCH_ENGINE_ID: ${GOOGLE_SEARCH_ENGINE_ID}
     restart: always
     ports:
       - "3000:3000"

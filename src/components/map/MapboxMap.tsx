@@ -46,6 +46,18 @@ export default function MapboxMap({
         }
     }, [userLocation, selectedProvider]);
 
+    if (!mapboxToken) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full bg-muted/20 p-6 text-center">
+                <MapPin className="h-12 w-12 text-destructive mb-4" />
+                <h3 className="text-lg font-semibold text-destructive">Map Configuration Error</h3>
+                <p className="text-muted-foreground max-w-md">
+                    The Mapbox access token is missing. Please check your environment variables (NEXT_PUBLIC_MAPBOX_TOKEN).
+                </p>
+            </div>
+        );
+    }
+
     return (
         <Map
             ref={mapRef}
