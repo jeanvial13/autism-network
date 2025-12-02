@@ -30,3 +30,5 @@ const nextConfig: NextConfig = {
 };
 
 export default withNextIntl(nextConfig);
+
+// Force restart for Pictogramas UI update
