@@ -5,10 +5,12 @@ import { MapPin, BookOpen, Brain, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { GlassButton } from '@/components/ui/glass-button';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 export default function Navigation() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const t = useTranslations('navigation');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -34,7 +36,7 @@ export default function Navigation() {
                             TC
                         </div>
                         <span className="font-bold text-lg tracking-tight text-foreground hidden sm:block">
-                            T-Conecta
+                            {t('brand')}
                         </span>
                     </Link>
                 </div>
@@ -56,15 +58,15 @@ export default function Navigation() {
 
                 <div className="hidden lg:flex lg:gap-x-8">
                     <Link href="/map" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group">
-                        Global Map
+                        {t('globalMap')}
                         <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all group-hover:w-full"></span>
                     </Link>
                     <Link href="/resources" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group">
-                        Resources
+                        {t('resources')}
                         <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all group-hover:w-full"></span>
                     </Link>
                     <Link href="/articles" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group">
-                        Articles
+                        {t('articles')}
                         <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all group-hover:w-full"></span>
                     </Link>
                 </div>
@@ -72,12 +74,12 @@ export default function Navigation() {
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
                     <Link href="/auth/signin">
                         <GlassButton variant="ghost" size="sm">
-                            Sign in
+                            {t('signIn')}
                         </GlassButton>
                     </Link>
                     <Link href="/auth/signin">
                         <GlassButton variant="primary" size="sm">
-                            Get Started
+                            {t('getStarted')}
                         </GlassButton>
                     </Link>
                 </div>
@@ -93,31 +95,31 @@ export default function Navigation() {
                                 className="block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-foreground hover:bg-white/10"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
-                                Global Map
+                                {t('globalMap')}
                             </Link>
                             <Link
                                 href="/resources"
                                 className="block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-foreground hover:bg-white/10"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
-                                Resources
+                                {t('resources')}
                             </Link>
                             <Link
                                 href="/articles"
                                 className="block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-foreground hover:bg-white/10"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
-                                Articles
+                                {t('articles')}
                             </Link>
                             <div className="mt-6 space-y-2 pt-4 border-t border-white/10">
                                 <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
                                     <GlassButton variant="secondary" className="w-full justify-center">
-                                        Sign in
+                                        {t('signIn')}
                                     </GlassButton>
                                 </Link>
                                 <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
                                     <GlassButton variant="primary" className="w-full justify-center">
-                                        Get Started
+                                        {t('getStarted')}
                                     </GlassButton>
                                 </Link>
                             </div>

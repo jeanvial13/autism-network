@@ -3,8 +3,11 @@ import { MapPin, BookOpen, Users, Brain, Calendar, Globe, ArrowRight } from 'luc
 import { HeroSection } from '@/components/home/HeroSection';
 import { GlassCard } from '@/components/ui/glass-card';
 import { GlassButton } from '@/components/ui/glass-button';
+import { useTranslations } from 'next-intl';
 
 export default function Home() {
+  const t = useTranslations('home');
+
   return (
     <main className="min-h-screen bg-background selection:bg-primary/20">
       {/* Hero Section (Liquid Glass) */}
@@ -17,7 +20,7 @@ export default function Home() {
             <div className="p-2 rounded-lg bg-primary/10">
               <Calendar className="h-6 w-6 text-primary" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">Today's Autism News</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t('dailyBrief.title')}</h2>
           </div>
 
           <GlassCard className="border-l-4 border-l-primary">
@@ -27,13 +30,13 @@ export default function Home() {
               </div>
               <div className="flex-1">
                 <h3 className="text-xl font-semibold text-foreground mb-2">
-                  Daily Scientific Digest
+                  {t('dailyBrief.heading')}
                 </h3>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  Get the latest autism research, clinical updates, and evidence-based news reviewed by experts. Updated every day to keep you informed.
+                  {t('dailyBrief.description')}
                 </p>
                 <Link href="/articles" className="inline-flex items-center text-primary font-medium hover:underline">
-                  Read Today's Update <ArrowRight className="w-4 h-4 ml-1" />
+                  {t('dailyBrief.readUpdate')} <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
               </div>
             </div>
@@ -46,10 +49,10 @@ export default function Home() {
         <div className="container px-4 md:px-6 mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">
-              Everything You Need
+              {t('features.title')}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Evidence-based information, global connections, and expert support all in one place.
+              {t('features.subtitle')}
             </p>
           </div>
 
@@ -60,9 +63,9 @@ export default function Home() {
                 <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-6">
                   <MapPin className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Global Map</h3>
+                <h3 className="text-xl font-semibold mb-3">{t('features.globalMap.title')}</h3>
                 <p className="text-muted-foreground">
-                  Find verified autism centers, therapists, and professionals near you. Filter by services, languages, and insurance.
+                  {t('features.globalMap.description')}
                 </p>
               </GlassCard>
             </Link>
@@ -73,9 +76,9 @@ export default function Home() {
                 <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-6">
                   <BookOpen className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Resource Library</h3>
+                <h3 className="text-xl font-semibold mb-3">{t('features.resourceLibrary.title')}</h3>
                 <p className="text-muted-foreground">
-                  Explore our curated library of evidence-based articles, guides, videos, and tools for families and professionals.
+                  {t('features.resourceLibrary.description')}
                 </p>
               </GlassCard>
             </Link>
@@ -86,9 +89,9 @@ export default function Home() {
                 <div className="w-12 h-12 rounded-2xl bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-6">
                   <Users className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Join the Network</h3>
+                <h3 className="text-xl font-semibold mb-3">{t('features.network.title')}</h3>
                 <p className="text-muted-foreground">
-                  Connect with verified professionals, other families, and autistic adults. Share experiences and find support.
+                  {t('features.network.description')}
                 </p>
               </GlassCard>
             </Link>
@@ -102,14 +105,14 @@ export default function Home() {
         <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Get Started?
+              {t('cta.title')}
             </h2>
             <p className="text-xl text-muted-foreground mb-10">
-              Join thousands of families and professionals in the global autism community.
+              {t('cta.subtitle')}
             </p>
             <Link href="/auth/signin">
               <GlassButton variant="primary" size="lg" className="px-12">
-                Create Free Account
+                {t('cta.button')}
               </GlassButton>
             </Link>
           </div>

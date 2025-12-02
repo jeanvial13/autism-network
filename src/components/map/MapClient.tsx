@@ -10,6 +10,7 @@ import ProviderCard from '@/components/map/ProviderCard';
 import ProviderDetail from '@/components/map/ProviderDetail';
 import MapboxMap from '@/components/map/MapboxMap';
 import { useRobustGeolocation, calculateDistance } from '@/lib/geolocation';
+import { useTranslations } from 'next-intl';
 
 interface MapClientProps {
     providers: Array<{
@@ -36,6 +37,7 @@ export default function MapClient({ providers }: MapClientProps) {
 
     const userLocation = useRobustGeolocation(); // Uses robust 3-layer logic
     const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
+    const t = useTranslations('map');
 
     // Debounce search query
     useEffect(() => {
@@ -99,21 +101,21 @@ export default function MapClient({ providers }: MapClientProps) {
         <main className="h-[calc(100vh-4rem)] flex flex-col lg:flex-row bg-background overflow-hidden relative">
             {/* Sidebar / Bottom Sheet */}
             <div className={`
-                w-full lg:w-96 bg-background border-r border-border 
+                w-full lg:w-96 bg-background/80 backdrop-blur-md border-r border-border 
                 flex flex-col overflow-hidden
                 lg:relative absolute bottom-0 left-0 right-0 z-10
-                h-1/2 lg:h-full
+                h-1/2 lg:h-full shadow-xl lg:shadow-none
             `}>
                 {/* Header */}
-                <div className="p-6 border-b border-border bg-background">
+                <div className="p-6 border-b border-border bg-background/50">
                     <div className="flex items-center gap-2 mb-4">
                         <MapPin className="h-6 w-6 text-primary" />
-                        <h1 className="text-2xl font-bold text-foreground">Global Map</h1>
-                        {userLocation.loading && <span className="text-xs text-muted-foreground animate-pulse">(Locating...)</span>}
+                        <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
+                        {userLocation.loading && <span className="text-xs text-muted-foreground animate-pulse">({t('locating')})</span>}
                     </div>
                     <p className="text-sm text-muted-foreground mb-4">
-                        {filteredProviders.length} result{filteredProviders.length !== 1 ? 's' : ''}
-                        {userLocation.source === 'ip' && <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">Approx Location</span>}
+                        {t('results', { count: filteredProviders.length, s: filteredProviders.length !== 1 ? 's' : '' })}
+                        {userLocation.source === 'ip' && <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">{t('approxLocation')}</span>}
                     </p>
 
                     {/* Search */}
@@ -121,10 +123,10 @@ export default function MapClient({ providers }: MapClientProps) {
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="text"
-                            placeholder="Search providers..."
+                            placeholder={t('searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 rounded-full"
+                            className="pl-10 rounded-full bg-white/50 border-white/20 focus:bg-white transition-all"
                         />
                     </div>
 
@@ -147,8 +149,8 @@ export default function MapClient({ providers }: MapClientProps) {
                         {filteredProviders.length === 0 && (
                             <div className="text-center py-8 text-muted-foreground">
                                 <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                                <p>No providers found</p>
-                                <p className="text-sm">Try adjusting your filters</p>
+                                <p>{t('noResults')}</p>
+                                <p className="text-sm">{t('tryAdjusting')}</p>
                             </div>
                         )}
                     </div>
@@ -174,7 +176,7 @@ export default function MapClient({ providers }: MapClientProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
                         onClick={() => setSelectedProvider(null)}
                     >
                         <motion.div

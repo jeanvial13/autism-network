@@ -1,13 +1,18 @@
 "use client";
 
+"use client";
+
 import { motion } from "framer-motion";
 import { GlassButton } from "@/components/ui/glass-button";
 import { GlassCard } from "@/components/ui/glass-card";
 import { FloatingGlassOrbs } from "@/components/ui/floating-glass-orbs";
 import { MapPin, BookOpen, Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from 'next-intl';
 
 export function HeroSection() {
+    const t = useTranslations('home.hero');
+
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
             {/* Animated background */}
@@ -23,28 +28,27 @@ export function HeroSection() {
                         transition={{ duration: 0.8, ease: "easeOut" }}
                     >
                         <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground mb-6">
-                            Global autism knowledge.
+                            {t('title1')}
                             <span className="block text-primary mt-2">
-                                Local support for your family.
+                                {t('title2')}
                             </span>
                         </h1>
 
                         <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                            Find nearby specialists, explore free educational materials,
-                            and read the most up-to-date autism research — all in one calm, trusted space.
+                            {t('subtitle')}
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                             <Link href="/map">
                                 <GlassButton variant="primary" size="lg" className="w-full sm:w-auto">
                                     <MapPin className="w-5 h-5" />
-                                    Find support near me
+                                    {t('findSupport')}
                                 </GlassButton>
                             </Link>
                             <Link href="/resources">
                                 <GlassButton variant="secondary" size="lg" className="w-full sm:w-auto">
                                     <BookOpen className="w-5 h-5" />
-                                    Explore resources
+                                    {t('exploreResources')}
                                 </GlassButton>
                             </Link>
                         </div>
@@ -59,12 +63,12 @@ export function HeroSection() {
                     >
                         <div className="flex items-center gap-2">
                             <Users className="w-5 h-5 text-primary" />
-                            <span className="text-sm font-medium">10k+ Families</span>
+                            <span className="text-sm font-medium">{t('trust.families')}</span>
                         </div>
                         <div className="w-1.5 h-1.5 rounded-full bg-border" />
                         <div className="flex items-center gap-2">
                             <MapPin className="w-5 h-5 text-primary" />
-                            <span className="text-sm font-medium">50+ Countries</span>
+                            <span className="text-sm font-medium">{t('trust.countries')}</span>
                         </div>
                     </motion.div>
                 </div>
@@ -83,9 +87,9 @@ export function HeroSection() {
                                     <MapPin className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-foreground">Specialists</h3>
+                                    <h3 className="font-semibold text-foreground">{t('cards.specialists.title')}</h3>
                                     <p className="text-sm text-muted-foreground mt-1">
-                                        Verified therapists & centers nearby
+                                        {t('cards.specialists.subtitle')}
                                     </p>
                                 </div>
                             </div>
@@ -109,18 +113,18 @@ export function HeroSection() {
                         <GlassCard className="w-80 backdrop-blur-lg bg-white/30 dark:bg-slate-900/30 border-white/30">
                             <div className="flex items-center gap-3 mb-3">
                                 <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/20 text-secondary-foreground border border-secondary/20">
-                                    New Article
+                                    {t('cards.article.tag')}
                                 </span>
-                                <span className="text-xs text-muted-foreground">5 min read</span>
+                                <span className="text-xs text-muted-foreground">{t('cards.article.readTime')}</span>
                             </div>
                             <h3 className="font-semibold text-lg leading-tight mb-2">
-                                Early Intervention Strategies
+                                {t('cards.article.title')}
                             </h3>
                             <p className="text-sm text-muted-foreground mb-4">
-                                Evidence-based approaches for supporting communication...
+                                {t('cards.article.subtitle')}
                             </p>
                             <div className="flex items-center text-primary text-sm font-medium">
-                                Read more <ArrowRight className="w-4 h-4 ml-1" />
+                                {t('cards.article.readMore')} <ArrowRight className="w-4 h-4 ml-1" />
                             </div>
                         </GlassCard>
                     </motion.div>
