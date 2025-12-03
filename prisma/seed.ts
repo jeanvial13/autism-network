@@ -5,13 +5,50 @@ const prisma = new PrismaClient();
 async function main() {
     console.log('🌱 Starting database seed...');
 
-    // Clear existing data
-    console.log('🧹 Clearing existing data...');
+    // Clear existing data - EXCEPT users to preserve admin
+    console.log('🧹 Clearing existing data (preserving users)...');
     await prisma.articleTranslation.deleteMany();
     await prisma.article.deleteMany();
     await prisma.educationalResource.deleteMany();
     await prisma.professionalProfile.deleteMany();
-    await prisma.user.deleteMany();
+    // await prisma.user.deleteMany(); // DO NOT DELETE USERS
+
+    // ========================================
+    // 0. CREATE ADMIN USER
+    // ========================================
+    const adminUser = process.env.ADMIN_USER?.trim();
+    const adminPass = process.env.ADMIN_PASS?.trim();
+    const adminName = process.env.ADMIN_NAME?.trim();
+
+    if (adminUser && adminPass) {
+        const existingAdmin = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { email: adminUser },
+                    { username: adminUser }
+                ]
+            }
+        });
+
+        if (!existingAdmin) {
+            console.log('🛡️ Creating admin user...');
+            const bcrypt = require('bcryptjs');
+            const hashedPassword = await bcrypt.hash(adminPass, 10);
+
+            await prisma.user.create({
+                data: {
+                    email: adminUser.includes('@') ? adminUser : `admin-${Date.now()}@example.com`,
+                    username: adminUser,
+                    name: adminName || 'Admin',
+                    passwordHash: hashedPassword,
+                    role: 'ADMIN',
+                }
+            });
+            console.log('✅ Admin user created successfully');
+        } else {
+            console.log('ℹ️ Admin user already exists, skipping creation');
+        }
+    }
 
     // ========================================
     // 1. CREATE PROFESSIONAL PROFILES (Map Providers)

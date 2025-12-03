@@ -30,28 +30,43 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             authorize: async (credentials) => {
                 const { username, password } = credentials ?? {}
 
-                const adminUser = process.env.ADMIN_USER?.trim()
-                const adminPass = process.env.ADMIN_PASS?.trim()
-                const adminName = process.env.ADMIN_NAME?.trim()
+                if (!username || !password) return null;
 
-                console.log("Login Attempt:", {
-                    receivedUsername: username,
-                    expectedUsername: adminUser,
-                    passwordMatch: password === adminPass,
-                    hasAdminUser: !!adminUser,
-                    hasAdminPass: !!adminPass
-                })
+                const prisma = require("@/lib/prisma").prisma;
+                const bcrypt = require("bcryptjs");
 
-                if (username === adminUser && password === adminPass) {
-                    return {
-                        id: 'admin',
-                        name: adminName,
-                        email: adminUser,
-                        role: 'ADMIN',
+                try {
+                    const user = await prisma.user.findFirst({
+                        where: {
+                            OR: [
+                                { email: username },
+                                { username: username }
+                            ]
+                        }
+                    });
+
+                    if (!user || !user.passwordHash) {
+                        console.log("Auth failed: User not found or no password hash");
+                        return null;
                     }
-                }
 
-                return null
+                    const isValid = await bcrypt.compare(password, user.passwordHash);
+
+                    if (!isValid) {
+                        console.log("Auth failed: Invalid password");
+                        return null;
+                    }
+
+                    return {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                    };
+                } catch (error) {
+                    console.error("Auth error:", error);
+                    return null;
+                }
             },
         }),
     ],
