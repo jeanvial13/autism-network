@@ -30,9 +30,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             authorize: async (credentials) => {
                 const { username, password } = credentials ?? {}
 
-                const adminUser = process.env.ADMIN_USER
-                const adminPass = process.env.ADMIN_PASS
-                const adminName = process.env.ADMIN_NAME
+                const adminUser = process.env.ADMIN_USER?.trim()
+                const adminPass = process.env.ADMIN_PASS?.trim()
+                const adminName = process.env.ADMIN_NAME?.trim()
 
                 console.log("Login Attempt:", {
                     receivedUsername: username,
