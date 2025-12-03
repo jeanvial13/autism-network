@@ -136,20 +136,7 @@ export default function Navigation() {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                    ) : (
-                        <>
-                            <Link href="/auth/signin">
-                                <GlassButton variant="ghost" size="sm">
-                                    {t('signIn')}
-                                </GlassButton>
-                            </Link>
-                            <Link href="/auth/signin">
-                                <GlassButton variant="primary" size="sm">
-                                    {t('getStarted')}
-                                </GlassButton>
-                            </Link>
-                        </>
-                    )}
+                    ) : null}
                 </div>
             </nav>
 
@@ -204,20 +191,7 @@ export default function Navigation() {
                                             Cerrar Sesión
                                         </GlassButton>
                                     </>
-                                ) : (
-                                    <>
-                                        <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
-                                            <GlassButton variant="secondary" className="w-full justify-center">
-                                                {t('signIn')}
-                                            </GlassButton>
-                                        </Link>
-                                        <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
-                                            <GlassButton variant="primary" className="w-full justify-center">
-                                                {t('getStarted')}
-                                            </GlassButton>
-                                        </Link>
-                                    </>
-                                )}
+                                ) : null}
                             </div>
                         </div>
                     </div>
