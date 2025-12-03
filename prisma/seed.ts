@@ -46,7 +46,19 @@ async function main() {
             });
             console.log('✅ Admin user created successfully');
         } else {
-            console.log('ℹ️ Admin user already exists, skipping creation');
+            console.log('🔄 Admin user exists, updating password...');
+            const bcrypt = require('bcryptjs');
+            const hashedPassword = await bcrypt.hash(adminPass, 10);
+
+            await prisma.user.update({
+                where: { id: existingAdmin.id },
+                data: {
+                    passwordHash: hashedPassword,
+                    // Ensure username is set if it was missing
+                    username: adminUser,
+                }
+            });
+            console.log('✅ Admin password updated successfully');
         }
     }
 

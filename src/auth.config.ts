@@ -18,7 +18,7 @@ export const authConfig = {
             const isOnAdmin = nextUrl.pathname.startsWith('/admin')
             const isOnProtected = ['/map/add', '/pictogramas', '/profile'].some(path => nextUrl.pathname.startsWith(path))
 
-            const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+            const baseUrl = process.env.NEXTAUTH_URL || 'http://192.168.1.74:3000'
 
             if (isOnAdmin || isOnProtected) {
                 if (nextUrl.pathname === '/admin/login') {
