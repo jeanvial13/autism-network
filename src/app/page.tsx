@@ -1,4 +1,5 @@
 import Link from 'next/link';
+export const dynamic = 'force-dynamic';
 import { MapPin, BookOpen, Users, Brain, Calendar, Globe, ArrowRight } from 'lucide-react';
 import { HeroSection } from '@/components/home/HeroSection';
 import { GlassCard } from '@/components/ui/glass-card';

@@ -11,50 +11,37 @@ export const authConfig = {
                 session.user.id = token.sub
             }
             return session
-            import type { NextAuthConfig } from "next-auth"
+        },
+        authorized({ auth, request: { nextUrl } }) {
+            const isLoggedIn = !!auth?.user
+            const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
+            const isOnAdmin = nextUrl.pathname.startsWith('/admin')
+            const isOnProtected = ['/map/add', '/pictogramas', '/profile'].some(path => nextUrl.pathname.startsWith(path))
 
-            export const authConfig = {
-                providers: [],
-                session: {
-                    strategy: "jwt",
-                },
-                callbacks: {
-                    async session({ session, token }) {
-                        if (token.sub && session.user) {
-                            session.user.id = token.sub
-                        }
-                        return session
-                    },
-                    authorized({ auth, request: { nextUrl } }) {
-                        const isLoggedIn = !!auth?.user
-                        const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
-                        const isOnAdmin = nextUrl.pathname.startsWith('/admin')
-                        const isOnProtected = ['/map/add', '/pictogramas', '/profile'].some(path => nextUrl.pathname.startsWith(path))
+            const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
 
-                        const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+            if (isOnAdmin || isOnProtected) {
+                if (nextUrl.pathname === '/admin/login') {
+                    if (isLoggedIn) return Response.redirect(new URL('/admin/dashboard', baseUrl))
+                    return true
+                }
+                if (isLoggedIn) return true
 
-                        if (isOnAdmin || isOnProtected) {
-                            if (nextUrl.pathname === '/admin/login') {
-                                if (isLoggedIn) return Response.redirect(new URL('/admin/dashboard', baseUrl))
-                                return true
-                            }
-                            if (isLoggedIn) return true
+                // Redirect unauthenticated users to login page with correct callback URL
+                const callbackUrl = encodeURIComponent(`${baseUrl}${nextUrl.pathname}`)
+                const loginUrl = new URL(`${baseUrl}/api/auth/signin?callbackUrl=${callbackUrl}`)
+                return Response.redirect(loginUrl)
+            }
 
-                            // Redirect unauthenticated users to login page with correct callback URL
-                            const callbackUrl = encodeURIComponent(`${baseUrl}${nextUrl.pathname}`)
-                            const loginUrl = new URL(`${baseUrl}/api/auth/signin?callbackUrl=${callbackUrl}`)
-                            return Response.redirect(loginUrl)
-                        }
+            if (isOnDashboard) {
+                if (isLoggedIn) return true
+                // Redirect unauthenticated users to login page
+                const callbackUrl = encodeURIComponent(`${baseUrl}${nextUrl.pathname}`)
+                const loginUrl = new URL(`${baseUrl}/api/auth/signin?callbackUrl=${callbackUrl}`)
+                return Response.redirect(loginUrl)
+            }
 
-                        if (isOnDashboard) {
-                            if (isLoggedIn) return true
-                            // Redirect unauthenticated users to login page
-                            const callbackUrl = encodeURIComponent(`${baseUrl}${nextUrl.pathname}`)
-                            const loginUrl = new URL(`${baseUrl}/api/auth/signin?callbackUrl=${callbackUrl}`)
-                            return Response.redirect(loginUrl)
-                        }
-
-                        return true
-                    },
-                },
-            } satisfies NextAuthConfig
+            return true
+        },
+    },
+} satisfies NextAuthConfig
