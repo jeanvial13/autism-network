@@ -34,6 +34,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 const adminPass = process.env.ADMIN_PASS
                 const adminName = process.env.ADMIN_NAME
 
+                console.log("Login Attempt:", {
+                    receivedUsername: username,
+                    expectedUsername: adminUser,
+                    passwordMatch: password === adminPass,
+                    hasAdminUser: !!adminUser,
+                    hasAdminPass: !!adminPass
+                })
+
                 if (username === adminUser && password === adminPass) {
                     return {
                         id: 'admin',
