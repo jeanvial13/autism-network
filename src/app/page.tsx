@@ -5,11 +5,11 @@ import { HeroSection } from '@/components/home/HeroSection';
 import { GlassCard } from '@/components/ui/glass-card';
 import { GlassButton } from '@/components/ui/glass-button';
 import { NewsTicker } from '@/components/home/NewsTicker';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { auth } from '@/auth';
 
 export default async function Home() {
-  const t = useTranslations('home');
+  const t = await getTranslations('home');
   let session = null;
   try {
     session = await auth();
