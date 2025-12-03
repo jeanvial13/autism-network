@@ -36,6 +36,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 const bcrypt = require("bcryptjs");
 
                 try {
+                    console.log(`🔍 Auth: Searching for user '${username}'...`);
+
                     const user = await prisma.user.findFirst({
                         where: {
                             OR: [
@@ -45,18 +47,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         }
                     });
 
-                    if (!user || !user.passwordHash) {
-                        console.log("Auth failed: User not found or no password hash");
+                    if (!user) {
+                        console.log(`❌ Auth: User '${username}' NOT found in database.`);
+                        // Debug: List all users to see what's actually there (careful with PII in prod, but needed here)
+                        const allUsers = await prisma.user.findMany({ select: { id: true, email: true, username: true } });
+                        console.log("📊 Auth: Current users in DB:", allUsers);
+                        return null;
+                    }
+
+                    console.log(`✅ Auth: User found: ${user.id}, Email: ${user.email}, Username: ${user.username}`);
+
+                    if (!user.passwordHash) {
+                        console.log("❌ Auth: User has NO password hash.");
                         return null;
                     }
 
                     const isValid = await bcrypt.compare(password, user.passwordHash);
 
                     if (!isValid) {
-                        console.log("Auth failed: Invalid password");
+                        console.log("❌ Auth: Password invalid.");
                         return null;
                     }
 
+                    console.log("✅ Auth: Password valid. Logging in.");
                     return {
                         id: user.id,
                         name: user.name,
@@ -64,7 +77,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         role: user.role,
                     };
                 } catch (error) {
-                    console.error("Auth error:", error);
+                    console.error("🔥 Auth error:", error);
                     return null;
                 }
             },
