@@ -10,7 +10,12 @@ import { auth } from '@/auth';
 
 export default async function Home() {
   const t = useTranslations('home');
-  const session = await auth();
+  let session = null;
+  try {
+    session = await auth();
+  } catch (error) {
+    console.error("Failed to fetch session:", error);
+  }
 
   return (
     <main className="min-h-screen bg-background selection:bg-primary/20">
