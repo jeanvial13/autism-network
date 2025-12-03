@@ -17,15 +17,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     adapter: getAdapter(),
     providers: [
         Credentials({
-            // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-            // e.g. domain, username, password, 2FA token, etc.
             credentials: {
-                email: {},
-                password: {},
+                username: { label: "Username", type: "text" },
+                password: { label: "Password", type: "password" },
             },
-            authorize: async () => {
-                // Add logic here to look up the user from the credentials supplied
-                // For now, return null to fail or a dummy user for dev
+            authorize: async (credentials) => {
+                const { username, password } = credentials ?? {}
+
+                const adminUser = process.env.ADMIN_USER
+                const adminPass = process.env.ADMIN_PASS
+                const adminName = process.env.ADMIN_NAME
+
+                if (username === adminUser && password === adminPass) {
+                    return {
+                        id: 'admin',
+                        name: adminName,
+                        email: adminUser,
+                        role: 'ADMIN',
+                    }
+                }
+
                 return null
             },
         }),

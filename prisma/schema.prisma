@@ -49,6 +49,7 @@ model User {
   sessions Session[]
 }
 
+
 model ProfessionalProfile {
   id     String @id @default(uuid())
   userId String @unique
@@ -61,10 +62,71 @@ model ProfessionalProfile {
   bio                String?
   locationLat        Float?
   locationLng        Float?
+  
+  approvedAt         DateTime?
+  approvedBy         String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Application {
+  id              String   @id @default(uuid())
+  name            String
+  institution     String?
+  email           String
+  phone           String?
+  whatsapp        String?
+  country         String?
+  state           String?
+  city            String?
+  address         String?
+  googleMapsUrl   String?
+  
+  profession      String
+  cedula          String?
+  services        Json?    // Array of strings
+  
+  certifications  String[] // File paths
+  degrees         String[] // File paths
+  
+  latitude        Float?
+  longitude       Float?
+  
+  status          ApplicationStatus @default(PENDING)
+  rejectedReason  String?
+  rejectedAt      DateTime?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  ipAddress       String?
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model AdminLog {
+  id            String   @id @default(uuid())
+  adminUsername String
+  action        String
+  targetId      String?
+  details       Json?
+  timestamp     DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      String   // APPLICATION_NEW, APPLICATION_APPROVED, etc.
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+}
+
 
 model Resource {
   id               String  @id @default(uuid())

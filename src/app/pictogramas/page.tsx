@@ -102,23 +102,23 @@ export default function PictogramasPage() {
     };
 
     return (
-        <main className="min-h-screen pt-24 pb-20 px-4 md:px-6 bg-background">
-            <div className="container mx-auto max-w-6xl">
+        <main className="min-h-screen pt-20 pb-4 px-2 md:px-4 bg-background">
+            <div className="w-full h-full flex flex-col">
                 {/* Header & Controls */}
-                <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
+                <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4 sticky top-20 z-30 bg-background/80 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-sm">
                     <div>
-                        <h1 className="text-4xl font-bold text-foreground mb-2">{t('title')}</h1>
-                        <p className="text-muted-foreground">{t('subtitle')}</p>
+                        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{t('title')}</h1>
+                        <p className="text-sm text-muted-foreground hidden md:block">{t('subtitle')}</p>
                     </div>
 
-                    <div className="flex gap-4">
+                    <div className="flex gap-3">
                         <GlassButton
                             variant="primary"
                             onClick={() => document.getElementById('file-upload')?.click()}
-                            className="w-14 h-14 rounded-full p-0 flex items-center justify-center bg-gradient-to-br from-cyan-400 to-blue-600 hover:scale-110 transition-all shadow-lg hover:shadow-cyan-500/25 border-none"
+                            className="w-12 h-12 rounded-full p-0 flex items-center justify-center bg-gradient-to-br from-cyan-400 to-blue-600 hover:scale-110 transition-all shadow-lg hover:shadow-cyan-500/25 border-none"
                             title={t('upload')}
                         >
-                            <Upload className="w-6 h-6 text-white" />
+                            <Upload className="w-5 h-5 text-white" />
                         </GlassButton>
                         <input
                             id="file-upload"
@@ -132,34 +132,34 @@ export default function PictogramasPage() {
                         <GlassButton
                             variant="primary"
                             onClick={() => setShowGenerateModal(true)}
-                            className="w-14 h-14 rounded-full p-0 flex items-center justify-center bg-gradient-to-br from-violet-500 to-fuchsia-600 hover:scale-110 transition-all shadow-lg hover:shadow-purple-500/25 border-none"
+                            className="w-12 h-12 rounded-full p-0 flex items-center justify-center bg-gradient-to-br from-violet-500 to-fuchsia-600 hover:scale-110 transition-all shadow-lg hover:shadow-purple-500/25 border-none"
                             title={t('generate')}
                         >
-                            <Sparkles className="w-6 h-6 text-white" />
+                            <Sparkles className="w-5 h-5 text-white" />
                         </GlassButton>
 
                         <GlassButton
                             variant="primary"
                             onClick={() => setIsDeleteMode(!isDeleteMode)}
-                            className={`w-14 h-14 rounded-full p-0 flex items-center justify-center transition-all shadow-lg border-none hover:scale-110 ${isDeleteMode
-                                    ? "bg-gradient-to-br from-red-500 to-orange-500 hover:shadow-red-500/25 ring-4 ring-red-500/30"
-                                    : "bg-gradient-to-br from-slate-700 to-slate-900 hover:shadow-slate-500/25"
+                            className={`w-12 h-12 rounded-full p-0 flex items-center justify-center transition-all shadow-lg border-none hover:scale-110 ${isDeleteMode
+                                ? "bg-gradient-to-br from-red-500 to-orange-500 hover:shadow-red-500/25 ring-4 ring-red-500/30"
+                                : "bg-gradient-to-br from-slate-700 to-slate-900 hover:shadow-slate-500/25"
                                 }`}
                             title={isDeleteMode ? t('done') : t('delete')}
                         >
-                            {isDeleteMode ? <X className="w-6 h-6 text-white" /> : <Trash2 className="w-6 h-6 text-white" />}
+                            {isDeleteMode ? <X className="w-5 h-5 text-white" /> : <Trash2 className="w-5 h-5 text-white" />}
                         </GlassButton>
                     </div>
                 </div>
 
                 {/* Grid */}
                 {pictograms.length === 0 ? (
-                    <div className="text-center py-20 text-muted-foreground">
-                        <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                        <p>{t('noPictograms')}</p>
+                    <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground min-h-[50vh]">
+                        <ImageIcon className="w-20 h-20 mb-4 opacity-20" />
+                        <p className="text-lg">{t('noPictograms')}</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-4 pb-20">
                         <AnimatePresence>
                             {pictograms.map((pic) => (
                                 <motion.div
@@ -172,8 +172,8 @@ export default function PictogramasPage() {
                                     onClick={() => !isDeleteMode && speak(pic.name)}
                                     className={`cursor-pointer ${isDeleteMode ? 'cursor-default' : ''}`}
                                 >
-                                    <GlassCard className={`group relative aspect-square p-4 flex flex-col items-center justify-center overflow-hidden transition-all duration-300 ${!isDeleteMode && 'hover:scale-105 hover:shadow-xl active:scale-95'}`}>
-                                        <div className="relative w-full h-full mb-2">
+                                    <GlassCard className={`group relative aspect-square p-2 flex flex-col items-center justify-center overflow-hidden transition-all duration-300 ${!isDeleteMode && 'hover:scale-105 hover:shadow-xl active:scale-95'}`}>
+                                        <div className="relative w-full h-full mb-1">
                                             <NextImage
                                                 src={pic.url}
                                                 alt={pic.name}
@@ -182,7 +182,7 @@ export default function PictogramasPage() {
                                                 unoptimized
                                             />
                                         </div>
-                                        <p className="text-center font-bold text-lg text-foreground capitalize truncate w-full">
+                                        <p className="text-center font-bold text-sm md:text-base text-foreground capitalize truncate w-full px-1">
                                             {pic.name}
                                         </p>
 
@@ -194,9 +194,9 @@ export default function PictogramasPage() {
                                                         e.stopPropagation();
                                                         handleDelete(pic.id);
                                                     }}
-                                                    className="p-4 rounded-full bg-destructive text-white hover:scale-110 transition-transform shadow-lg"
+                                                    className="p-3 rounded-full bg-destructive text-white hover:scale-110 transition-transform shadow-lg"
                                                 >
-                                                    <Trash2 className="w-6 h-6" />
+                                                    <Trash2 className="w-5 h-5" />
                                                 </button>
                                             </div>
                                         )}
@@ -210,21 +210,21 @@ export default function PictogramasPage() {
                 {/* Generate Modal */}
                 <AnimatePresence>
                     {showGenerateModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                             <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.9, y: 20 }}
                                 className="w-full max-w-md"
                             >
-                                <GlassCard className="p-6">
-                                    <h2 className="text-2xl font-bold mb-4">{t('generate')}</h2>
+                                <GlassCard className="p-6 border-white/20 shadow-2xl">
+                                    <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent">{t('generate')}</h2>
                                     <input
                                         type="text"
                                         value={prompt}
                                         onChange={(e) => setPrompt(e.target.value)}
                                         placeholder={t('promptPlaceholder')}
-                                        className="w-full p-4 rounded-xl bg-secondary/20 border border-border mb-6 focus:outline-none focus:ring-2 focus:ring-primary text-lg"
+                                        className="w-full p-4 rounded-xl bg-white/10 border border-white/20 mb-6 focus:outline-none focus:ring-2 focus:ring-violet-500 text-lg placeholder:text-white/40"
                                         autoFocus
                                     />
                                     <div className="flex justify-end gap-3">
@@ -235,6 +235,7 @@ export default function PictogramasPage() {
                                             variant="primary"
                                             onClick={handleGenerate}
                                             disabled={isGenerating || !prompt.trim()}
+                                            className="bg-gradient-to-r from-violet-600 to-fuchsia-600"
                                         >
                                             {isGenerating ? (
                                                 <>
