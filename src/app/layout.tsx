@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
+import Providers from "@/components/providers/SessionProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,10 +27,12 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={`${inter.className} antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Navigation />
-          {children}
-          <Footer />
-          <ChatInterface />
+          <Providers>
+            <Navigation />
+            {children}
+            <Footer />
+            <ChatInterface />
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

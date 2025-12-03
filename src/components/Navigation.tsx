@@ -1,16 +1,27 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, BookOpen, Brain, Menu, X } from 'lucide-react';
+import { MapPin, BookOpen, Brain, Menu, X, LogOut, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { GlassButton } from '@/components/ui/glass-button';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
+import { useSession, signOut } from 'next-auth/react';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function Navigation() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const t = useTranslations('navigation');
+    const { data: session } = useSession();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -84,16 +95,61 @@ export default function Navigation() {
                 </div>
 
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
-                    <Link href="/auth/signin">
-                        <GlassButton variant="ghost" size="sm">
-                            {t('signIn')}
-                        </GlassButton>
-                    </Link>
-                    <Link href="/auth/signin">
-                        <GlassButton variant="primary" size="sm">
-                            {t('getStarted')}
-                        </GlassButton>
-                    </Link>
+                    {session ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <GlassButton variant="ghost" className="relative h-10 w-10 rounded-full p-0 overflow-hidden border border-white/20">
+                                    <Avatar className="h-full w-full">
+                                        <AvatarImage src={session.user?.image || ''} alt={session.user?.name || ''} />
+                                        <AvatarFallback>{session.user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                                    </Avatar>
+                                </GlassButton>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56" align="end" forceMount>
+                                <DropdownMenuLabel className="font-normal">
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium leading-none">{session.user?.name}</p>
+                                        <p className="text-xs leading-none text-muted-foreground">
+                                            {session.user?.email}
+                                        </p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link href="/profile">
+                                        <User className="mr-2 h-4 w-4" />
+                                        <span>Perfil</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                {session.user?.email === process.env.NEXT_PUBLIC_ADMIN_USER && ( // Simple check, ideally use role
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/admin/dashboard">
+                                            <Brain className="mr-2 h-4 w-4" />
+                                            <span>Admin Dashboard</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                )}
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => signOut()}>
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Cerrar Sesión</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (
+                        <>
+                            <Link href="/auth/signin">
+                                <GlassButton variant="ghost" size="sm">
+                                    {t('signIn')}
+                                </GlassButton>
+                            </Link>
+                            <Link href="/auth/signin">
+                                <GlassButton variant="primary" size="sm">
+                                    {t('getStarted')}
+                                </GlassButton>
+                            </Link>
+                        </>
+                    )}
                 </div>
             </nav>
 
@@ -131,16 +187,37 @@ export default function Navigation() {
                                 {t('pictograms')}
                             </Link>
                             <div className="mt-6 space-y-2 pt-4 border-t border-white/10">
-                                <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
-                                    <GlassButton variant="secondary" className="w-full justify-center">
-                                        {t('signIn')}
-                                    </GlassButton>
-                                </Link>
-                                <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
-                                    <GlassButton variant="primary" className="w-full justify-center">
-                                        {t('getStarted')}
-                                    </GlassButton>
-                                </Link>
+                                {session ? (
+                                    <>
+                                        <div className="px-3 py-2">
+                                            <p className="text-sm font-medium">{session.user?.name}</p>
+                                            <p className="text-xs text-muted-foreground">{session.user?.email}</p>
+                                        </div>
+                                        <Link href="/profile" onClick={() => setMobileMenuOpen(false)}>
+                                            <GlassButton variant="ghost" className="w-full justify-start">
+                                                <User className="mr-2 h-4 w-4" />
+                                                Perfil
+                                            </GlassButton>
+                                        </Link>
+                                        <GlassButton variant="secondary" className="w-full justify-start text-destructive hover:text-destructive" onClick={() => signOut()}>
+                                            <LogOut className="mr-2 h-4 w-4" />
+                                            Cerrar Sesión
+                                        </GlassButton>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
+                                            <GlassButton variant="secondary" className="w-full justify-center">
+                                                {t('signIn')}
+                                            </GlassButton>
+                                        </Link>
+                                        <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
+                                            <GlassButton variant="primary" className="w-full justify-center">
+                                                {t('getStarted')}
+                                            </GlassButton>
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
