@@ -8,12 +8,18 @@ const getAdapter = () => {
     if (process.env.SKIP_DATABASE_CONNECTION === 'true') {
         return undefined
     }
-    const { prisma } = require("@/lib/prisma")
-    return PrismaAdapter(prisma)
+    try {
+        const { prisma } = require("@/lib/prisma")
+        return PrismaAdapter(prisma)
+    } catch (e) {
+        console.warn("Failed to initialize Prisma Adapter:", e)
+        return undefined
+    }
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig,
+    trustHost: true,
     adapter: getAdapter(),
     providers: [
         Credentials({
