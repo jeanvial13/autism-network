@@ -22,6 +22,10 @@ npx prisma db push --accept-data-loss
 
 echo "✅ Database schema synced!"
 
+# Seed the database (Create Admin User)
+echo "🌱 Seeding database..."
+npx prisma db seed
+
 # Start the application
 echo "🌐 Starting Next.js server..."
 exec node server.js
