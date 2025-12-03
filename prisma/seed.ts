@@ -117,9 +117,15 @@ async function main() {
     ];
 
     for (const prof of professionals) {
-        const user = await prisma.user.create({
-            data: {
-                id: prof.id, // Use provided ID if available (will auto-generate if undefined)
+        const user = await prisma.user.upsert({
+            where: { id: prof.id || 'undefined' }, // Handle undefined ID case safely, though our data has IDs
+            update: {
+                name: prof.name,
+                email: prof.email,
+                role: 'PROFESSIONAL',
+            },
+            create: {
+                id: prof.id,
                 name: prof.name,
                 email: prof.email,
                 role: 'PROFESSIONAL',
