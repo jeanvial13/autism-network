@@ -3,6 +3,7 @@ import { GlassCard } from '@/components/ui/glass-card';
 import { Badge } from '@/components/ui/badge';
 import { GlassButton } from '@/components/ui/glass-button';
 import { GlassPill } from '@/components/ui/glass-pill';
+import { GlassSelect } from '@/components/ui/glass-select';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
@@ -69,25 +70,24 @@ export default async function ArticlesPage() {
                         />
                     </div>
 
-                    <div className="flex flex-wrap gap-3 items-center">
-                        <div className="flex items-center gap-2 mr-2">
-                            <Filter className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm font-medium">{t('filters.topic')}</span>
-                        </div>
-                        {['diagnosis', 'intervention', 'education', 'technology', 'inclusion'].map((topic) => (
-                            <GlassPill key={topic} active={false} className="opacity-50 cursor-not-allowed">
-                                {topic}
-                            </GlassPill>
-                        ))}
-                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <GlassSelect label={t('filters.topic')} defaultValue="">
+                            <option value="" disabled>{t('filters.topic')}</option>
+                            {['diagnosis', 'intervention', 'education', 'technology', 'inclusion'].map((topic) => (
+                                <option key={topic} value={topic}>
+                                    {topic}
+                                </option>
+                            ))}
+                        </GlassSelect>
 
-                    <div className="flex flex-wrap gap-3 items-center">
-                        <span className="text-sm font-medium mr-2">{t('filters.audience')}</span>
-                        {['parents', 'professionals', 'autistic_adults', 'educators'].map((audience) => (
-                            <GlassPill key={audience} active={false} className="opacity-50 cursor-not-allowed">
-                                {audience.replace('_', ' ')}
-                            </GlassPill>
-                        ))}
+                        <GlassSelect label={t('filters.audience')} defaultValue="">
+                            <option value="" disabled>{t('filters.audience')}</option>
+                            {['parents', 'professionals', 'autistic_adults', 'educators'].map((audience) => (
+                                <option key={audience} value={audience}>
+                                    {audience.replace('_', ' ')}
+                                </option>
+                            ))}
+                        </GlassSelect>
                     </div>
                 </div>
 

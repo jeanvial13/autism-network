@@ -3,6 +3,7 @@ import { GlassCard } from '@/components/ui/glass-card';
 import { Badge } from '@/components/ui/badge';
 import { GlassButton } from '@/components/ui/glass-button';
 import { GlassPill } from '@/components/ui/glass-pill';
+import { GlassSelect } from '@/components/ui/glass-select';
 import { Input } from '@/components/ui/input';
 import { prisma } from '@/lib/prisma';
 import { getTranslations } from 'next-intl/server';
@@ -11,7 +12,7 @@ export default async function ResourcesPage() {
     const t = await getTranslations('resources');
 
     // Fetch resources from database
-    let resources = [];
+    let resources: any[] = [];
 
     try {
         if (prisma) {
@@ -69,12 +70,9 @@ export default async function ResourcesPage() {
                 </div>
 
                 {/* Filters */}
-                <div className="mb-8 space-y-6">
-                    <div className="flex flex-wrap gap-3 items-center">
-                        <div className="flex items-center gap-2 mr-2">
-                            <Filter className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm font-medium">{t('filters.topic')}</span>
-                        </div>
+                <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <GlassSelect label={t('filters.topic')} defaultValue="">
+                        <option value="" disabled>{t('filters.topic')}</option>
                         {[
                             'communication',
                             'social_skills',
@@ -83,29 +81,29 @@ export default async function ResourcesPage() {
                             'behavior_support',
                             'daily_living',
                         ].map((topic) => (
-                            <GlassPill key={topic} active={false} className="opacity-50 cursor-not-allowed">
+                            <option key={topic} value={topic}>
                                 {topic.replace('_', ' ')}
-                            </GlassPill>
+                            </option>
                         ))}
-                    </div>
+                    </GlassSelect>
 
-                    <div className="flex flex-wrap gap-3 items-center">
-                        <span className="text-sm font-medium mr-2">{t('filters.age')}</span>
+                    <GlassSelect label={t('filters.age')} defaultValue="">
+                        <option value="" disabled>{t('filters.age')}</option>
                         {['early_childhood', 'elementary', 'teens', 'adults'].map((age) => (
-                            <GlassPill key={age} active={false} className="opacity-50 cursor-not-allowed">
+                            <option key={age} value={age}>
                                 {age.replace('_', ' ')}
-                            </GlassPill>
+                            </option>
                         ))}
-                    </div>
+                    </GlassSelect>
 
-                    <div className="flex flex-wrap gap-3 items-center">
-                        <span className="text-sm font-medium mr-2">{t('filters.format')}</span>
+                    <GlassSelect label={t('filters.format')} defaultValue="">
+                        <option value="" disabled>{t('filters.format')}</option>
                         {['worksheet', 'visual_schedule', 'social_story', 'coloring', 'guide'].map((format) => (
-                            <GlassPill key={format} active={false} className="opacity-50 cursor-not-allowed">
+                            <option key={format} value={format}>
                                 {format.replace('_', ' ')}
-                            </GlassPill>
+                            </option>
                         ))}
-                    </div>
+                    </GlassSelect>
                 </div>
 
                 {/* Resources Grid */}
