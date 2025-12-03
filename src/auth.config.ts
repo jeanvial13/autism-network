@@ -11,37 +11,50 @@ export const authConfig = {
                 session.user.id = token.sub
             }
             return session
-        },
-        authorized({ auth, request: { nextUrl } }) {
-            const isLoggedIn = !!auth?.user
-            const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
-            const isOnAdmin = nextUrl.pathname.startsWith('/admin')
-            const isOnProtected = ['/map/add', '/pictogramas', '/profile'].some(path => nextUrl.pathname.startsWith(path))
+            import type { NextAuthConfig } from "next-auth"
 
-            // Helper to get absolute URL if NEXTAUTH_URL is set, otherwise use relative
-            const getRedirectUrl = (path: string) => {
-                const baseUrl = process.env.NEXTAUTH_URL
-                if (baseUrl) {
-                    return `${baseUrl}${path}`
-                }
-                return new URL(path, nextUrl)
-            }
+            export const authConfig = {
+                providers: [],
+                session: {
+                    strategy: "jwt",
+                },
+                callbacks: {
+                    async session({ session, token }) {
+                        if (token.sub && session.user) {
+                            session.user.id = token.sub
+                        }
+                        return session
+                    },
+                    authorized({ auth, request: { nextUrl } }) {
+                        const isLoggedIn = !!auth?.user
+                        const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
+                        const isOnAdmin = nextUrl.pathname.startsWith('/admin')
+                        const isOnProtected = ['/map/add', '/pictogramas', '/profile'].some(path => nextUrl.pathname.startsWith(path))
 
-            if (isOnAdmin || isOnProtected) {
-                if (nextUrl.pathname === '/admin/login') {
-                    if (isLoggedIn) return Response.redirect(getRedirectUrl('/admin/dashboard'))
-                    return true
-                }
-                if (isLoggedIn) return true
-                return false // Redirect unauthenticated users to login page
-            }
+                        const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
 
-            if (isOnDashboard) {
-                if (isLoggedIn) return true
-                return false // Redirect unauthenticated users to login page
-            }
+                        if (isOnAdmin || isOnProtected) {
+                            if (nextUrl.pathname === '/admin/login') {
+                                if (isLoggedIn) return Response.redirect(new URL('/admin/dashboard', baseUrl))
+                                return true
+                            }
+                            if (isLoggedIn) return true
 
-            return true
-        },
-    },
-} satisfies NextAuthConfig
+                            // Redirect unauthenticated users to login page with correct callback URL
+                            const callbackUrl = encodeURIComponent(`${baseUrl}${nextUrl.pathname}`)
+                            const loginUrl = new URL(`${baseUrl}/api/auth/signin?callbackUrl=${callbackUrl}`)
+                            return Response.redirect(loginUrl)
+                        }
+
+                        if (isOnDashboard) {
+                            if (isLoggedIn) return true
+                            // Redirect unauthenticated users to login page
+                            const callbackUrl = encodeURIComponent(`${baseUrl}${nextUrl.pathname}`)
+                            const loginUrl = new URL(`${baseUrl}/api/auth/signin?callbackUrl=${callbackUrl}`)
+                            return Response.redirect(loginUrl)
+                        }
+
+                        return true
+                    },
+                },
+            } satisfies NextAuthConfig
