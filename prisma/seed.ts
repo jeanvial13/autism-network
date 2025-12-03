@@ -8,9 +8,9 @@ async function main() {
     // Clear existing data - EXCEPT users to preserve admin
     console.log('🧹 Clearing existing data (preserving users)...');
     await prisma.articleTranslation.deleteMany();
-    await prisma.article.deleteMany();
-    await prisma.educationalResource.deleteMany();
-    await prisma.professionalProfile.deleteMany();
+    // await prisma.article.deleteMany(); // Don't delete articles to test idempotency
+    // await prisma.educationalResource.deleteMany(); // Don't delete resources to test idempotency
+    // await prisma.professionalProfile.deleteMany(); // Don't delete profiles to test idempotency
     // await prisma.user.deleteMany(); // DO NOT DELETE USERS
 
     // ========================================
@@ -46,19 +46,7 @@ async function main() {
             });
             console.log('✅ Admin user created successfully');
         } else {
-            console.log('🔄 Admin user exists, updating password...');
-            const bcrypt = require('bcryptjs');
-            const hashedPassword = await bcrypt.hash(adminPass, 10);
-
-            await prisma.user.update({
-                where: { id: existingAdmin.id },
-                data: {
-                    passwordHash: hashedPassword,
-                    // Ensure username is set if it was missing
-                    username: adminUser,
-                }
-            });
-            console.log('✅ Admin password updated successfully');
+            console.log('ℹ️ Admin user already exists. Skipping creation.');
         }
     }
 
@@ -117,38 +105,53 @@ async function main() {
     ];
 
     for (const prof of professionals) {
-        const user = await prisma.user.upsert({
-            where: { id: prof.id || 'undefined' }, // Handle undefined ID case safely, though our data has IDs
-            update: {
-                name: prof.name,
-                email: prof.email,
-                role: 'PROFESSIONAL',
-            },
-            create: {
-                id: prof.id,
-                name: prof.name,
-                email: prof.email,
-                role: 'PROFESSIONAL',
-            },
+        // 1. Check if user exists
+        let user = await prisma.user.findUnique({
+            where: { email: prof.email }
         });
 
-        const isVerified = 'verified' in prof ? (prof as { verified: boolean }).verified : false;
+        if (!user) {
+            // Create user if not exists
+            console.log(`Creating user for ${prof.email}...`);
+            user = await prisma.user.create({
+                data: {
+                    id: prof.id, // Will be undefined for dummy data, which is fine (Prisma generates UUID)
+                    name: prof.name,
+                    email: prof.email,
+                    role: 'PROFESSIONAL',
+                },
+            });
+        } else {
+            console.log(`User ${prof.email} already exists. Using existing user.`);
+        }
 
-        await prisma.professionalProfile.create({
-            data: {
-                userId: user.id,
-                bio: `Especialista en ${prof.services[0]} con experiencia en apoyo basado en evidencia.`,
-                specialties: prof.services,
-                licenseNumber: `LIC${Math.floor(Math.random() * 100000)}`,
-                licenseCountry: prof.country,
-                locationLat: prof.lat,
-                locationLng: prof.lng,
-                verificationStatus: isVerified ? 'VERIFIED' : 'VERIFIED',
-            },
+        // 2. Check if profile exists
+        const existingProfile = await prisma.professionalProfile.findUnique({
+            where: { userId: user.id }
         });
+
+        if (!existingProfile) {
+            console.log(`Creating profile for ${prof.email}...`);
+            const isVerified = 'verified' in prof ? (prof as { verified: boolean }).verified : false;
+
+            await prisma.professionalProfile.create({
+                data: {
+                    userId: user.id,
+                    bio: `Especialista en ${prof.services[0]} con experiencia en apoyo basado en evidencia.`,
+                    specialties: prof.services,
+                    licenseNumber: `LIC${Math.floor(Math.random() * 100000)}`,
+                    licenseCountry: prof.country,
+                    locationLat: prof.lat,
+                    locationLng: prof.lng,
+                    verificationStatus: isVerified ? 'VERIFIED' : 'VERIFIED',
+                },
+            });
+        } else {
+            console.log(`Profile for ${prof.email} already exists. Skipping.`);
+        }
     }
 
-    console.log(`✅ Created ${professionals.length} professional profiles`);
+    console.log(`✅ Professional profiles processing completed`);
 
     // ========================================
     // 2. CREATE EDUCATIONAL RESOURCES
@@ -257,7 +260,7 @@ async function main() {
         },
         {
             title: 'Self-Advocacy Scripts',
-            description: 'Practice scripts for autistic individuals to advocate for their needs in various settings.',
+            description: 'A practice scripts for autistic individuals to advocate for their needs in various settings.',
             suggestedUses: ['Role-play and practice before real-life situations.'],
             url: 'https://example.com/resources/self-advocacy',
             fileType: 'PDF',
@@ -324,37 +327,40 @@ async function main() {
     ];
 
     for (const resource of resources) {
-        await prisma.$executeRaw`
-            INSERT INTO "EducationalResource" (
-                id, title, description, "suggestedUses", url, "fileType", 
-                "isDownloadable", "requiresAccount", "targetAge", audience, 
-                topics, format, language, "sourceName", "sourceUrl", 
-                "credibilityScore", status, "lastCheckedDate", embedding
-            ) VALUES (
-                gen_random_uuid(),
-                ${resource.title},
-                ${resource.description},
-                ${resource.suggestedUses}::text[],
-                ${resource.url},
-                ${resource.fileType},
-                true,
-                false,
-                ${resource.targetAge}::text[],
-                ${resource.audience}::text[],
-                ${resource.topics}::text[],
-                ${resource.format}::text[],
-                'en',
-                'Autism Resource Hub',
-                ${resource.url},
-                85,
-                'APPROVED',
-                NOW(),
-                array_fill(0, ARRAY[1536])::vector
-            )
-        `;
+        // Check if resource exists by URL
+        const existingResource = await prisma.educationalResource.findFirst({
+            where: { url: resource.url },
+            select: { id: true }
+        });
+
+        if (!existingResource) {
+            console.log(`Creating resource: ${resource.title}`);
+            await prisma.educationalResource.create({
+                data: {
+                    title: resource.title,
+                    description: resource.description,
+                    suggestedUses: resource.suggestedUses,
+                    url: resource.url,
+                    fileType: resource.fileType,
+                    isDownloadable: true,
+                    requiresAccount: false,
+                    targetAge: resource.targetAge,
+                    audience: resource.audience,
+                    topics: resource.topics,
+                    format: resource.format,
+                    language: 'en',
+                    sourceName: 'Autism Resource Hub',
+                    sourceUrl: resource.url,
+                    credibilityScore: 85,
+                    status: 'ACTIVE',
+                }
+            });
+        } else {
+            console.log(`Resource ${resource.title} already exists. Skipping.`);
+        }
     }
 
-    console.log(`✅ Created ${resources.length} educational resources`);
+    console.log(`✅ Educational resources processing completed`);
 
     // ========================================
     // 3. CREATE ARTICLES
@@ -445,40 +451,42 @@ async function main() {
     ];
 
     for (const article of articles) {
-        await prisma.$executeRaw`
-            INSERT INTO "Article" (
-                id, slug, title, "tldrSummary", "backgroundText", "findingsText",
-                "whyItMatters", "practicalTips", "technicalSection", tags, topics,
-                audience, "ageGroups", "evidenceType", "sourceUrls", "sourceName",
-                "originalPublishedDate", "credibilityScore", status, "aiGeneratedDate",
-                embedding
-            ) VALUES (
-                gen_random_uuid(),
-                ${article.slug},
-                ${article.title},
-                ${article.tldr},
-                ${article.background},
-                ${article.findings},
-                ${article.why},
-                ${article.tips},
-                ${article.technical},
-                ARRAY['autism', 'research']::text[],
-                ${article.topics}::text[],
-                ${article.audience}::text[],
-                ${article.ageGroups}::text[],
-                ${article.evidenceType},
-                ARRAY['https://example.com/research']::text[],
-                ${article.source},
-                ${article.date},
-                92,
-                'APPROVED',
-                NOW(),
-                array_fill(0, ARRAY[1536])::vector
-            )
-        `;
+        // Check if article exists by slug
+        const existingArticle = await prisma.article.findUnique({
+            where: { slug: article.slug },
+            select: { id: true }
+        });
+
+        if (!existingArticle) {
+            console.log(`Creating article: ${article.title}`);
+            await prisma.article.create({
+                data: {
+                    slug: article.slug,
+                    title: article.title,
+                    tldrSummary: article.tldr,
+                    backgroundText: article.background,
+                    findingsText: article.findings,
+                    whyItMatters: article.why,
+                    practicalTips: article.tips,
+                    technicalSection: article.technical,
+                    tags: ['autism', 'research'],
+                    topics: article.topics,
+                    audience: article.audience,
+                    ageGroups: article.ageGroups,
+                    evidenceType: article.evidenceType,
+                    sourceUrls: ['https://example.com/research'],
+                    sourceName: article.source,
+                    originalPublishedDate: article.date,
+                    credibilityScore: 92,
+                    status: 'APPROVED',
+                }
+            });
+        } else {
+            console.log(`Article ${article.slug} already exists. Skipping.`);
+        }
     }
 
-    console.log(`✅ Created ${articles.length} articles`);
+    console.log(`✅ Articles processing completed`);
 
     console.log('🎉 Database seed completed successfully!');
 }
