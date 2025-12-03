@@ -8,7 +8,6 @@ import { Brain, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "sonner"; // Assuming sonner is used, or I'll use simple error state
 
 export default function SignInPage() {
     const router = useRouter();

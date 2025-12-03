@@ -29,7 +29,7 @@ export const authConfig = {
 
                 // Redirect unauthenticated users to login page with correct callback URL
                 const callbackUrl = encodeURIComponent(`${baseUrl}${nextUrl.pathname}`)
-                const loginUrl = new URL(`${baseUrl}/auth/signin?callbackUrl=${callbackUrl}`)
+                const loginUrl = new URL(`${baseUrl}/login?callbackUrl=${callbackUrl}`)
                 return Response.redirect(loginUrl)
             }
 
@@ -37,7 +37,7 @@ export const authConfig = {
                 if (isLoggedIn) return true
                 // Redirect unauthenticated users to login page
                 const callbackUrl = encodeURIComponent(`${baseUrl}${nextUrl.pathname}`)
-                const loginUrl = new URL(`${baseUrl}/auth/signin?callbackUrl=${callbackUrl}`)
+                const loginUrl = new URL(`${baseUrl}/login?callbackUrl=${callbackUrl}`)
                 return Response.redirect(loginUrl)
             }
 
@@ -45,6 +45,6 @@ export const authConfig = {
         },
     },
     pages: {
-        signIn: '/auth/signin',
+        signIn: '/login',
     },
 } satisfies NextAuthConfig
