@@ -25,20 +25,31 @@ export default function SignInPage() {
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
 
+        // Sanitize callbackUrl to prevent 0.0.0.0 issues
+        let sanitizedCallbackUrl = callbackUrl;
+        if (sanitizedCallbackUrl.includes("0.0.0.0")) {
+            try {
+                const urlObj = new URL(sanitizedCallbackUrl);
+                sanitizedCallbackUrl = urlObj.pathname + urlObj.search;
+            } catch {
+                sanitizedCallbackUrl = "/";
+            }
+        }
+
         try {
             const result = await signIn("credentials", {
                 username,
                 password,
                 redirect: false,
-                callbackUrl,
+                callbackUrl: sanitizedCallbackUrl,
             });
 
             if (result?.error) {
                 setError("Credenciales inválidas. Por favor intenta de nuevo.");
                 setIsLoading(false);
             } else {
-                router.push(callbackUrl);
-                router.refresh();
+                // Force a hard navigation to ensure session is picked up and we don't hang
+                window.location.href = sanitizedCallbackUrl;
             }
         } catch (error) {
             setError("Ocurrió un error. Por favor intenta de nuevo.");
