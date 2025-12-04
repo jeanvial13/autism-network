@@ -83,14 +83,19 @@ export default function MapClient({ providers }: MapClientProps) {
             if (a.verified && !b.verified) return -1;
             if (!a.verified && b.verified) return 1;
 
-            // 2. Nearest First (if location available)
+            // 2. Highest Rating First (if available)
+            const ratingA = (a as any).rating || 0;
+            const ratingB = (b as any).rating || 0;
+            if (ratingA !== ratingB) return ratingB - ratingA;
+
+            // 3. Nearest First (if location available)
             if (userLocation.latitude && userLocation.longitude) {
                 const distA = calculateDistance(userLocation.latitude, userLocation.longitude, a.lat, a.lng);
                 const distB = calculateDistance(userLocation.latitude, userLocation.longitude, b.lat, b.lng);
                 return distA - distB;
             }
 
-            // 3. Alphabetical Fallback
+            // 4. Alphabetical Fallback
             return a.name.localeCompare(b.name);
         });
 

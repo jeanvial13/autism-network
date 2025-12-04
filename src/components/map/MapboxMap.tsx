@@ -76,7 +76,7 @@ export default function MapboxMap({
         return createGeoJSONCircle([userLocation.longitude, userLocation.latitude], distance);
     }, [userLocation, distance]);
 
-    // Auto-Zoom to fit providers
+    // Auto-Zoom to fit providers (Smart Bounds)
     useEffect(() => {
         if (providers.length > 0 && mapRef.current) {
             const bounds = new mapboxgl.LngLatBounds();
@@ -90,21 +90,26 @@ export default function MapboxMap({
                 bounds.extend([p.lng, p.lat]);
             });
 
+            // "Genius" fit: Add generous padding and smooth animation
             mapRef.current.fitBounds(bounds, {
-                padding: 100,
+                padding: { top: 100, bottom: 100, left: 100, right: 350 }, // Extra right padding for sidebar
                 maxZoom: 14,
-                duration: 2000
+                duration: 2500, // Slower, more cinematic
+                essential: true
             });
         }
     }, [providers, userLocation]);
 
-    // Fly to selected provider
+    // Cinematic FlyTo selected provider
     useEffect(() => {
         if (selectedProvider && mapRef.current) {
             mapRef.current.flyTo({
                 center: [selectedProvider.lng, selectedProvider.lat],
-                zoom: 15,
-                duration: 2000,
+                zoom: 16,
+                pitch: 45, // Angled view for "3D" feel
+                bearing: 0,
+                duration: 3000,
+                curve: 1.5, // More pronounced curve
                 essential: true
             });
         }
