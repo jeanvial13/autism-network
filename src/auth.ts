@@ -21,6 +21,36 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig,
     trustHost: true,
     adapter: getAdapter(),
+    callbacks: {
+        ...authConfig.callbacks,
+        async redirect({ url, baseUrl }) {
+            // If the url is relative, return it as is (browser handles the host)
+            if (url.startsWith("/")) return url;
+
+            // If the url is absolute and valid (not 0.0.0.0), return it
+            if (url.startsWith("http") && !url.includes("0.0.0.0")) {
+                return url;
+            }
+
+            // If baseUrl contains 0.0.0.0, we can't trust it for absolute URLs.
+            // But if the url is relative, we should just return the relative part.
+            if (baseUrl.includes("0.0.0.0")) {
+                if (url.startsWith("/")) return url;
+                // If url is absolute but points to 0.0.0.0, try to make it relative
+                try {
+                    const urlObj = new URL(url);
+                    return urlObj.pathname + urlObj.search;
+                } catch {
+                    return "/";
+                }
+            }
+
+            // Default behavior: allow if it starts with baseUrl
+            if (url.startsWith(baseUrl)) return url;
+
+            return baseUrl;
+        }
+    },
     providers: [
         Credentials({
             credentials: {
