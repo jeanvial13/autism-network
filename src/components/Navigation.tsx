@@ -130,7 +130,7 @@ export default function Navigation() {
                                     </DropdownMenuItem>
                                 )}
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => signOut()}>
+                                <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
                                     <LogOut className="mr-2 h-4 w-4" />
                                     <span>Cerrar Sesión</span>
                                 </DropdownMenuItem>
@@ -186,7 +186,7 @@ export default function Navigation() {
                                                 Perfil
                                             </GlassButton>
                                         </Link>
-                                        <GlassButton variant="secondary" className="w-full justify-start text-destructive hover:text-destructive" onClick={() => signOut()}>
+                                        <GlassButton variant="secondary" className="w-full justify-start text-destructive hover:text-destructive" onClick={() => signOut({ callbackUrl: '/' })}>
                                             <LogOut className="mr-2 h-4 w-4" />
                                             Cerrar Sesión
                                         </GlassButton>

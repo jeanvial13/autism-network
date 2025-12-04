@@ -28,7 +28,11 @@ export const authConfig = {
                 // Handle comma-separated values (take the first one)
                 const host = forwardedHost.split(',')[0].trim()
                 const proto = forwardedProto ? forwardedProto.split(',')[0].trim() : 'https'
-                baseUrl = `${proto}://${host}`
+
+                // Ignore 0.0.0.0 as it's not a valid browser address
+                if (host !== '0.0.0.0') {
+                    baseUrl = `${proto}://${host}`
+                }
             }
 
             if (isOnAdmin || isOnProtected) {
