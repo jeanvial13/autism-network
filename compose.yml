@@ -16,7 +16,7 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/autism_network
       - REDIS_URL=redis://redis:6379
       - MEILISEARCH_HOST=http://meilisearch:7700
-      - NEXTAUTH_URL=http://localhost:3000
+      # - NEXTAUTH_URL=http://localhost:3000
       - NEXTAUTH_SECRET=changeme_in_production
       - AUTH_TRUST_HOST=true
       - OPENAI_API_KEY=${OPENAI_API_KEY}
