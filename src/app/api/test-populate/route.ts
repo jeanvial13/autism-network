@@ -21,45 +21,140 @@ export async function GET(request: NextRequest) {
 
     console.log('[TEST] Starting test data population...');
 
+    try {
+        // ========================================
+        // 1. CREATE PROFESSIONAL PROFILES
+        // ========================================
+        console.log('[TEST] Creating professional profiles...');
 
-    // ========================================
-    // 2. CREATE EDUCATIONAL RESOURCES  
-    // ========================================
-    console.log('[TEST] Creating educational resources...');
+        const professionals = [
+            {
+                name: 'Dr. Alejandro García',
+                email: 'alejandro.g@example.com',
+                specialty: 'Terapia ABA',
+                city: 'Ciudad de México',
+                lat: 19.4326,
+                lng: -99.1332,
+                country: 'México',
+                rating: 4.9,
+                experienceYears: 15,
+                patientCount: 1200,
+                phoneNumber: '+52 55 1234 5678',
+                contactEmail: 'contacto@dralejandro.com'
+            },
+            {
+                name: 'Dra. María Fernández',
+                email: 'maria.f@example.com',
+                specialty: 'Terapia de Habla',
+                city: 'Guadalajara',
+                lat: 20.6597,
+                lng: -103.3496,
+                country: 'México',
+                rating: 4.8,
+                experienceYears: 12,
+                patientCount: 850,
+                phoneNumber: '+52 33 9876 5432',
+                contactEmail: 'citas@dramaria.com'
+            },
+            {
+                name: 'Dr. Carlos López',
+                email: 'carlos.l@example.com',
+                specialty: 'Terapia Ocupacional',
+                city: 'Monterrey',
+                lat: 25.6866,
+                lng: -100.3161,
+                country: 'México',
+                rating: 4.7,
+                experienceYears: 8,
+                patientCount: 600,
+                phoneNumber: '+52 81 1122 3344',
+                contactEmail: null
+            },
+            { name: 'Dra. Ana Torres', email: 'ana.t@example.com', specialty: 'Diagnóstico', city: 'Bogotá', lat: 4.7110, lng: -74.0721, country: 'Colombia', rating: 4.6, experienceYears: 10, patientCount: 500, phoneNumber: null, contactEmail: null },
+            { name: 'Dr. Diego Ramirez', email: 'diego.r@example.com', specialty: 'Terapia ABA', city: 'Buenos Aires', lat: -34.6037, lng: -58.3816, country: 'Argentina', rating: 4.5, experienceYears: 7, patientCount: 300, phoneNumber: null, contactEmail: null },
+            { name: 'Dra. Valentina Silva', email: 'valentina.s@example.com', specialty: 'Apoyo Conductual', city: 'Santiago', lat: -33.4489, lng: -70.6693, country: 'Chile', rating: 4.9, experienceYears: 20, patientCount: 2000, phoneNumber: null, contactEmail: null },
+            { name: 'Dr. Javier Mendoza', email: 'javier.m@example.com', specialty: 'Terapia de Habla', city: 'Lima', lat: -12.0464, lng: -77.0428, country: 'Perú', rating: 4.4, experienceYears: 5, patientCount: 200, phoneNumber: null, contactEmail: null },
+            { name: 'Dra. Camila Oliveira', email: 'camila.o@example.com', specialty: 'Terapia Ocupacional', city: 'São Paulo', lat: -23.5505, lng: -46.6333, country: 'Brasil', rating: 4.7, experienceYears: 9, patientCount: 450, phoneNumber: null, contactEmail: null },
+            { name: 'Dr. Ricardo Vargas', email: 'ricardo.v@example.com', specialty: 'Diagnóstico', city: 'Ciudad de México', lat: 19.3900, lng: -99.1500, country: 'México', rating: 4.8, experienceYears: 14, patientCount: 900, phoneNumber: null, contactEmail: null },
+            { name: 'Dra. Laura Martinez', email: 'laura.m@example.com', specialty: 'Habilidades Sociales', city: 'Cancún', lat: 21.1619, lng: -86.8515, country: 'México', rating: 4.5, experienceYears: 6, patientCount: 150, phoneNumber: null, contactEmail: null },
+        ];
 
-    const resources = [
-        {
-            title: 'Visual Schedule for Morning Routine',
-            description: 'A printable visual schedule with picture cards to help children follow their morning routine independently.',
-            topics: ['daily_living', 'communication'],
-        },
-        {
-            title: 'Social Stories: Making Friends at School',
-            description: 'A social story template to help autistic children understand and navigate social situations at school.',
-            topics: ['social_skills', 'communication'],
-        },
-        {
-            title: 'Emotion Cards for Identification',
-            description: 'Colorful emotion identification cards featuring diverse faces expressing different feelings.',
-            topics: ['communication', 'social_skills'],
-        },
-        {
-            title: 'Sensory Break Activity Cards',
-            description: 'Quick sensory break activities that can be done at home or in the classroom.',
-            topics: ['sensory', 'behavior_support'],
-        },
-        {
-            title: 'Communication Board - Basic Needs',
-            description: 'A printable communication board with symbols for basic needs and wants.',
-            topics: ['communication'],
-        },
-    ];
+        let profCount = 0;
+        for (const prof of professionals) {
+            // Check if user exists
+            const existing = await prisma.user.findUnique({ where: { email: prof.email } });
+            if (existing) continue;
 
-    let resCount = 0;
-    for (let i = 0; i < resources.length; i++) {
-        const resource = resources[i];
-        // Use raw executeRaw to insert with vector embedding
-        await prisma.$executeRaw`
+            const user = await prisma.user.create({
+                data: {
+                    name: prof.name,
+                    email: prof.email,
+                    role: 'PROFESSIONAL',
+                    image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${prof.email}`
+                },
+            });
+
+            await prisma.professionalProfile.create({
+                data: {
+                    userId: user.id,
+                    bio: `Especialista en ${prof.specialty} con ${prof.experienceYears} años de experiencia brindando apoyo basado en evidencia.`,
+                    licenseNumber: `LIC-${Math.floor(Math.random() * 100000)}`,
+                    licenseCountry: prof.country,
+                    verificationStatus: 'VERIFIED',
+                    locationLat: prof.lat,
+                    locationLng: prof.lng,
+                    specialties: [prof.specialty, 'Diagnóstico', 'Apoyo Familiar'],
+                    city: prof.city,
+                    rating: prof.rating,
+                    experienceYears: prof.experienceYears,
+                    patientCount: prof.patientCount,
+                    phoneNumber: prof.phoneNumber,
+                    contactEmail: prof.contactEmail || prof.email
+                },
+            });
+            profCount++;
+        }
+
+        console.log(`[TEST] Created ${profCount} professional profiles`);
+
+        // ========================================
+        // 2. CREATE EDUCATIONAL RESOURCES  
+        // ========================================
+        console.log('[TEST] Creating educational resources...');
+
+        const resources = [
+            {
+                title: 'Visual Schedule for Morning Routine',
+                description: 'A printable visual schedule with picture cards to help children follow their morning routine independently.',
+                topics: ['daily_living', 'communication'],
+            },
+            {
+                title: 'Social Stories: Making Friends at School',
+                description: 'A social story template to help autistic children understand and navigate social situations at school.',
+                topics: ['social_skills', 'communication'],
+            },
+            {
+                title: 'Emotion Cards for Identification',
+                description: 'Colorful emotion identification cards featuring diverse faces expressing different feelings.',
+                topics: ['communication', 'social_skills'],
+            },
+            {
+                title: 'Sensory Break Activity Cards',
+                description: 'Quick sensory break activities that can be done at home or in the classroom.',
+                topics: ['sensory', 'behavior_support'],
+            },
+            {
+                title: 'Communication Board - Basic Needs',
+                description: 'A printable communication board with symbols for basic needs and wants.',
+                topics: ['communication'],
+            },
+        ];
+
+        let resCount = 0;
+        for (let i = 0; i < resources.length; i++) {
+            const resource = resources[i];
+            // Use raw executeRaw to insert with vector embedding
+            await prisma.$executeRaw`
                 INSERT INTO "EducationalResource" (
                     id, title, description, "suggestedUses", url, "fileType", 
                     "isDownloadable", "requiresAccount", "targetAge", audience, 
@@ -88,40 +183,40 @@ export async function GET(request: NextRequest) {
                 )
                 ON CONFLICT DO NOTHING
             `;
-        resCount++;
-    }
+            resCount++;
+        }
 
-    console.log(`[TEST] Created ${resCount} educational resources`);
+        console.log(`[TEST] Created ${resCount} educational resources`);
 
-    // ========================================
-    // 3. CREATE ARTICLES
-    // ========================================
-    console.log('[TEST] Creating articles...');
+        // ========================================
+        // 3. CREATE ARTICLES
+        // ========================================
+        console.log('[TEST] Creating articles...');
 
-    const articles = [
-        {
-            slug: 'early-intervention-benefits-' + Date.now(),
-            title: 'Early Intervention Programs Show Significant Benefits for Autistic Toddlers',
-            tldr: 'New research confirms that early intervention programs starting before age 3 lead to improved social communication and reduced support needs.',
-            topics: ['diagnosis', 'intervention', 'education'],
-        },
-        {
-            slug: 'technology-assistive-communication-' + Date.now(),
-            title: 'Assistive Communication Technology Opens New Doors for Non-Speaking Autistic Individuals',
-            tldr: 'Modern AAC devices and apps are transforming communication for non-speaking autistic people.',
-            topics: ['technology', 'communication', 'inclusion'],
-        },
-        {
-            slug: 'sensory-workplace-accommodations-' + Date.now(),
-            title: 'Sensory-Friendly Workplace Modifications Boost Autistic Employee Performance',
-            tldr: 'Simple workplace accommodations for sensory differences improve productivity and job satisfaction.',
-            topics: ['inclusion', 'employment', 'sensory'],
-        },
-    ];
+        const articles = [
+            {
+                slug: 'early-intervention-benefits-' + Date.now(),
+                title: 'Early Intervention Programs Show Significant Benefits for Autistic Toddlers',
+                tldr: 'New research confirms that early intervention programs starting before age 3 lead to improved social communication and reduced support needs.',
+                topics: ['diagnosis', 'intervention', 'education'],
+            },
+            {
+                slug: 'technology-assistive-communication-' + Date.now(),
+                title: 'Assistive Communication Technology Opens New Doors for Non-Speaking Autistic Individuals',
+                tldr: 'Modern AAC devices and apps are transforming communication for non-speaking autistic people.',
+                topics: ['technology', 'communication', 'inclusion'],
+            },
+            {
+                slug: 'sensory-workplace-accommodations-' + Date.now(),
+                title: 'Sensory-Friendly Workplace Modifications Boost Autistic Employee Performance',
+                tldr: 'Simple workplace accommodations for sensory differences improve productivity and job satisfaction.',
+                topics: ['inclusion', 'employment', 'sensory'],
+            },
+        ];
 
-    let artCount = 0;
-    for (const article of articles) {
-        await prisma.$executeRaw`
+        let artCount = 0;
+        for (const article of articles) {
+            await prisma.$executeRaw`
                 INSERT INTO "Article" (
                     id, slug, title, "tldrSummary", "backgroundText", "findingsText",
                     "whyItMatters", "practicalTips", "technicalSection", tags, topics,
@@ -153,25 +248,25 @@ export async function GET(request: NextRequest) {
                 )
                 ON CONFLICT DO NOTHING
             `;
-        artCount++;
+            artCount++;
+        }
+
+        console.log(`[TEST] Created ${artCount} articles`);
+
+        return NextResponse.json({
+            success: true,
+            message: 'Test data populated successfully',
+            data: {
+                professionals: profCount,
+                resources: resCount,
+                articles: artCount,
+            },
+        });
+    } catch (error) {
+        console.error('[TEST] Error populating data:', error);
+        return NextResponse.json({
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+        }, { status: 500 });
     }
-
-    console.log(`[TEST] Created ${artCount} articles`);
-
-    return NextResponse.json({
-        success: true,
-        message: 'Test data populated successfully',
-        data: {
-            professionals: profCount,
-            resources: resCount,
-            articles: artCount,
-        },
-    });
-} catch (error) {
-    console.error('[TEST] Error populating data:', error);
-    return NextResponse.json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-    }, { status: 500 });
-}
 }
