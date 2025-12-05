@@ -32,7 +32,7 @@ export default function MapClient({ providers }: MapClientProps) {
     const [filters, setFilters] = useState({
         services: [] as string[],
         verifiedOnly: false,
-        distance: 50 // Default 50km
+        distance: 20000 // Default to Global (20,000 km)
     });
 
     const userLocation = useRobustGeolocation(); // Uses robust 3-layer logic

@@ -72,7 +72,7 @@ export default function MapboxMap({
 
     // Create radius circle GeoJSON
     const radiusGeoJSON = useMemo(() => {
-        if (!userLocation.latitude || !userLocation.longitude) return null;
+        if (!userLocation.latitude || !userLocation.longitude || distance > 10000) return null;
         return createGeoJSONCircle([userLocation.longitude, userLocation.latitude], distance);
     }, [userLocation, distance]);
 
@@ -81,8 +81,12 @@ export default function MapboxMap({
         if (providers.length > 0 && mapRef.current) {
             const bounds = new mapboxgl.LngLatBounds();
 
-            // Include user location in bounds if available
-            if (userLocation.longitude && userLocation.latitude) {
+            // Include user location in bounds if available and REASONABLE (local search)
+            // If global search, fitting to user location + providers might zoom out way too much if providers are far.
+            // But usually we want to see where we are relative to providers.
+            // Let's keep it but maybe optimize later. Use user location only if within reasonable distance?
+            // For now, standard fitBounds is fine.
+            if (userLocation.longitude && userLocation.latitude && distance < 10000) {
                 bounds.extend([userLocation.longitude, userLocation.latitude]);
             }
 
@@ -98,62 +102,9 @@ export default function MapboxMap({
                 essential: true
             });
         }
-    }, [providers, userLocation]);
+    }, [providers, userLocation, distance]);
 
-    // Cinematic FlyTo selected provider
-    useEffect(() => {
-        if (selectedProvider && mapRef.current) {
-            mapRef.current.flyTo({
-                center: [selectedProvider.lng, selectedProvider.lat],
-                zoom: 16,
-                pitch: 45, // Angled view for "3D" feel
-                bearing: 0,
-                duration: 3000,
-                curve: 1.5, // More pronounced curve
-                essential: true
-            });
-        }
-    }, [selectedProvider]);
-
-    // Handle cluster click
-    const onClick = (event: any) => {
-        const feature = event.features?.[0];
-        if (!feature) return;
-
-        const clusterId = feature.properties.cluster_id;
-        const mapboxSource = mapRef.current?.getSource('providers') as any;
-
-        if (clusterId) {
-            mapboxSource.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
-                if (err) return;
-
-                mapRef.current?.easeTo({
-                    center: feature.geometry.coordinates,
-                    zoom,
-                    duration: 500
-                });
-            });
-        } else {
-            // Clicked on a single point
-            const providerId = feature.properties.id;
-            const provider = providers.find(p => p.id === providerId || p.id === String(providerId));
-            if (provider) {
-                onSelectProvider(provider);
-            }
-        }
-    };
-
-    if (!mapboxToken) {
-        return (
-            <div className="flex flex-col items-center justify-center h-full bg-muted/20 p-6 text-center">
-                <MapPin className="h-12 w-12 text-destructive mb-4" />
-                <h3 className="text-lg font-semibold text-destructive">Map Configuration Error</h3>
-                <p className="text-muted-foreground max-w-md">
-                    The Mapbox access token is missing. Please check your environment variables (NEXT_PUBLIC_MAPBOX_TOKEN).
-                </p>
-            </div>
-        );
-    }
+    // ... (rest of file)
 
     return (
         <Map
@@ -164,7 +115,7 @@ export default function MapboxMap({
                 zoom: 3.5
             }}
             style={{ width: '100%', height: '100%' }}
-            mapStyle="mapbox://styles/mapbox/streets-v12"
+            mapStyle="mapbox://styles/mapbox/light-v11" // Lighter, more premium style
             mapboxAccessToken={mapboxToken}
             interactiveLayerIds={['clusters', 'unclustered-point']}
             onClick={onClick}
@@ -179,7 +130,7 @@ export default function MapboxMap({
                         id="radius-fill"
                         type="fill"
                         paint={{
-                            'fill-color': '#3b82f6',
+                            'fill-color': '#4f46e5', // Indigo-600
                             'fill-opacity': 0.1
                         }}
                     />
@@ -187,7 +138,7 @@ export default function MapboxMap({
                         id="radius-line"
                         type="line"
                         paint={{
-                            'line-color': '#3b82f6',
+                            'line-color': '#4f46e5',
                             'line-width': 2,
                             'line-dasharray': [2, 2]
                         }}
@@ -213,11 +164,11 @@ export default function MapboxMap({
                         'circle-color': [
                             'step',
                             ['get', 'point_count'],
-                            '#51bbd6',
+                            '#818cf8', // Indigo-400
                             10,
-                            '#f1f075',
+                            '#6366f1', // Indigo-500
                             30,
-                            '#f28cb1'
+                            '#4f46e5'  // Indigo-600
                         ],
                         'circle-radius': [
                             'step',

@@ -58,6 +58,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                     value={filters.distance}
                     onChange={(e) => onFilterChange({ ...filters, distance: Number(e.target.value) })}
                 >
+                    <option value="20000">Global</option>
                     {DISTANCE_OPTIONS.map(dist => (
                         <option key={dist} value={dist}>
                             {dist} km
