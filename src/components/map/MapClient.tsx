@@ -32,7 +32,8 @@ export default function MapClient({ providers }: MapClientProps) {
     const [filters, setFilters] = useState({
         services: [] as string[],
         verifiedOnly: false,
-        distance: 20000 // Default to Global (20,000 km)
+        verifiedOnly: false,
+        distance: 50 // Default to "Near Me" (50 km)
     });
 
     const userLocation = useRobustGeolocation(); // Uses robust 3-layer logic
@@ -112,31 +113,36 @@ export default function MapClient({ providers }: MapClientProps) {
                 h-1/2 lg:h-full shadow-xl lg:shadow-none
             `}>
                 {/* Header */}
-                <div className="p-6 border-b border-border bg-background/50">
-                    <div className="flex items-center gap-2 mb-4">
-                        <MapPin className="h-6 w-6 text-primary" />
-                        <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
-                        {userLocation.loading && <span className="text-xs text-muted-foreground animate-pulse">({t('locating')})</span>}
+                <div className="p-4 border-b border-border bg-background/50">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                <MapPin className="h-4 w-4" />
+                            </div>
+                            <div>
+                                <h1 className="text-lg font-bold text-foreground leading-none">{t('title')}</h1>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                    {filteredProviders.length} resultados
+                                    {userLocation.latitude && (
+                                        <span className="ml-1 opacity-50 font-mono">
+                                            ({userLocation.latitude.toFixed(2)}, {userLocation.longitude?.toFixed(2)})
+                                        </span>
+                                    )}
+                                </p>
+                            </div>
+                        </div>
+                        {userLocation.loading && <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />}
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4">
-                        {t('results', { count: filteredProviders.length, s: filteredProviders.length !== 1 ? 's' : '' })}
-                        {userLocation.source === 'ip' && <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">{t('approxLocation')}</span>}
-                        {userLocation.latitude && (
-                            <span className="ml-2 text-xs font-mono text-muted-foreground" title="Debug Location">
-                                ({userLocation.latitude.toFixed(4)}, {userLocation.longitude?.toFixed(4)})
-                            </span>
-                        )}
-                    </p>
 
                     {/* Search */}
-                    <div className="relative mb-4">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <div className="relative mb-6">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
                         <Input
                             type="text"
                             placeholder={t('searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 rounded-full bg-white/50 border-white/20 focus:bg-white transition-all"
+                            className="pl-9 h-9 text-sm rounded-xl bg-secondary/50 border-transparent focus:bg-background focus:border-primary/20 transition-all shadow-sm"
                         />
                     </div>
 

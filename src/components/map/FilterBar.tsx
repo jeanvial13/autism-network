@@ -36,7 +36,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
 
     return (
         <div className="w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-10 transition-all duration-300">
-            <div className="p-4 flex flex-col sm:flex-row gap-4 items-end">
+            <div className="p-4 flex flex-col sm:flex-row gap-8 sm:gap-4 items-end">
                 <div className="flex-1 w-full sm:w-auto">
                     <GlassSelect
                         label={t('services')}
