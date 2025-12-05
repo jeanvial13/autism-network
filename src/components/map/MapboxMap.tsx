@@ -157,9 +157,9 @@ export default function MapboxMap({
         <Map
             ref={mapRef}
             initialViewState={{
-                longitude: -98.5795,
-                latitude: 39.8283,
-                zoom: 3.5
+                longitude: -99.1332, // Mexico City
+                latitude: 19.4326,
+                zoom: 4
             }}
             style={{ width: '100%', height: '100%' }}
             mapStyle="mapbox://styles/mapbox/light-v11"

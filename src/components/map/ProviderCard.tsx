@@ -37,9 +37,9 @@ export default function ProviderCard({ provider, userLocation, isSelected, onCli
             transition={{ duration: 0.2 }}
         >
             <GlassCard
-                className={`cursor-pointer transition-all border-l-4 p-4 ${isSelected
-                    ? 'border-l-primary ring-1 ring-primary/20 shadow-lg bg-primary/5'
-                    : 'border-l-transparent hover:shadow-md'
+                className={`cursor-pointer transition-all p-4 ${isSelected
+                    ? 'ring-2 ring-primary/50 shadow-xl bg-primary/5 scale-[1.02]'
+                    : 'hover:shadow-lg hover:bg-white/5'
                     }`}
                 hover={false} // We handle hover manually with motion
             >

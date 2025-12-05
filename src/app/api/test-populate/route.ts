@@ -28,16 +28,16 @@ export async function GET(request: NextRequest) {
         console.log('[TEST] Creating professional profiles...');
 
         const professionals = [
-            { name: 'Dr. Sarah Chen', email: 'sarah.chen@example.com', specialty: 'ABA Therapy', city: 'New York', lat: 40.7128, lng: -74.0060, country: 'USA' },
-            { name: 'Dr. Michael Thompson', email: 'michael.t@example.com', specialty: 'Speech Therapy', city: 'London', lat: 51.5074, lng: -0.1278, country: 'UK' },
-            { name: 'Dr. Maria Rodriguez', email: 'maria.r@example.com', specialty: 'Occupational Therapy', city: 'Madrid', lat: 40.4168, lng: -3.7038, country: 'Spain' },
-            { name: 'Dr. James Wilson', email: 'james.w@example.com', specialty: 'Diagnostic Assessment', city: 'Toronto', lat: 43.6532, lng: -79.3832, country: 'Canada' },
-            { name: 'Dr. Emma Brown', email: 'emma.b@example.com', specialty: 'ABA Therapy', city: 'Sydney', lat: -33.8688, lng: 151.2093, country: 'Australia' },
-            { name: 'Dr. Li Wei', email: 'li.wei@example.com', specialty: 'Behavioral Support', city: 'Singapore', lat: 1.3521, lng: 103.8198, country: 'Singapore' },
-            { name: 'Dr. Anna Kowalski', email: 'anna.k@example.com', specialty: 'Speech Therapy', city: 'Berlin', lat: 52.5200, lng: 13.4050, country: 'Germany' },
-            { name: 'Dr. Carlos Santos', email: 'carlos.s@example.com', specialty: 'Occupational Therapy', city: 'São Paulo', lat: -23.5505, lng: -46.6333, country: 'Brazil' },
-            { name: 'Dr. Yuki Tanaka', email: 'yuki.t@example.com', specialty: 'Diagnostic Assessment', city: 'Tokyo', lat: 35.6762, lng: 139.6503, country: 'Japan' },
-            { name: 'Dr. Sofia Andersson', email: 'sofia.a@example.com', specialty: 'Social Skills Training', city: 'Stockholm', lat: 59.3293, lng: 18.0686, country: 'Sweden' },
+            { name: 'Dr. Alejandro García', email: 'alejandro.g@example.com', specialty: 'Terapia ABA', city: 'Ciudad de México', lat: 19.4326, lng: -99.1332, country: 'México' },
+            { name: 'Dra. María Fernández', email: 'maria.f@example.com', specialty: 'Terapia de Habla', city: 'Guadalajara', lat: 20.6597, lng: -103.3496, country: 'México' },
+            { name: 'Dr. Carlos López', email: 'carlos.l@example.com', specialty: 'Terapia Ocupacional', city: 'Monterrey', lat: 25.6866, lng: -100.3161, country: 'México' },
+            { name: 'Dra. Ana Torres', email: 'ana.t@example.com', specialty: 'Diagnóstico', city: 'Bogotá', lat: 4.7110, lng: -74.0721, country: 'Colombia' },
+            { name: 'Dr. Diego Ramirez', email: 'diego.r@example.com', specialty: 'Terapia ABA', city: 'Buenos Aires', lat: -34.6037, lng: -58.3816, country: 'Argentina' },
+            { name: 'Dra. Valentina Silva', email: 'valentina.s@example.com', specialty: 'Apoyo Conductual', city: 'Santiago', lat: -33.4489, lng: -70.6693, country: 'Chile' },
+            { name: 'Dr. Javier Mendoza', email: 'javier.m@example.com', specialty: 'Terapia de Habla', city: 'Lima', lat: -12.0464, lng: -77.0428, country: 'Perú' },
+            { name: 'Dra. Camila Oliveira', email: 'camila.o@example.com', specialty: 'Terapia Ocupacional', city: 'São Paulo', lat: -23.5505, lng: -46.6333, country: 'Brasil' },
+            { name: 'Dr. Ricardo Vargas', email: 'ricardo.v@example.com', specialty: 'Diagnóstico', city: 'Ciudad de México', lat: 19.3900, lng: -99.1500, country: 'México' },
+            { name: 'Dra. Laura Martinez', email: 'laura.m@example.com', specialty: 'Habilidades Sociales', city: 'Cancún', lat: 21.1619, lng: -86.8515, country: 'México' },
         ];
 
         let profCount = 0;
@@ -57,8 +57,8 @@ export async function GET(request: NextRequest) {
             await prisma.professionalProfile.create({
                 data: {
                     userId: user.id,
-                    bio: `Experienced ${prof.specialty} specialist with ${Math.floor(Math.random() * 15) + 5} years of experience providing evidence-based autism support services.`,
-                    specialties: [prof.specialty, 'Family Support'],
+                    bio: `Especialista en ${prof.specialty} con ${Math.floor(Math.random() * 15) + 5} años de experiencia brindando apoyo basado en evidencia.`,
+                    specialties: [prof.specialty, 'Apoyo Familiar'],
                     licenseNumber: `LIC${Math.floor(Math.random() * 100000)}`,
                     licenseCountry: prof.country,
                     locationLat: prof.lat,
