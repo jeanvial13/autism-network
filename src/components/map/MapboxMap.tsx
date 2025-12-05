@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo, useState } from 'react';
 import Map, { Marker, Popup, NavigationControl, GeolocateControl, Source, Layer, MapRef } from 'react-map-gl/mapbox';
 import { MapPin } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -16,7 +16,6 @@ interface MapboxMapProps {
     mapboxToken: string;
     distance: number;
 }
-
 // Helper to create a GeoJSON circle
 const createGeoJSONCircle = (center: [number, number], radiusInKm: number, points = 64) => {
     const coords = {
@@ -106,6 +105,54 @@ export default function MapboxMap({
 
     // ... (rest of file)
 
+    // Cursor state
+    const [cursor, setCursor] = useState<string>('auto');
+
+    const onMapClick = (event: mapboxgl.MapLayerMouseEvent) => {
+        const feature = event.features?.[0];
+
+        if (!feature) {
+            // Clicked on background maps - deselect
+            onSelectProvider(null);
+            return;
+        }
+
+        const clusterId = feature.properties?.cluster_id;
+        const map = mapRef.current;
+
+        if (clusterId && map) {
+            // Clicked on a cluster - zoom in
+            const source = map.getSource('providers') as mapboxgl.GeoJSONSource;
+            source.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
+                if (err || !zoom) return;
+
+                map.easeTo({
+                    center: (feature.geometry as any).coordinates,
+                    zoom: zoom + 1, // Add a bit more zoom to break it apart
+                    duration: 500
+                });
+            });
+
+        } else {
+            // Clicked on an individual provider
+            const providerId = feature.properties?.id;
+            const provider = providers.find(p => p.id === providerId || p.id === Number(providerId));
+
+            if (provider) {
+                // Fly to location and select
+                map?.flyTo({
+                    center: [provider.lng, provider.lat],
+                    zoom: 14,
+                    duration: 1000
+                });
+                onSelectProvider(provider);
+            }
+        }
+    };
+
+    const onMouseEnter = () => setCursor('pointer');
+    const onMouseLeave = () => setCursor('auto');
+
     return (
         <Map
             ref={mapRef}
@@ -115,10 +162,13 @@ export default function MapboxMap({
                 zoom: 3.5
             }}
             style={{ width: '100%', height: '100%' }}
-            mapStyle="mapbox://styles/mapbox/light-v11" // Lighter, more premium style
+            mapStyle="mapbox://styles/mapbox/light-v11"
             mapboxAccessToken={mapboxToken}
             interactiveLayerIds={['clusters', 'unclustered-point']}
-            onClick={onClick}
+            onClick={onMapClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            cursor={cursor}
         >
             <NavigationControl position="bottom-right" />
             <GeolocateControl position="bottom-right" />
@@ -192,6 +242,9 @@ export default function MapboxMap({
                         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
                         'text-size': 12
                     }}
+                    paint={{
+                        'text-color': '#ffffff'
+                    }}
                 />
 
                 {/* Unclustered Points (Individual Providers) */}
@@ -200,7 +253,7 @@ export default function MapboxMap({
                     type="circle"
                     filter={['!', ['has', 'point_count']]}
                     paint={{
-                        'circle-color': '#11b4da',
+                        'circle-color': '#0ea5e9', // Sky 500
                         'circle-radius': 8,
                         'circle-stroke-width': 2,
                         'circle-stroke-color': '#fff'
@@ -245,7 +298,7 @@ export default function MapboxMap({
                                 ))
                                 : undefined
                         }
-                        onClose={() => { }}
+                        onClose={() => onSelectProvider(null)}
                     />
                 </Popup>
             )}
