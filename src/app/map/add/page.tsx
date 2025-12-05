@@ -16,6 +16,9 @@ export default function ProviderManagerPage() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
+    // Editing State
+    const [editingId, setEditingId] = useState<string | null>(null);
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -70,6 +73,26 @@ export default function ProviderManagerPage() {
         }
     };
 
+    const handleEdit = (provider: any) => {
+        setEditingId(provider.id);
+        setFormData({
+            name: provider.name,
+            email: provider.email || '',
+            city: provider.city || '',
+            address: '', // Address is usually not stored plain text in the simplified model, but city is.
+            lat: provider.lat?.toString() || '',
+            lng: provider.lng?.toString() || '',
+            services: provider.services || [],
+            verified: provider.verified || false,
+            rating: provider.rating?.toString() || '0',
+            experienceYears: provider.experienceYears?.toString() || '0',
+            patientCount: provider.patientCount?.toString() || '0',
+            phoneNumber: provider.phoneNumber || ''
+        });
+        setActiveTab('add');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     const handleSubmit = async () => {
         if (!formData.name || !formData.lat || !formData.lng) {
             alert('Por favor complete los campos obligatorios');
@@ -77,27 +100,41 @@ export default function ProviderManagerPage() {
         }
 
         try {
-            const res = await fetch('/api/providers', {
-                method: 'POST',
+            const url = editingId ? `/api/providers/${editingId}` : '/api/providers';
+            const method = editingId ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
 
             if (res.ok) {
-                alert('Proveedor agregado exitosamente');
+                alert(editingId ? 'Proveedor actualizado exitosamente' : 'Proveedor agregado exitosamente');
                 setFormData({
                     name: '', email: '', city: '', address: '', lat: '', lng: '',
                     services: [], verified: false, rating: '5.0', experienceYears: '5',
                     patientCount: '100', phoneNumber: ''
                 });
+                setEditingId(null);
                 setActiveTab('list');
                 fetchProviders();
             } else {
-                alert('Error al crear proveedor');
+                alert('Error al guardar proveedor');
             }
         } catch (error) {
-            console.error('Error creating:', error);
+            console.error('Error creating/updating:', error);
         }
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setFormData({
+            name: '', email: '', city: '', address: '', lat: '', lng: '',
+            services: [], verified: false, rating: '5.0', experienceYears: '5',
+            patientCount: '100', phoneNumber: ''
+        });
+        setActiveTab('list');
     };
 
     const handleServiceToggle = (service: string) => {
@@ -120,9 +157,9 @@ export default function ProviderManagerPage() {
     );
 
     return (
-        <main className="min-h-screen bg-background py-12">
+        <main className="min-h-screen bg-background pt-32 pb-12">
             <div className="mx-auto max-w-6xl px-6">
-                <div className="flex justify-between items-center mb-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
                         <h1 className="text-4xl font-bold text-foreground">Gestor de Proveedores</h1>
                         <p className="text-muted-foreground mt-2">Agregue, modifique y elimine proveedores del mapa.</p>
@@ -130,7 +167,7 @@ export default function ProviderManagerPage() {
                     <div className="flex gap-4">
                         <Button
                             variant={activeTab === 'list' ? 'default' : 'outline'}
-                            onClick={() => setActiveTab('list')}
+                            onClick={() => { setActiveTab('list'); setEditingId(null); }}
                         >
                             Ver Lista
                         </Button>
@@ -138,8 +175,7 @@ export default function ProviderManagerPage() {
                             variant={activeTab === 'add' ? 'default' : 'outline'}
                             onClick={() => setActiveTab('add')}
                         >
-                            <Plus className="mr-2 h-4 w-4" />
-                            Agregar Nuevo
+                            {editingId ? <><Save className="mr-2 h-4 w-4" /> Editando</> : <><Plus className="mr-2 h-4 w-4" /> Agregar Nuevo</>}
                         </Button>
                     </div>
                 </div>
@@ -162,29 +198,44 @@ export default function ProviderManagerPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {filteredProviders.map((provider) => (
                                     <GlassCard key={provider.id} className="relative group">
-                                        <Button
-                                            variant="destructive"
-                                            size="icon"
-                                            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                                            onClick={() => handleDelete(provider.id, provider.name)}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                        <div className="flex items-center gap-4 mb-4">
-                                            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
-                                                {provider.name?.charAt(0)}
+                                        <div className="absolute top-2 right-2 flex gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Button
+                                                variant="secondary"
+                                                size="icon"
+                                                className="h-8 w-8"
+                                                onClick={() => handleEdit(provider)}
+                                            >
+                                                <i className="h-4 w-4">✎</i>
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                size="icon"
+                                                className="h-8 w-8"
+                                                onClick={() => handleDelete(provider.id, provider.name)}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+
+                                        <div className="flex items-center gap-4 mb-4 pt-2">
+                                            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl overflow-hidden">
+                                                {provider.image && !provider.image.includes('placeholder') ? (
+                                                    <img src={provider.image} alt={provider.name} className="h-full w-full object-cover" />
+                                                ) : (
+                                                    provider.name?.charAt(0)
+                                                )}
                                             </div>
                                             <div>
-                                                <h3 className="font-bold truncate pr-4">{provider.name}</h3>
-                                                <p className="text-sm text-muted-foreground">{provider.city}</p>
+                                                <h3 className="font-bold truncate pr-4 max-w-[150px]" title={provider.name}>{provider.name}</h3>
+                                                <p className="text-sm text-muted-foreground truncate max-w-[150px]" title={provider.city}>{provider.city}</p>
                                             </div>
                                         </div>
-                                        <div className="flex flex-wrap gap-1 mb-4">
-                                            {provider.specialties?.slice(0, 3).map((s: string) => (
+                                        <div className="flex flex-wrap gap-1 mb-4 h-16 content-start overflow-hidden">
+                                            {provider.services?.slice(0, 3).map((s: string) => (
                                                 <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>
                                             ))}
-                                            {(provider.specialties?.length || 0) > 3 && (
-                                                <Badge variant="outline" className="text-xs">+{provider.specialties.length - 3}</Badge>
+                                            {(provider.services?.length || 0) > 3 && (
+                                                <Badge variant="outline" className="text-xs">+{provider.services.length - 3}</Badge>
                                             )}
                                         </div>
                                         <div className="flex justify-between text-sm text-muted-foreground border-t pt-3 mt-auto">
@@ -199,9 +250,11 @@ export default function ProviderManagerPage() {
                 ) : (
                     <Card>
                         <CardHeader>
-                            <CardTitle>Información del Centro</CardTitle>
+                            <CardTitle>{editingId ? 'Editar Proveedor' : 'Agregar Nuevo Proveedor'}</CardTitle>
                             <CardDescription>
-                                Ingrese los detalles completos para agregar un nuevo proveedor al mapa en tiempo real.
+                                {editingId
+                                    ? 'Modifique los detalles del proveedor existente.'
+                                    : 'Ingrese los detalles completos para agregar un nuevo proveedor al mapa en tiempo real.'}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
@@ -292,10 +345,17 @@ export default function ProviderManagerPage() {
                                 </div>
                             </div>
 
-                            <Button onClick={handleSubmit} className="w-full" size="lg">
-                                <Save className="mr-2 h-5 w-5" />
-                                Guardar Proveedor
-                            </Button>
+                            <div className="flex gap-4">
+                                {editingId && (
+                                    <Button variant="outline" onClick={handleCancelEdit} className="w-1/3">
+                                        Cancelar
+                                    </Button>
+                                )}
+                                <Button onClick={handleSubmit} className="flex-1" size="lg">
+                                    <Save className="mr-2 h-5 w-5" />
+                                    {editingId ? 'Actualizar Proveedor' : 'Guardar Nuevo Proveedor'}
+                                </Button>
+                            </div>
                         </CardContent>
                     </Card>
                 )}
