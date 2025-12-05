@@ -64,6 +64,16 @@ model ProfessionalProfile {
   locationLat        Float?
   locationLng        Float?
   
+  verified     Boolean @default(false) // Deprecating verificationStatus enum for simple bool if preferred, or keep enum. Let's keep enum but add these fields.
+  
+  // Map/Profile Fields
+  city             String?
+  rating           Float   @default(0)
+  experienceYears  Int     @default(0)
+  patientCount     Int     @default(0)
+  phoneNumber      String?
+  contactEmail     String?
+  
   approvedAt         DateTime?
   approvedBy         String?
 
