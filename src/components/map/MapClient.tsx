@@ -121,6 +121,11 @@ export default function MapClient({ providers }: MapClientProps) {
                     <p className="text-sm text-muted-foreground mb-4">
                         {t('results', { count: filteredProviders.length, s: filteredProviders.length !== 1 ? 's' : '' })}
                         {userLocation.source === 'ip' && <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">{t('approxLocation')}</span>}
+                        {userLocation.latitude && (
+                            <span className="ml-2 text-xs font-mono text-muted-foreground" title="Debug Location">
+                                ({userLocation.latitude.toFixed(4)}, {userLocation.longitude?.toFixed(4)})
+                            </span>
+                        )}
                     </p>
 
                     {/* Search */}

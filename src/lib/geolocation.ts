@@ -117,7 +117,7 @@ export function useRobustGeolocation() {
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                console.log('✅ GPS Geolocation successful');
+                console.log('✅ GPS Geolocation successful', position.coords.latitude, position.coords.longitude);
                 setLocation(position.coords.latitude, position.coords.longitude, 'gps');
             },
             async (error) => {
