@@ -68,6 +68,20 @@ export default function ProviderCard({ provider, userLocation, isSelected, onCli
                         )}
                     </div>
 
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
+                        {provider.rating > 0 && (
+                            <div className="flex items-center gap-1 text-yellow-600 dark:text-yellow-400">
+                                <span className="font-bold">{provider.rating}</span>
+                                <span className="">★</span>
+                            </div>
+                        )}
+                        {provider.experienceYears > 0 && (
+                            <div className="flex items-center gap-1">
+                                <span>{provider.experienceYears} años exp.</span>
+                            </div>
+                        )}
+                    </div>
+
                     <div className="flex flex-wrap gap-1.5 mt-3 mb-3">
                         {provider.services.slice(0, 3).map((service: string, idx: number) => (
                             <Badge key={idx} variant="secondary" className="text-xs font-normal bg-secondary/10 text-secondary-foreground border-secondary/20">

@@ -93,17 +93,17 @@ export default function ProviderDetail({ provider, userLocation, onClose }: Prov
                         <div className="grid grid-cols-3 gap-4">
                             <GlassCard className="p-3 flex flex-col items-center justify-center text-center gap-1 hover:bg-primary/5 transition-colors">
                                 <Star className="h-5 w-5 text-yellow-500 fill-yellow-500/20" />
-                                <span className="font-bold text-lg">4.9</span>
+                                <span className="font-bold text-lg">{provider.rating || 'N/A'}</span>
                                 <span className="text-xs text-muted-foreground">Rating</span>
                             </GlassCard>
                             <GlassCard className="p-3 flex flex-col items-center justify-center text-center gap-1 hover:bg-primary/5 transition-colors">
                                 <Clock className="h-5 w-5 text-green-500" />
-                                <span className="font-bold text-lg">15+</span>
-                                <span className="text-xs text-muted-foreground">Años Exp.</span>
+                                <span className="font-bold text-lg">{provider.experienceYears ? `${provider.experienceYears}+` : 'N/A'}</span>
+                                <span className="text-xs text-muted-foreground">Aiños Exp.</span>
                             </GlassCard>
                             <GlassCard className="p-3 flex flex-col items-center justify-center text-center gap-1 hover:bg-primary/5 transition-colors">
                                 <Heart className="h-5 w-5 text-red-500" />
-                                <span className="font-bold text-lg">1k+</span>
+                                <span className="font-bold text-lg">{provider.patientCount ? `${provider.patientCount}+` : 'N/A'}</span>
                                 <span className="text-xs text-muted-foreground">Pacientes</span>
                             </GlassCard>
                         </div>
@@ -126,11 +126,17 @@ export default function ProviderDetail({ provider, userLocation, onClose }: Prov
                                 Especialidades
                             </h3>
                             <div className="flex flex-wrap gap-2">
-                                <Badge variant="secondary" className="px-3 py-1 text-sm bg-primary/10 hover:bg-primary/20 text-primary border-primary/20">
-                                    {provider.specialty || 'Especialista General'}
-                                </Badge>
-                                <Badge variant="outline" className="px-3 py-1 text-sm">Diagnóstico Temprano</Badge>
-                                <Badge variant="outline" className="px-3 py-1 text-sm">Terapia Familiar</Badge>
+                                {provider.services && provider.services.length > 0 ? (
+                                    provider.services.map((s: string) => (
+                                        <Badge key={s} variant="secondary" className="px-3 py-1 text-sm bg-primary/10 hover:bg-primary/20 text-primary border-primary/20">
+                                            {s}
+                                        </Badge>
+                                    ))
+                                ) : (
+                                    <Badge variant="secondary" className="px-3 py-1 text-sm bg-primary/10 hover:bg-primary/20 text-primary border-primary/20">
+                                        Especialista General
+                                    </Badge>
+                                )}
                             </div>
                         </section>
 
@@ -152,15 +158,17 @@ export default function ProviderDetail({ provider, userLocation, onClose }: Prov
                                         </div>
                                     </GlassCard>
                                 )}
-                                <GlassCard className="flex items-center gap-3 p-3">
-                                    <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                                        <Phone className="h-5 w-5" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-sm font-medium">Teléfono</p>
-                                        <p className="text-sm text-muted-foreground">+52 (55) 1234-5678</p>
-                                    </div>
-                                </GlassCard>
+                                {provider.phoneNumber && (
+                                    <GlassCard className="flex items-center gap-3 p-3">
+                                        <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                            <Phone className="h-5 w-5" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium">Teléfono</p>
+                                            <p className="text-sm text-muted-foreground">{provider.phoneNumber}</p>
+                                        </div>
+                                    </GlassCard>
+                                )}
                             </div>
                         </section>
                     </div>
