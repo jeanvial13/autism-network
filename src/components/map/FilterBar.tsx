@@ -35,7 +35,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
     };
 
     return (
-    return (
+
         <div className="w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-10 transition-all duration-300">
             <div className="p-4 grid grid-cols-12 gap-4 items-end">
                 {/* Services & Distance - Side by Side on Mobile, flexible on Desktop */}
@@ -79,8 +79,8 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                         <GlassButton
                             variant={filters.verifiedOnly ? "primary" : "outline"}
                             className={`w-full justify-between h-11 px-4 transition-all duration-300 ${filters.verifiedOnly
-                                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 border-primary"
-                                    : "bg-background/50 hover:bg-background/80 border-white/20"
+                                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 border-primary"
+                                : "bg-background/50 hover:bg-background/80 border-white/20"
                                 }`}
                             onClick={() => onFilterChange({ ...filters, verifiedOnly: !filters.verifiedOnly })}
                         >
@@ -97,5 +97,5 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
             </div>
         </div>
     );
-    );
+
 }
