@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { getTranslations } from 'next-intl/server';
+import { ArticleGenerator } from '@/components/articles/ArticleGenerator';
 
 export default async function ArticlesPage() {
     const t = await getTranslations('articles');
@@ -58,38 +59,8 @@ export default async function ArticlesPage() {
                     )}
                 </div>
 
-                {/* Filters & Search */}
-                <div className="mb-8 space-y-6">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="text"
-                            placeholder={t('searchPlaceholder')}
-                            className="pl-10 rounded-full bg-white/50 border-white/20 focus:bg-white transition-all h-12"
-                            disabled
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <GlassSelect label={t('filters.topic')} defaultValue="">
-                            <option value="" disabled>{t('filters.topic')}</option>
-                            {['diagnosis', 'intervention', 'education', 'technology', 'inclusion'].map((topic) => (
-                                <option key={topic} value={topic}>
-                                    {topic}
-                                </option>
-                            ))}
-                        </GlassSelect>
-
-                        <GlassSelect label={t('filters.audience')} defaultValue="">
-                            <option value="" disabled>{t('filters.audience')}</option>
-                            {['parents', 'professionals', 'autistic_adults', 'educators'].map((audience) => (
-                                <option key={audience} value={audience}>
-                                    {audience.replace('_', ' ')}
-                                </option>
-                            ))}
-                        </GlassSelect>
-                    </div>
-                </div>
+                {/* AI Generator */}
+                <ArticleGenerator />
 
                 {/* Article List */}
                 <div className="space-y-6">

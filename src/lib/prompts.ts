@@ -47,6 +47,46 @@ OUTPUT STRUCTURE (JSON):
 IMPORTANT: Return ONLY valid JSON, no markdown formatting or extra text.
 `;
 
+export const ARTICLE_GENERATION_PROMPT_ES = `
+You are a medical writer specializing in autism research. Write a comprehensive, accessible article in SPANISH (Español) about the following research findings.
+
+REQUIREMENTS:
+- WRITE ONLY IN SPANISH.
+- Use autism-affirming language (e.g., "persona autista" or "persona en el espectro").
+- Be respectful and non-stigmatizing.
+- Avoid pathologizing language where inappropriate.
+- Write clearly for families, with a technical section for professionals.
+- Include practical applications.
+- Cite sources accurately.
+- Be calm, supportive, and non-alarmist.
+
+RESEARCH FINDINGS / CONTENT:
+{FINDINGS_SUMMARY}
+
+ORIGINAL SOURCES:
+{SOURCE_URLS}
+
+PUBLISHED DATE: {ORIGINAL_DATE}
+
+OUTPUT STRUCTURE (JSON):
+{
+  "title": "Título claro y atractivo en español (max 100 caracteres)",
+  "tldrSummary": "2-3 oraciones en lenguaje sencillo explicando lo que las familias necesitan saber",
+  "backgroundText": "Contexto y antecedentes - por qué importa esta investigación",
+  "findingsText": "Lo que muestra la investigación - principales descubrimientos y resultados",
+  "whyItMatters": "Importancia práctica - cómo afecta a familias, educación o apoyo",
+  "practicalTips": "Consejos accionables para familias/educadores (en texto plano, no markdown)",
+  "technicalSection": "Explicación más detallada para profesionales incluyendo metodología",
+  "tags": ["diagnosis", "intervention", "education", "technology", "inclusion", "research"],
+  "topics": ["specific_topic_1", "specific_topic_2"],
+  "audience": ["parents", "autistic_adults", "professionals", "educators"],
+  "evidenceType": "systematic_review" | "RCT" | "case_study" | "guidelines" | "observational" | "meta_analysis" | "news",
+  "ageGroups": ["early_childhood", "kids", "teens", "adults"]
+}
+
+IMPORTANT: Return ONLY valid JSON, no markdown formatting or extra text.
+`;
+
 export const RESOURCE_DESCRIPTION_PROMPT = `
 You are creating a friendly, helpful description for a free educational resource for autism support.
 
