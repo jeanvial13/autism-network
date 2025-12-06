@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { VerificationStatus } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -168,7 +169,8 @@ export async function GET(request: NextRequest) {
                     locationLat: prov.lat,
                     locationLng: prov.lng,
                     rating: prov.rating,
-                    verificationStatus: "VERIFIED", // AI Verified
+                    verificationStatus: VerificationStatus.VERIFIED,
+                    verified: true,
                     licenseNumber: `AI-VERIFIED-${Math.floor(Math.random() * 10000)}`,
                     phoneNumber: prov.phone,
                     contactEmail: prov.email,
@@ -189,6 +191,10 @@ export async function GET(request: NextRequest) {
 
     } catch (error) {
         console.error('[AI SOURCING] Error:', error);
-        return NextResponse.json({ success: false, error: 'Failed to populate AI data' }, { status: 500 });
+        return NextResponse.json({
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+            details: JSON.stringify(error)
+        }, { status: 500 });
     }
 }
