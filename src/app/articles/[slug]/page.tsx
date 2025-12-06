@@ -36,6 +36,16 @@ export default async function ArticleDetailPage({
     const tags = (article.tags as string[]) || [];
     const sourceUrls = (article.sourceUrls as string[]) || [];
 
+    // Use Spanish translation if available
+    const translation = article.translations?.find((t: any) => t.language === 'es');
+    const title = translation?.title || article.title;
+    const tldrSummary = translation?.tldrSummary || article.tldrSummary;
+    const backgroundText = translation?.backgroundText || article.backgroundText;
+    const findingsText = translation?.findingsText || article.findingsText;
+    const whyItMatters = translation?.whyItMatters || article.whyItMatters;
+    const practicalTips = translation?.practicalTips || article.practicalTips;
+    const technicalSection = translation?.technicalSection || article.technicalSection;
+
     return (
         <main className="min-h-screen bg-background py-12">
             <article className="mx-auto max-w-4xl px-6 lg:px-8">
@@ -55,7 +65,7 @@ export default async function ArticleDetailPage({
                         </span>
                     </div>
 
-                    <h1 className="text-4xl font-bold text-foreground mb-4">{article.title}</h1>
+                    <h1 className="text-4xl font-bold text-foreground mb-4">{title}</h1>
 
                     <div className="flex items-center gap-3 mb-6 flex-wrap">
                         <Button variant="outline" size="sm" className="gap-2">
@@ -67,7 +77,7 @@ export default async function ArticleDetailPage({
                     {/* TL;DR Box */}
                     <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900 p-6">
                         <h2 className="font-semibold text-lg mb-2 text-blue-900 dark:text-blue-100">TL;DR</h2>
-                        <p className="text-blue-800 dark:text-blue-200 leading-relaxed">{article.tldrSummary}</p>
+                        <p className="text-blue-800 dark:text-blue-200 leading-relaxed">{tldrSummary}</p>
                     </Card>
                 </div>
 
@@ -76,7 +86,7 @@ export default async function ArticleDetailPage({
                     <section className="mb-8">
                         <h2 className="text-2xl font-semibold mb-4">Background</h2>
                         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                            {article.backgroundText}
+                            {backgroundText}
                         </p>
                     </section>
 
@@ -85,7 +95,7 @@ export default async function ArticleDetailPage({
                     <section className="mb-8">
                         <h2 className="text-2xl font-semibold mb-4">Key Findings</h2>
                         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                            {article.findingsText}
+                            {findingsText}
                         </p>
                     </section>
 
@@ -94,7 +104,7 @@ export default async function ArticleDetailPage({
                     <section className="mb-8">
                         <h2 className="text-2xl font-semibold mb-4">Why This Matters</h2>
                         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                            {article.whyItMatters}
+                            {whyItMatters}
                         </p>
                     </section>
 
@@ -103,11 +113,11 @@ export default async function ArticleDetailPage({
                     <section className="mb-8">
                         <h2 className="text-2xl font-semibold mb-4">Practical Tips</h2>
                         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                            {article.practicalTips}
+                            {practicalTips}
                         </p>
                     </section>
 
-                    {article.technicalSection && (
+                    {technicalSection && (
                         <>
                             <Separator className="my-8" />
                             <details className="mb-8">
@@ -116,7 +126,7 @@ export default async function ArticleDetailPage({
                                 </summary>
                                 <div className="mt-4 p-6 bg-muted/30 rounded-lg">
                                     <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                                        {article.technicalSection}
+                                        {technicalSection}
                                     </p>
                                 </div>
                             </details>

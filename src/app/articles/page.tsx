@@ -105,8 +105,27 @@ export default async function ArticlesPage() {
 
                                     <div>
                                         <h2 className="text-2xl font-bold mb-3 text-foreground">{title}</h2>
-                                        <div className="text-muted-foreground text-base leading-relaxed bg-white/40 dark:bg-black/20 p-4 rounded-xl border border-white/10">
-                                            <strong className="text-foreground">{t('card.tldr')}</strong> {summary}
+                                        <div className="space-y-3">
+                                            <div className="text-muted-foreground text-base leading-relaxed bg-white/40 dark:bg-black/20 p-4 rounded-xl border border-white/10">
+                                                <strong className="text-foreground block mb-1">💡 {t('card.tldr')}</strong>
+                                                {summary}
+                                            </div>
+
+                                            {/* Show more details on the card */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                                <div className="bg-blue-50/50 dark:bg-blue-900/10 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
+                                                    <strong className="text-blue-700 dark:text-blue-300 block mb-1">🎯 {t('card.whyItMatters') || 'Por qué importa'}</strong>
+                                                    <p className="line-clamp-2 text-muted-foreground">
+                                                        {article.translations?.[0]?.whyItMatters || article.whyItMatters}
+                                                    </p>
+                                                </div>
+                                                <div className="bg-purple-50/50 dark:bg-purple-900/10 p-3 rounded-lg border border-purple-100 dark:border-purple-900/30">
+                                                    <strong className="text-purple-700 dark:text-purple-300 block mb-1">🔍 {t('card.findings') || 'Hallazgos Clave'}</strong>
+                                                    <p className="line-clamp-2 text-muted-foreground">
+                                                        {article.translations?.[0]?.findingsText || article.findingsText}
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
