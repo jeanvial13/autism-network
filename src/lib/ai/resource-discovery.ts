@@ -138,36 +138,63 @@ export async function discoverAutismResources(): Promise<
         allResources.push(...resources);
     }
 
-    // FALLBACK: Recursos verificados (Mixto Español/Inglés - Stable Landing Pages)
-    // Limitado a 4 recursos de alta calidad
+    // FALLBACK: Recursos verificados y estables (Root/Index URLs)
+    // Si la API falla, seleccionamos 4 de esta lista de 8 para variar resultados
     if (allResources.length === 0) {
-        console.log('No resources found via API, using verified top 4 material list');
-        allResources.push(
+        console.log('No resources found via API, using shuffled fallback list');
+        const fallbackPool = [
             {
-                title: 'ARASAAC: Pictogramas & Visuales (ES)',
-                url: 'https://arasaac.org',
+                title: 'ARASAAC: Pictogramas (ES)',
+                url: 'https://arasaac.org/',
                 fileType: 'image',
-                rawDescription: 'El mayor catálogo mundial de pictogramas gratuitos para descargar.',
+                rawDescription: 'El mayor catálogo mundial de sistemas aumentativos y alternativos de comunicación (SAAC).',
             },
             {
-                title: 'CDC: Materiales para Padres (ES)',
-                url: 'https://www.cdc.gov/ncbddd/spanish/actearly/materials.html',
+                title: 'CDC: Aprenda los Signos (ES)',
+                url: 'https://www.cdc.gov/ncbddd/spanish/actearly/index.html',
                 fileType: 'webpage',
-                rawDescription: 'Kits y listas de verificación del desarrollo para imprimir (Gratis).',
+                rawDescription: 'Recursos oficiales del CDC en español para monitorear el desarrollo infantil.',
             },
             {
-                title: 'Do2Learn: Visual Schedules (EN)',
-                url: 'https://do2learn.com/picturecards/VisualSchedules/index.htm',
+                title: 'Do2Learn: Educational Resources (EN)',
+                url: 'https://do2learn.com/',
                 fileType: 'activity',
-                rawDescription: 'Free printable visual schedules and behavioral charts for daily routines.',
+                rawDescription: 'Thousands of free pages of social skills, behavioral regulation, and life skills activities.',
             },
             {
-                title: 'VCU-ACE: Visual Supports (EN)',
-                url: 'https://vcuautismcenter.org/resources/visuals.cfm',
-                fileType: 'activity',
-                rawDescription: 'Downloadable visual supports and structure guides for classrooms.',
+                title: 'Reading Rockets: Autism (EN)',
+                url: 'https://www.readingrockets.org/topics/autism-spectrum-disorder',
+                fileType: 'guide',
+                rawDescription: 'Strategies for teaching reading and literacy to children on the autism spectrum.',
+            },
+            {
+                title: 'Understood.org: Guía de Autismo (ES)',
+                url: 'https://www.understood.org/es-mx',
+                fileType: 'webpage',
+                rawDescription: 'Recursos prácticos para desafíos de aprendizaje y atención en español.',
+            },
+            {
+                title: 'Child Mind Institute: Autismo (ES)',
+                url: 'https://childmind.org/es/temas/trastornos-del-espectro-autista/',
+                fileType: 'guide',
+                rawDescription: 'Guías completas sobre diagnóstico, tratamiento y apoyo familiar.',
+            },
+            {
+                title: 'Autism Society: Recursos (EN)',
+                url: 'https://autismsociety.org/resources/',
+                fileType: 'webpage',
+                rawDescription: 'Comprehensive resource database for families and professionals.',
+            },
+            {
+                title: 'VCU Autism Center (EN)',
+                url: 'https://vcuautismcenter.org/resources/',
+                fileType: 'webpage',
+                rawDescription: 'Evidence-based resources and visual supports for schools and families.',
             }
-        );
+        ];
+
+        // Shuffle and pick 4
+        allResources.push(...fallbackPool.sort(() => 0.5 - Math.random()).slice(0, 4));
     }
 
 
