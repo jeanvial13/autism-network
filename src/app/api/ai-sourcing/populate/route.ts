@@ -135,6 +135,72 @@ export async function GET(request: NextRequest) {
                 phone: "+54 11 4444 5555",
                 rating: 4.8,
                 verified: true
+            },
+            // NEW ADDITIONS
+            {
+                name: "Centro Autismo Monterrey",
+                city: "Monterrey",
+                country: "México",
+                lat: 25.6866,
+                lng: -100.3161,
+                specialty: "Diagnóstico Clínico",
+                bio: "Referente en el norte de México para diagnóstico y tratamiento integral del espectro autista.",
+                email: "contacto@autismomonterrey.mx",
+                phone: "+52 81 8123 4567",
+                rating: 4.9,
+                verified: true
+            },
+            {
+                name: "CLIMA - Centro Ann Sullivan",
+                city: "Lima",
+                country: "Perú",
+                lat: -12.0464,
+                lng: -77.0428,
+                specialty: "Educación Inclusiva",
+                bio: "Modelo educativo reconocido mundialmente para la inclusión de personas con habilidades diferentes.",
+                email: "info@annsullivanperu.org",
+                phone: "+51 1 263 1234",
+                rating: 5.0,
+                verified: true
+            },
+            {
+                name: "Fundación Chilena del Autismo",
+                city: "Santiago",
+                country: "Chile",
+                lat: -33.4489,
+                lng: -70.6693,
+                specialty: "Apoyo Comunitario",
+                bio: "Promoviendo la inclusión social y laboral de personas autistas en Chile.",
+                email: "contacto@autismochile.cl",
+                phone: "+56 2 2222 3333",
+                rating: 4.7,
+                verified: true
+            },
+            {
+                name: "Dan Marino Foundation",
+                city: "Miami",
+                country: "USA",
+                lat: 25.7617,
+                lng: -80.1918,
+                specialty: "Tecnología y Empleo",
+                bio: "Innovación en realidad virtual y preparación laboral para jóvenes adultos con autismo.",
+                email: "info@danmarinofoundation.org",
+                phone: "+1 954 123 4567",
+                rating: 4.9,
+                verified: true
+            },
+            {
+                name: "AMA - Assoc. de Amigos do Autista",
+                city: "São Paulo",
+                country: "Brasil",
+                lat: -23.5505,
+                lng: -46.6333,
+                specialty: "Terapia Comportamental",
+                bio: "Primera asociación de autismo en Brasil, ofreciendo tratamiento gratuito y de calidad.",
+                email: "contato@ama.org.br",
+                phone: "+55 11 3333 4444",
+                rating: 4.8,
+                verified: true
             }
         ];
 
