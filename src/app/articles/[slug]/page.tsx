@@ -74,17 +74,13 @@ export default async function ArticleDetailPage({
                         </Button>
                     </div>
 
-                    {/* TL;DR Box */}
-                    <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900 p-6">
-                        <h2 className="font-semibold text-lg mb-2 text-blue-900 dark:text-blue-100">TL;DR</h2>
-                        <p className="text-blue-800 dark:text-blue-200 leading-relaxed">{tldrSummary}</p>
-                    </Card>
+                    {/* TL;DR Removed as requested */}
                 </div>
 
                 {/* Content */}
                 <div className="prose dark:prose-invert max-w-none mb-12">
                     <section className="mb-8">
-                        <h2 className="text-2xl font-semibold mb-4">Background</h2>
+                        <h2 className="text-2xl font-semibold mb-4">Antecedentes</h2>
                         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                             {backgroundText}
                         </p>
@@ -93,7 +89,7 @@ export default async function ArticleDetailPage({
                     <Separator className="my-8" />
 
                     <section className="mb-8">
-                        <h2 className="text-2xl font-semibold mb-4">Key Findings</h2>
+                        <h2 className="text-2xl font-semibold mb-4">Hallazgos Clave</h2>
                         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                             {findingsText}
                         </p>
@@ -102,7 +98,7 @@ export default async function ArticleDetailPage({
                     <Separator className="my-8" />
 
                     <section className="mb-8">
-                        <h2 className="text-2xl font-semibold mb-4">Why This Matters</h2>
+                        <h2 className="text-2xl font-semibold mb-4">Por qué importa</h2>
                         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                             {whyItMatters}
                         </p>
@@ -111,7 +107,7 @@ export default async function ArticleDetailPage({
                     <Separator className="my-8" />
 
                     <section className="mb-8">
-                        <h2 className="text-2xl font-semibold mb-4">Practical Tips</h2>
+                        <h2 className="text-2xl font-semibold mb-4">Consejos Prácticos</h2>
                         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                             {practicalTips}
                         </p>
@@ -122,7 +118,7 @@ export default async function ArticleDetailPage({
                             <Separator className="my-8" />
                             <details className="mb-8">
                                 <summary className="text-2xl font-semibold mb-4 cursor-pointer hover:text-primary">
-                                    For Professionals: Technical Details ▼
+                                    Para Profesionales: Detalles Técnicos ▼
                                 </summary>
                                 <div className="mt-4 p-6 bg-muted/30 rounded-lg">
                                     <p className="text-muted-foreground leading-relaxed whitespace-pre-line">

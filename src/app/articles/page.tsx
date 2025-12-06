@@ -114,13 +114,13 @@ export default async function ArticlesPage() {
                                             {/* Show more details on the card */}
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                                                 <div className="bg-blue-50/50 dark:bg-blue-900/10 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
-                                                    <strong className="text-blue-700 dark:text-blue-300 block mb-1">🎯 {t('card.whyItMatters') || 'Por qué importa'}</strong>
+                                                    <strong className="text-blue-700 dark:text-blue-300 block mb-1">🎯 Por qué importa</strong>
                                                     <p className="line-clamp-2 text-muted-foreground">
                                                         {article.translations?.[0]?.whyItMatters || article.whyItMatters}
                                                     </p>
                                                 </div>
                                                 <div className="bg-purple-50/50 dark:bg-purple-900/10 p-3 rounded-lg border border-purple-100 dark:border-purple-900/30">
-                                                    <strong className="text-purple-700 dark:text-purple-300 block mb-1">🔍 {t('card.findings') || 'Hallazgos Clave'}</strong>
+                                                    <strong className="text-purple-700 dark:text-purple-300 block mb-1">🔍 Hallazgos Clave</strong>
                                                     <p className="line-clamp-2 text-muted-foreground">
                                                         {article.translations?.[0]?.findingsText || article.findingsText}
                                                     </p>
