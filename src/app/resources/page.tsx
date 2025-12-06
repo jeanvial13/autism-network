@@ -8,18 +8,21 @@ import { Input } from '@/components/ui/input';
 import { prisma } from '@/lib/prisma';
 import { getTranslations } from 'next-intl/server';
 
+// Removed Search and Filters as per user request
+import { ResourceGenerator } from '@/components/resources/ResourceGenerator';
+
 export default async function ResourcesPage() {
     const t = await getTranslations('resources');
 
-    // Fetch resources from database
+    // Fetch resources from database (Limit increased to show more results)
     let resources: any[] = [];
 
     try {
         if (prisma) {
             resources = await prisma.educationalResource.findMany({
-                take: 50,
+                take: 100,
                 orderBy: {
-                    lastCheckedDate: 'desc'
+                    createdAt: 'desc' // Newest first
                 }
             });
         }
@@ -37,16 +40,16 @@ export default async function ResourcesPage() {
         <main className="min-h-screen bg-background py-12 pt-24">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 {/* Header */}
-                <div className="mb-12">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-3 rounded-xl bg-primary/10 text-primary">
-                            <Download className="h-8 w-8" />
-                        </div>
-                        <h1 className="text-4xl font-bold text-foreground">{t('title')}</h1>
-                    </div>
-                    <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
+                <div className="mb-8 text-center">
+
+                    <h1 className="text-4xl font-bold text-foreground mb-4">{t('title')}</h1>
+                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8">
                         {t('subtitle')}
                     </p>
+
+                    {/* Auto-Generate AI Button */}
+                    <ResourceGenerator />
+
                     {resources.length === 0 && (
                         <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-xl">
                             <p className="text-sm text-blue-800 dark:text-blue-200">
@@ -54,56 +57,6 @@ export default async function ResourcesPage() {
                             </p>
                         </div>
                     )}
-                </div>
-
-                {/* Search */}
-                <div className="mb-8">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="text"
-                            placeholder={t('searchPlaceholder')}
-                            className="pl-10 rounded-full bg-white/50 border-white/20 focus:bg-white transition-all h-12"
-                            disabled
-                        />
-                    </div>
-                </div>
-
-                {/* Filters */}
-                <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <GlassSelect label={t('filters.topic')} defaultValue="">
-                        <option value="" disabled>{t('filters.topic')}</option>
-                        {[
-                            'communication',
-                            'social_skills',
-                            'sensory',
-                            'academic',
-                            'behavior_support',
-                            'daily_living',
-                        ].map((topic) => (
-                            <option key={topic} value={topic}>
-                                {topic.replace('_', ' ')}
-                            </option>
-                        ))}
-                    </GlassSelect>
-
-                    <GlassSelect label={t('filters.age')} defaultValue="">
-                        <option value="" disabled>{t('filters.age')}</option>
-                        {['early_childhood', 'elementary', 'teens', 'adults'].map((age) => (
-                            <option key={age} value={age}>
-                                {age.replace('_', ' ')}
-                            </option>
-                        ))}
-                    </GlassSelect>
-
-                    <GlassSelect label={t('filters.format')} defaultValue="">
-                        <option value="" disabled>{t('filters.format')}</option>
-                        {['worksheet', 'visual_schedule', 'social_story', 'coloring', 'guide'].map((format) => (
-                            <option key={format} value={format}>
-                                {format.replace('_', ' ')}
-                            </option>
-                        ))}
-                    </GlassSelect>
                 </div>
 
                 {/* Resources Grid */}

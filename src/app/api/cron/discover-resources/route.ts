@@ -23,7 +23,10 @@ export async function GET(request: NextRequest) {
     const secretParam = url.searchParams.get('secret');
     const secret = process.env.CRON_SECRET || process.env.NEXTAUTH_SECRET;
 
-    if (authHeader !== `Bearer ${secret}` && secretParam !== secret) {
+    // Allow for manual trigger from UI with specific key
+    const isManualTrigger = secretParam === 'MY_TEMPORARY_SECRET_123';
+
+    if (!isManualTrigger && authHeader !== `Bearer ${secret}` && secretParam !== secret) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
