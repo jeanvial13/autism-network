@@ -47,7 +47,7 @@ export default async function ArticleDetailPage({
     const technicalSection = translation?.technicalSection || article.technicalSection;
 
     return (
-        <main className="min-h-screen bg-background py-12">
+        <main className="min-h-screen bg-background pt-32 pb-12">
             <article className="mx-auto max-w-4xl px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">

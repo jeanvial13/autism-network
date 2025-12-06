@@ -41,29 +41,6 @@ OUTPUT STRUCTURE (JSON):
   "topics": ["specific_topic_1", "specific_topic_2"],
   "audience": ["parents", "autistic_adults", "professionals", "educators"],
   "evidenceType": "systematic_review" | "RCT" | "case_study" | "guidelines" | "observational" | "meta_analysis",
-  "ageGroups": ["early_childhood", "kids", "teens", "adults"]
-}
-
-IMPORTANT: Return ONLY valid JSON, no markdown formatting or extra text.
-`;
-
-export const ARTICLE_GENERATION_PROMPT_ES = `
-You are a medical writer specializing in autism research. Write a comprehensive, accessible article in SPANISH (Español) about the following research findings.
-
-REQUIREMENTS:
-- WRITE ONLY IN SPANISH.
-- Use autism-affirming language (e.g., "persona autista" or "persona en el espectro").
-- Be respectful and non-stigmatizing.
-- Avoid pathologizing language where inappropriate.
-- Write clearly for families, with a technical section for professionals.
-- Include practical applications.
-- Cite sources accurately.
-- Be calm, supportive, and non-alarmist.
-
-RESEARCH FINDINGS / CONTENT:
-{FINDINGS_SUMMARY}
-
-ORIGINAL SOURCES:
 {SOURCE_URLS}
 
 PUBLISHED DATE: {ORIGINAL_DATE}
