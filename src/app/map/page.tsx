@@ -1,3 +1,5 @@
+import { prisma } from '@/lib/prisma';
+import MapClient from '@/components/map/MapClient';
 import { VerificationStatus } from '@prisma/client';
 
 export default async function MapPage() {
