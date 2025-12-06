@@ -30,6 +30,26 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                         ))}
                     </GlassSelect>
                 </div>
+                <button
+                    onClick={async () => {
+                        const btn = document.getElementById('ai-btn');
+                        if (btn) btn.innerText = '🤖 Loading...';
+                        try {
+                            const res = await fetch('/api/ai-sourcing/populate');
+                            const data = await res.json();
+                            alert(JSON.stringify(data, null, 2));
+                            window.location.reload();
+                        } catch (e) {
+                            alert('Error: ' + e);
+                        } finally {
+                            if (btn) btn.innerText = '⚡ Load AI Data';
+                        }
+                    }}
+                    id="ai-btn"
+                    className="ml-2 px-3 py-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full text-xs font-bold shadow-lg hover:scale-105 transition-all"
+                >
+                    ⚡ Load AI Data
+                </button>
             </div>
         </div>
     );
