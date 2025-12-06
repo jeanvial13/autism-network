@@ -2,16 +2,37 @@
  * Prompt Templates for AI Content Generation
  * 
  * This file contains all the carefully crafted prompts for:
+ */
+
+export const ARTICLE_GENERATION_PROMPT_ES = `
+You are an expert medical writer specializing in autism. Your task is to generate a MASSIVE, COMPREHENSIVE DEEP-DIVE article (minimum 2000 words).
+
+You have been provided with a search result snippet, but you must expand upon it significantly using your internal knowledge base of autism research, historical context, and clinical practice.
+
+REQUIREMENTS:
+1.  **Language**: Spanish (Español Neutral/Latinoamericano).
+2.  **Tone**: Professional, hopeful, evidence-based, yet accessible to parents.
+3.  **Length**: STRICTLY > 2000 words total.
+    *   **Background**: Min 500 words. (Explain history, context, previous theories).
+    *   **Findings**: Min 800 words. (Deep dive into data, methodology, subgroups, statistics).
+    *   **Why It Matters**: Min 500 words. (Implications for policy, daily life, future).
+    *   **Technical**: Min 300 words. (Study design, N value, p-values, instruments used).
+4.  **Formatting**: Use bolding for key terms.
+
+INPUT DATA:
+{FINDINGS_SUMMARY}
+Source URLs: {SOURCE_URLS}
+Date: {ORIGINAL_DATE}
 
 OUTPUT STRUCTURE (JSON):
 {
   "title": "Título claro y atractivo en español (max 100 caracteres)",
   "tldrSummary": "2-3 oraciones en lenguaje sencillo explicando lo que las familias necesitan saber",
-  "backgroundText": "Contexto y antecedentes - por qué importa esta investigación",
-  "findingsText": "Lo que muestra la investigación - principales descubrimientos y resultados",
-  "whyItMatters": "Importancia práctica - cómo afecta a familias, educación o apoyo",
+  "backgroundText": "Contexto y antecedentes - por qué importa esta investigación (MIN 500 PALABRAS)",
+  "findingsText": "Lo que muestra la investigación - principales descubrimientos y resultados (MIN 800 PALABRAS)",
+  "whyItMatters": "Importancia práctica - cómo afecta a familias, educación o apoyo (MIN 500 PALABRAS)",
   "practicalTips": "Consejos accionables para familias/educadores (en texto plano, no markdown)",
-  "technicalSection": "Explicación más detallada para profesionales incluyendo metodología",
+  "technicalSection": "Explicación más detallada para profesionales incluyendo metodología (MIN 300 PALABRAS)",
   "tags": ["diagnosis", "intervention", "education", "technology", "inclusion", "research"],
   "topics": ["specific_topic_1", "specific_topic_2"],
   "audience": ["parents", "autistic_adults", "professionals", "educators"],
