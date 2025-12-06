@@ -124,74 +124,60 @@ export async function discoverAutismResources(): Promise<
     Array<DiscoveredResource & ResourceDetails>
 > {
     const queries = [
-        'site:.org OR site:.edu OR site:.gov "autismo" agenda visual gratis filetype:pdf',
-        'site:.org OR site:.edu "autismo" historia social gratis pdf',
-        'site:.org "autismo" tablero comunicación imprimible gratis -precio -tienda',
-        'site:.edu "autismo" estrategias guía maestros gratis',
-        'site:.gov "autismo" actividades sensoriales guía gratis',
+        'site:.org OR site:.edu "autismo" actividades imprimibles pdf gratis',
+        'site:.org "autismo" pictogramas descargar pdf',
+        'site:.edu "autismo" cuentos sociales pdf gratis',
+        'site:.org "autismo" guía maestros aula pdf',
+        'site:.gov "autismo" kit herramientas padres pdf',
     ];
 
     const allResources: DiscoveredResource[] = [];
 
-    for (const query of queries) {
+    // Limit queries to avoid too many results
+    for (const query of queries.slice(0, 3)) {
         const resources = await searchFreeResources(query);
         allResources.push(...resources);
     }
 
-    // FALLBACK: Recursos verificados sin fines de lucro (En Español/Internacional)
+    // FALLBACK: Recursos verificados (SOLO MATERIALES DIRECTOS: PDF/Guías)
+    // Limitado a 5 recursos de alta calidad que funcionan
     if (allResources.length === 0) {
-        console.log('No resources found via API, using verified non-profit curated list (Spanish)');
+        console.log('No resources found via API, using verified top 5 material list');
         allResources.push(
             {
-                title: 'CDC: Indicadores del Desarrollo',
-                url: 'https://www.cdc.gov/ncbddd/spanish/autism/index.html',
-                fileType: 'webpage',
-                rawDescription: 'Guía oficial del CDC en español sobre los indicadores del desarrollo y el autismo.',
+                title: 'CDC: Indicadores del Desarrollo (Checklist PDF)',
+                url: 'https://www.cdc.gov/ncbddd/Spanish/actearly/pdf/Checklists-All-Spanish.pdf',
+                fileType: 'PDF',
+                rawDescription: 'Lista de verificación completa de indicadores del desarrollo del CDC para imprimir.',
             },
             {
-                title: 'WHO: Trastornos del espectro autista',
-                url: 'https://www.who.int/es/news-room/fact-sheets/detail/autism-spectrum-disorders',
-                fileType: 'webpage',
-                rawDescription: 'Hoja informativa de la Organización Mundial de la Salud sobre el autismo y normas globales.',
+                title: 'ARASAAC: Pictogramas para la Comunicación',
+                url: 'https://arasaac.org',
+                fileType: 'image',
+                rawDescription: 'El mayor catálogo mundial de pictogramas gratuitos para descargar y crear tableros de comunicación.',
             },
             {
-                title: 'Autism Speaks: Manual de los 100 Días',
-                url: 'https://www.autismspeaks.org/tool-kit-100-day-kit-young-children-en-espanol', // Ensure this URL is stable or use root
-                fileType: 'guide',
-                rawDescription: 'Una guía completa y gratuita para familias de niños recién diagnosticados con autismo.',
-            },
-            {
-                title: 'UNESCO: Inclusión Digital',
+                title: 'UNESCO: Guía de Inclusión Digital (PDF)',
                 url: 'https://unesdoc.unesco.org/ark:/48223/pf0000375276',
                 fileType: 'PDF',
-                rawDescription: 'Guía de políticas de la UNESCO sobre el uso de soluciones digitales para empoderar a personas con autismo.',
+                rawDescription: 'Manual completo sobre soluciones digitales para la educación inclusiva.',
             },
             {
-                title: 'OCALI: Módulos de Internet sobre Autismo',
-                url: 'https://autisminternetmodules.org/',
-                fileType: 'webpage',
-                rawDescription: 'Módulos de capacitación gratuitos y de alta calidad para padres y profesionales (Multilingüe).',
+                title: 'Autism Speaks: Manual de Ayuda (PDF)',
+                url: 'https://www.autismspeaks.org/sites/default/files/2018-09/Manual%20de%20los%20100%20Dias%20Para%20Familias%20de%20Ninos%20Pequenos%20Recien%20Diagnosticados.pdf',
+                fileType: 'PDF',
+                rawDescription: 'Kit de herramientas de 100 días: Guía práctica y completa en PDF.',
             },
             {
-                title: 'Reading Rockets: Instrucción de Lectura',
-                url: 'https://www.readingrockets.org/topics/autism-spectrum-disorder', // Using Topic Page
-                fileType: 'guide',
-                rawDescription: 'Estrategias basadas en evidencia para enseñar a leer a niños con TEA.',
-            },
-            {
-                title: 'Do2Learn: Horarios Visuales Gratuitos',
+                title: 'Do2Learn: Horarios Visuales Imprimibles',
                 url: 'https://do2learn.com/picturecards/VisualSchedules/index.htm',
-                fileType: 'image',
-                rawDescription: 'Horarios visuales imprimibles gratuitos y tablas de comportamiento para rutinas diarias.',
-            },
-            {
-                title: 'VCU-ACE: Prácticas Basadas en Evidencia',
-                url: 'https://vcuautismcenter.org/resources/', // Using generic resources page
-                fileType: 'webpage',
-                rawDescription: 'Lista de prácticas basadas en evidencia de la Virginia Commonwealth University.',
+                fileType: 'activity',
+                rawDescription: 'Tarjetas y horarios visuales listos para imprimir y usar en el aula o casa.',
             }
         );
     }
+
+
 
     // Deduplicate by URL
     const uniqueUrls = new Set<string>();
@@ -208,6 +194,9 @@ export async function discoverAutismResources(): Promise<
     const processedResources: Array<DiscoveredResource & ResourceDetails> = [];
 
     for (const resource of uniqueResources) {
+        // Stop if we have enough resources
+        if (processedResources.length >= 5) break;
+
         try {
             const details = await generateResourceDescription(resource);
             processedResources.push({
@@ -219,7 +208,7 @@ export async function discoverAutismResources(): Promise<
         }
     }
 
-    return processedResources;
+    return processedResources.slice(0, 5);
 }
 
 /**
