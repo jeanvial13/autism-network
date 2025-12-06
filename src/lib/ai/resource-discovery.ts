@@ -124,11 +124,10 @@ export async function discoverAutismResources(): Promise<
     Array<DiscoveredResource & ResourceDetails>
 > {
     const queries = [
-        'site:.org OR site:.edu "autismo" actividades imprimibles pdf gratis',
-        'site:.org "autismo" pictogramas descargar pdf',
+        'site:.org OR site:.edu OR site:.gov "autismo" actividades imprimibles gratis',
+        'site:.org "autism" printable visual schedules pdf free',
         'site:.edu "autismo" cuentos sociales pdf gratis',
-        'site:.org "autismo" guía maestros aula pdf',
-        'site:.gov "autismo" kit herramientas padres pdf',
+        'site:.org "autism" teacher guides classroom activities free',
     ];
 
     const allResources: DiscoveredResource[] = [];
@@ -139,40 +138,34 @@ export async function discoverAutismResources(): Promise<
         allResources.push(...resources);
     }
 
-    // FALLBACK: Recursos verificados (SOLO MATERIALES DIRECTOS: PDF/Guías)
-    // Limitado a 5 recursos de alta calidad que funcionan
+    // FALLBACK: Recursos verificados (Mixto Español/Inglés - Stable Landing Pages)
+    // Limitado a 4 recursos de alta calidad
     if (allResources.length === 0) {
-        console.log('No resources found via API, using verified top 5 material list');
+        console.log('No resources found via API, using verified top 4 material list');
         allResources.push(
             {
-                title: 'CDC: Indicadores del Desarrollo (Checklist PDF)',
-                url: 'https://www.cdc.gov/ncbddd/Spanish/actearly/pdf/Checklists-All-Spanish.pdf',
-                fileType: 'PDF',
-                rawDescription: 'Lista de verificación completa de indicadores del desarrollo del CDC para imprimir.',
-            },
-            {
-                title: 'ARASAAC: Pictogramas para la Comunicación',
+                title: 'ARASAAC: Pictogramas & Visuales (ES)',
                 url: 'https://arasaac.org',
                 fileType: 'image',
-                rawDescription: 'El mayor catálogo mundial de pictogramas gratuitos para descargar y crear tableros de comunicación.',
+                rawDescription: 'El mayor catálogo mundial de pictogramas gratuitos para descargar.',
             },
             {
-                title: 'UNESCO: Guía de Inclusión Digital (PDF)',
-                url: 'https://unesdoc.unesco.org/ark:/48223/pf0000375276',
-                fileType: 'PDF',
-                rawDescription: 'Manual completo sobre soluciones digitales para la educación inclusiva.',
+                title: 'CDC: Materiales para Padres (ES)',
+                url: 'https://www.cdc.gov/ncbddd/spanish/actearly/materials.html',
+                fileType: 'webpage',
+                rawDescription: 'Kits y listas de verificación del desarrollo para imprimir (Gratis).',
             },
             {
-                title: 'Autism Speaks: Manual de Ayuda (PDF)',
-                url: 'https://www.autismspeaks.org/sites/default/files/2018-09/Manual%20de%20los%20100%20Dias%20Para%20Familias%20de%20Ninos%20Pequenos%20Recien%20Diagnosticados.pdf',
-                fileType: 'PDF',
-                rawDescription: 'Kit de herramientas de 100 días: Guía práctica y completa en PDF.',
-            },
-            {
-                title: 'Do2Learn: Horarios Visuales Imprimibles',
+                title: 'Do2Learn: Visual Schedules (EN)',
                 url: 'https://do2learn.com/picturecards/VisualSchedules/index.htm',
                 fileType: 'activity',
-                rawDescription: 'Tarjetas y horarios visuales listos para imprimir y usar en el aula o casa.',
+                rawDescription: 'Free printable visual schedules and behavioral charts for daily routines.',
+            },
+            {
+                title: 'VCU-ACE: Visual Supports (EN)',
+                url: 'https://vcuautismcenter.org/resources/visuals.cfm',
+                fileType: 'activity',
+                rawDescription: 'Downloadable visual supports and structure guides for classrooms.',
             }
         );
     }
@@ -195,7 +188,7 @@ export async function discoverAutismResources(): Promise<
 
     for (const resource of uniqueResources) {
         // Stop if we have enough resources
-        if (processedResources.length >= 5) break;
+        if (processedResources.length >= 4) break;
 
         try {
             const details = await generateResourceDescription(resource);
@@ -208,7 +201,7 @@ export async function discoverAutismResources(): Promise<
         }
     }
 
-    return processedResources.slice(0, 5);
+    return processedResources.slice(0, 4);
 }
 
 /**
