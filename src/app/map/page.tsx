@@ -10,9 +10,8 @@ export default async function MapPage() {
         if (prisma) {
             professionals = await prisma.professionalProfile.findMany({
                 where: {
-                    // Show both VERIFIED and anything else if we want, but for now let's stick to verified
-                    // relying on the correct Enum type
-                    verificationStatus: VerificationStatus.VERIFIED
+                    // Fetch ALL profiles for debugging visibility
+                    // verificationStatus: VerificationStatus.VERIFIED
                 },
                 include: {
                     user: {
