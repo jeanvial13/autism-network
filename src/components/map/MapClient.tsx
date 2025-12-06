@@ -26,13 +26,8 @@ interface MapClientProps {
 }
 
 export default function MapClient({ providers }: MapClientProps) {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [selectedProvider, setSelectedProvider] = useState<any>(null);
     const [filters, setFilters] = useState({
-        services: [] as string[],
-        verifiedOnly: false,
-        verifiedOnly: false,
         distance: 50 // Default to "Near Me" (50 km)
     });
 
@@ -40,29 +35,11 @@ export default function MapClient({ providers }: MapClientProps) {
     const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
     const t = useTranslations('map');
 
-    // Debounce search query
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedSearch(searchQuery);
-        }, 300);
-        return () => clearTimeout(timer);
-    }, [searchQuery]);
+
 
     // Filter and Sort Providers
     const filteredProviders = useMemo(() => {
         let result = providers.filter(center => {
-            // Search Query
-            const matchesSearch =
-                center.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-                center.city.toLowerCase().includes(debouncedSearch.toLowerCase());
-
-            // Service Filter
-            const matchesServices = filters.services.length === 0 ||
-                filters.services.some(s => center.services.includes(s));
-
-            // Verified Filter
-            const matchesVerified = !filters.verifiedOnly || center.verified;
-
             // Distance Filter (if user location available)
             let matchesDistance = true;
             if (userLocation.latitude && userLocation.longitude) {
@@ -75,7 +52,7 @@ export default function MapClient({ providers }: MapClientProps) {
                 matchesDistance = dist <= filters.distance;
             }
 
-            return matchesSearch && matchesServices && matchesVerified && matchesDistance;
+            return matchesDistance;
         });
 
         // Sort Providers
@@ -101,7 +78,8 @@ export default function MapClient({ providers }: MapClientProps) {
         });
 
         return result;
-    }, [providers, debouncedSearch, filters, userLocation]);
+        return result;
+    }, [providers, filters, userLocation]);
 
     return (
         <main className="h-[calc(100vh-4rem)] flex flex-col lg:flex-row bg-background overflow-hidden relative">
@@ -113,8 +91,8 @@ export default function MapClient({ providers }: MapClientProps) {
                 h-1/2 lg:h-full shadow-xl lg:shadow-none
             `}>
                 {/* Header */}
-                <div className="p-4 border-b border-border bg-background/50">
-                    <div className="flex items-center justify-between mb-3">
+                <div className="relative z-20 flex-shrink-0 border-b border-border bg-background/50 backdrop-blur-sm">
+                    <div className="flex items-center justify-between p-4 pb-2">
                         <div className="flex items-center gap-2">
                             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                                 <MapPin className="h-4 w-4" />
@@ -123,27 +101,9 @@ export default function MapClient({ providers }: MapClientProps) {
                                 <h1 className="text-lg font-bold text-foreground leading-none">{t('title')}</h1>
                                 <p className="text-xs text-muted-foreground mt-0.5">
                                     {filteredProviders.length} resultados
-                                    {userLocation.latitude && (
-                                        <span className="ml-1 opacity-50 font-mono">
-                                            ({userLocation.latitude.toFixed(2)}, {userLocation.longitude?.toFixed(2)})
-                                        </span>
-                                    )}
                                 </p>
                             </div>
                         </div>
-                        {userLocation.loading && <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />}
-                    </div>
-
-                    {/* Search */}
-                    <div className="relative mb-6">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
-                        <Input
-                            type="text"
-                            placeholder={t('searchPlaceholder')}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-9 h-9 text-sm rounded-xl bg-secondary/50 border-transparent focus:bg-background focus:border-primary/20 transition-all shadow-sm"
-                        />
                     </div>
 
                     {/* Filters */}
