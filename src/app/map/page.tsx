@@ -1,5 +1,4 @@
-import { prisma } from '@/lib/prisma';
-import MapClient from '@/components/map/MapClient';
+import { VerificationStatus } from '@prisma/client';
 
 export default async function MapPage() {
     // Fetch professional profiles from database (these are the providers)
@@ -9,13 +8,16 @@ export default async function MapPage() {
         if (prisma) {
             professionals = await prisma.professionalProfile.findMany({
                 where: {
-                    verificationStatus: 'VERIFIED'
+                    // Show both VERIFIED and anything else if we want, but for now let's stick to verified
+                    // relying on the correct Enum type
+                    verificationStatus: VerificationStatus.VERIFIED
                 },
                 include: {
                     user: {
                         select: {
                             name: true,
-                            email: true
+                            email: true,
+                            image: true
                         }
                     }
                 },
@@ -37,7 +39,7 @@ export default async function MapPage() {
         lat: p.locationLat || 0,
         lng: p.locationLng || 0,
         services: p.specialties,
-        verified: p.verificationStatus === 'VERIFIED',
+        verified: p.verificationStatus === VerificationStatus.VERIFIED || p.verified === true,
         image: p.user.image || '/placeholder-center.jpg',
         email: p.contactEmail || p.user.email,
         rating: p.rating,
