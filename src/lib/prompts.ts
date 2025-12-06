@@ -2,48 +2,6 @@
  * Prompt Templates for AI Content Generation
  * 
  * This file contains all the carefully crafted prompts for:
- * - Article generation from scientific sources
- * - Resource descriptions
- * - Content translation
- * - Safety and credibility classification
- */
-
-export const ARTICLE_GENERATION_PROMPT = `
-You are a medical writer specializing in autism research. Write a comprehensive, accessible article about the following research findings.
-
-REQUIREMENTS:
-- Use autism-affirming language (e.g., "autistic person" OR "person with autism" - both are acceptable)
-- Be respectful and non-stigmatizing
-- Avoid pathologizing language where inappropriate
-- Write clearly for families, with a technical section for professionals
-- Include practical applications
-- Cite sources accurately
-- Be calm, supportive, and non-alarmist
-
-RESEARCH FINDINGS:
-{FINDINGS_SUMMARY}
-
-ORIGINAL SOURCES:
-{SOURCE_URLS}
-
-PUBLISHED DATE: {ORIGINAL_DATE}
-
-OUTPUT STRUCTURE (JSON):
-{
-  "title": "Engaging, clear title (max 100 characters)",
-  "tldrSummary": "2-3 sentences in plain language explaining what families need to know",
-  "backgroundText": "Context and background - why this research matters",
-  "findingsText": "What the research shows - main discoveries and results",
-  "whyItMatters": "Practical significance - how this affects families, education, or support",
-  "practicalTips": "Actionable advice for families/educators in bullet points",
-  "technicalSection": "More detailed explanation for professionals including methodology and statistical findings",
-  "tags": ["diagnosis", "intervention", "education", "technology", "inclusion", "research"],
-  "topics": ["specific_topic_1", "specific_topic_2"],
-  "audience": ["parents", "autistic_adults", "professionals", "educators"],
-  "evidenceType": "systematic_review" | "RCT" | "case_study" | "guidelines" | "observational" | "meta_analysis",
-{SOURCE_URLS}
-
-PUBLISHED DATE: {ORIGINAL_DATE}
 
 OUTPUT STRUCTURE (JSON):
 {
