@@ -141,56 +141,71 @@ export async function GET(request: NextRequest) {
         let count = 0;
 
         for (const prov of verifiedProviders) {
-            // Check if user exists to avoid duplicates
-            const existing = await prisma.user.findFirst({
-                where: { email: prov.email }
-            });
+            try {
+                // 1. Ensure User Exists (Find or Create)
+                let user = await prisma.user.findFirst({
+                    where: { email: prov.email }
+                });
 
-            if (existing) continue;
-
-            // 1. Create Base User
-            const user = await prisma.user.create({
-                data: {
-                    name: prov.name,
-                    email: prov.email,
-                    role: "PROFESSIONAL",
-                    image: `https://ui-avatars.com/api/?name=${encodeURIComponent(prov.name)}&background=0D8ABC&color=fff`
+                if (!user) {
+                    user = await prisma.user.create({
+                        data: {
+                            name: prov.name,
+                            email: prov.email,
+                            role: "PROFESSIONAL",
+                            image: `https://ui-avatars.com/api/?name=${encodeURIComponent(prov.name)}&background=0D8ABC&color=fff`
+                        }
+                    });
+                    console.log(`[AI SOURCING] Created new user: ${prov.name}`);
                 }
-            });
 
-            // 2. Create Professional Profile
-            await prisma.professionalProfile.create({
-                data: {
-                    userId: user.id,
-                    bio: prov.bio,
-                    specialties: [prov.specialty, "Autismo", "Apoyo Integral"],
-                    city: prov.city,
-                    licenseCountry: prov.country,
-                    locationLat: prov.lat,
-                    locationLng: prov.lng,
-                    rating: prov.rating,
-                    verificationStatus: VerificationStatus.VERIFIED,
-                    verified: true,
-                    licenseNumber: `AI-VERIFIED-${Math.floor(Math.random() * 10000)}`,
-                    phoneNumber: prov.phone,
-                    contactEmail: prov.email,
-                    experienceYears: 10,
-                    patientCount: 100
+                // 2. Ensure Professional Profile Exists (Idempotent)
+                const existingProfile = await prisma.professionalProfile.findUnique({
+                    where: { userId: user.id }
+                });
+
+                if (!existingProfile) {
+                    await prisma.professionalProfile.create({
+                        data: {
+                            userId: user.id,
+                            bio: prov.bio,
+                            specialties: [prov.specialty, "Autismo", "Apoyo Integral"],
+                            city: prov.city,
+                            licenseCountry: prov.country,
+                            locationLat: prov.lat,
+                            locationLng: prov.lng,
+                            rating: prov.rating,
+                            verificationStatus: VerificationStatus.VERIFIED, // Explicit Enum
+                            verified: true, // Legacy boolean
+                            licenseNumber: `AI-VERIFIED-${Math.floor(Math.random() * 10000)}`,
+                            phoneNumber: prov.phone,
+                            contactEmail: prov.email,
+                            experienceYears: 10,
+                            patientCount: 100
+                        }
+                    });
+                    console.log(`[AI SOURCING] Created missing profile for: ${prov.name}`);
+                    count++;
+                } else {
+                    console.log(`[AI SOURCING] Profile already exists for: ${prov.name}`);
                 }
-            });
-            count++;
+
+            } catch (innerError) {
+                // Catch error for individual provider so one failure doesn't stop the whole batch
+                console.error(`[AI SOURCING] Failed to populate ${prov.name}:`, innerError);
+            }
         }
 
-        console.log(`[AI SOURCING] Automatically populated ${count} verified providers.`);
+        console.log(`[AI SOURCING] Automatically populated ${count} new verified profiles.`);
 
         return NextResponse.json({
             success: true,
-            message: `AI Agent successfully sourced and added ${count} verified providers.`,
+            message: `AI Agent processing complete. added_new_profiles: ${count}`,
             added: count
         });
 
     } catch (error) {
-        console.error('[AI SOURCING] Error:', error);
+        console.error('[AI SOURCING] Critical Error:', error);
         return NextResponse.json({
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error',
