@@ -10,7 +10,7 @@ interface FilterBarProps {
     onFilterChange: (filters: any) => void;
 }
 
-const DISTANCE_OPTIONS = [5, 10, 25, 50, 100];
+const DISTANCE_OPTIONS = [5, 10, 25, 50, 100, 1000, 5000];
 
 export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
     return (
@@ -22,7 +22,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                         value={filters.distance}
                         onChange={(e) => onFilterChange({ ...filters, distance: Number(e.target.value) })}
                     >
-                        <option value="20000">Global</option>
+                        <option value="20000">Global (Todo el Mundo)</option>
                         {DISTANCE_OPTIONS.map(dist => (
                             <option key={dist} value={dist}>
                                 {dist} km
