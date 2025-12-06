@@ -78,7 +78,7 @@ export default function MapClient({ providers }: MapClientProps) {
         });
 
         return result;
-        return result;
+
     }, [providers, filters, userLocation]);
 
     return (
