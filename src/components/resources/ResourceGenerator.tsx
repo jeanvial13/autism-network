@@ -39,10 +39,10 @@ export function ResourceGenerator() {
             <div className="text-center mb-4">
                 <h3 className="text-lg font-semibold flex items-center justify-center gap-2">
                     <Sparkles className="h-5 w-5 text-purple-500" />
-                    AI Resource Discovery
+                    Descubrimiento de Recursos IA
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                    Use our AI agent to discover and verify new autism educational resources from the web.
+                    Usa nuestro agente de IA para descubrir y verificar recursos educativos sobre autismo en la web.
                 </p>
             </div>
 
@@ -60,19 +60,19 @@ export function ResourceGenerator() {
                 {isLoading ? (
                     <>
                         <RefreshCw className="h-4 w-4 animate-spin" />
-                        Scanning Web...
+                        Buscando en la web...
                     </>
                 ) : status === 'success' ? (
                     <>
-                        ✅ Resources Found!
+                        ✅ ¡Recursos Encontrados!
                     </>
                 ) : status === 'error' ? (
                     <>
-                        ❌ Error (Try Again)
+                        ❌ Error (Intentar de nuevo)
                     </>
                 ) : (
                     <>
-                        ✨ Generate New Resources
+                        ✨ Generar Nuevos Recursos
                     </>
                 )}
             </button>

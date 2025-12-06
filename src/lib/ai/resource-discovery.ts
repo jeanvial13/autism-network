@@ -124,11 +124,11 @@ export async function discoverAutismResources(): Promise<
     Array<DiscoveredResource & ResourceDetails>
 > {
     const queries = [
-        'site:.org OR site:.edu OR site:.gov "autism" visual schedule free filetype:pdf',
-        'site:.org OR site:.edu "autism" social story free pdf',
-        'site:.org "autism" communication board printable free -price -shop',
-        'site:.edu "autism" strategies teacher guide free',
-        'site:.gov "autism" sensory activities guide free',
+        'site:.org OR site:.edu OR site:.gov "autismo" agenda visual gratis filetype:pdf',
+        'site:.org OR site:.edu "autismo" historia social gratis pdf',
+        'site:.org "autismo" tablero comunicación imprimible gratis -precio -tienda',
+        'site:.edu "autismo" estrategias guía maestros gratis',
+        'site:.gov "autismo" actividades sensoriales guía gratis',
     ];
 
     const allResources: DiscoveredResource[] = [];
@@ -138,57 +138,57 @@ export async function discoverAutismResources(): Promise<
         allResources.push(...resources);
     }
 
-    // FALLBACK: Verified High-Quality Non-Profit Resources
+    // FALLBACK: Recursos verificados sin fines de lucro (En Español/Internacional)
     if (allResources.length === 0) {
-        console.log('No resources found via API, using verified non-profit curated list');
+        console.log('No resources found via API, using verified non-profit curated list (Spanish)');
         allResources.push(
             {
-                title: 'CDC: Autism Milestones Tracker',
-                url: 'https://www.cdc.gov/ncbddd/autism/access/early-intervention.html',
+                title: 'CDC: Indicadores del Desarrollo',
+                url: 'https://www.cdc.gov/ncbddd/spanish/autism/index.html',
                 fileType: 'webpage',
-                rawDescription: 'Official CDC guide for tracking developmental milestones and early intervention.'
+                rawDescription: 'Guía oficial del CDC en español sobre los indicadores del desarrollo y el autismo.',
             },
             {
-                title: 'WHO: Autism Spectrum Disorders',
-                url: 'https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders',
+                title: 'WHO: Trastornos del espectro autista',
+                url: 'https://www.who.int/es/news-room/fact-sheets/detail/autism-spectrum-disorders',
                 fileType: 'webpage',
-                rawDescription: 'World Health Organization comprehensive fact sheet and global standards on autism.'
+                rawDescription: 'Hoja informativa de la Organización Mundial de la Salud sobre el autismo y normas globales.',
             },
             {
-                title: 'Autism Speaks: 100 Day Kit',
-                url: 'https://www.autismspeaks.org/tool-kit/100-day-kit-young-children',
+                title: 'Autism Speaks: Manual de los 100 Días',
+                url: 'https://www.autismspeaks.org/tool-kit-100-day-kit-young-children-en-espanol', // Ensure this URL is stable or use root
                 fileType: 'guide',
-                rawDescription: 'A free, comprehensive guide for families of children recently diagnosed with autism.'
+                rawDescription: 'Una guía completa y gratuita para familias de niños recién diagnosticados con autismo.',
             },
             {
-                title: 'UNESCO: Digital Inclusion for Autism',
+                title: 'UNESCO: Inclusión Digital',
                 url: 'https://unesdoc.unesco.org/ark:/48223/pf0000375276',
                 fileType: 'PDF',
-                rawDescription: 'UNESCO policy guide on using digital solutions to empower people with autism.'
+                rawDescription: 'Guía de políticas de la UNESCO sobre el uso de soluciones digitales para empoderar a personas con autismo.',
             },
             {
-                title: 'OCALI: Autism Internet Modules',
+                title: 'OCALI: Módulos de Internet sobre Autismo',
                 url: 'https://autisminternetmodules.org/',
                 fileType: 'webpage',
-                rawDescription: 'Free high-quality training modules for parents and professionals from OCALI.'
+                rawDescription: 'Módulos de capacitación gratuitos y de alta calidad para padres y profesionales (Multilingüe).',
             },
             {
-                title: 'Reading Rockets: Literacy for Autism',
-                url: 'https://www.readingrockets.org/article/literacy-instruction-students-autism-spectrum-disorder',
+                title: 'Reading Rockets: Instrucción de Lectura',
+                url: 'https://www.readingrockets.org/topics/autism-spectrum-disorder', // Using Topic Page
                 fileType: 'guide',
-                rawDescription: 'Evidence-based strategies for teaching reading to children with ASD.'
+                rawDescription: 'Estrategias basadas en evidencia para enseñar a leer a niños con TEA.',
             },
             {
-                title: 'Do2Learn: Free Visual Schedules',
+                title: 'Do2Learn: Horarios Visuales Gratuitos',
                 url: 'https://do2learn.com/picturecards/VisualSchedules/index.htm',
                 fileType: 'image',
-                rawDescription: 'Free printable visual schedules and behavioral charts for daily routines.'
+                rawDescription: 'Horarios visuales imprimibles gratuitos y tablas de comportamiento para rutinas diarias.',
             },
             {
-                title: 'VCU-ACE: Evidence-Based Practices',
-                url: 'https://vcuautismcenter.org/resources/evidence_based_practices.cfm',
+                title: 'VCU-ACE: Prácticas Basadas en Evidencia',
+                url: 'https://vcuautismcenter.org/resources/', // Using generic resources page
                 fileType: 'webpage',
-                rawDescription: 'Virginia Commonwealth University list of evidence-based practices for autism.'
+                rawDescription: 'Lista de prácticas basadas en evidencia de la Virginia Commonwealth University.',
             }
         );
     }

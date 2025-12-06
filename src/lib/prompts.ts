@@ -57,12 +57,13 @@ File Type: {FILE_TYPE}
 Apparent Topic: {TOPIC}
 
 Your task:
-1. Write a clear 2-3 sentence description
+1. Write a clear 2-3 sentence description IN SPANISH (Español)
 2. Identify who it's for (age/audience)
 3. What skills or areas it helps develop
 4. 2-3 suggested uses
 
 Requirements:
+- Write ONLY IN SPANISH
 - Be warm, helpful, and practical
 - Use autism-affirming language
 - Focus on strengths and capabilities
@@ -71,12 +72,12 @@ Requirements:
 
 OUTPUT (JSON):
 {
-  "description": "Clear, friendly description of what this resource is",
+  "description": "Descripción clara y amigable en español de lo que es este recurso",
   "targetAge": ["early_childhood", "elementary", "teens", "adults"],
   "audience": ["parent", "teacher", "therapist", "autistic_individual"],
   "topics": ["communication", "social_skills", "sensory", "academic", "daily_living", "behavior_support", "executive_function"],
   "format": ["worksheet", "coloring", "visual_schedule", "guide", "activity", "social_story"],
-  "suggestedUses": ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
+  "suggestedUses": ["Sugerencia 1", "Sugerencia 2", "Sugerencia 3"]
 }
 
 IMPORTANT: Return ONLY valid JSON.
@@ -217,31 +218,31 @@ IMPORTANT: Return ONLY valid JSON.
  * Helper function to fill in prompt templates
  */
 export function fillPromptTemplate(
-    template: string,
-    variables: Record<string, string>
+  template: string,
+  variables: Record<string, string>
 ): string {
-    let filled = template;
-    for (const [key, value] of Object.entries(variables)) {
-        filled = filled.replace(new RegExp(`\\{${key}\\}`, 'g'), value);
-    }
-    return filled;
+  let filled = template;
+  for (const [key, value] of Object.entries(variables)) {
+    filled = filled.replace(new RegExp(`\\{${key}\\}`, 'g'), value);
+  }
+  return filled;
 }
 
 /**
  * Parse JSON response from OpenAI, handling potential formatting issues
  */
 export function parseAIResponse<T>(response: string): T {
-    // Remove markdown code blocks if present
-    let cleaned = response.trim();
-    if (cleaned.startsWith('```json')) {
-        cleaned = cleaned.slice(7);
-    }
-    if (cleaned.startsWith('```')) {
-        cleaned = cleaned.slice(3);
-    }
-    if (cleaned.endsWith('```')) {
-        cleaned = cleaned.slice(0, -3);
-    }
+  // Remove markdown code blocks if present
+  let cleaned = response.trim();
+  if (cleaned.startsWith('```json')) {
+    cleaned = cleaned.slice(7);
+  }
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.slice(3);
+  }
+  if (cleaned.endsWith('```')) {
+    cleaned = cleaned.slice(0, -3);
+  }
 
-    return JSON.parse(cleaned.trim());
+  return JSON.parse(cleaned.trim());
 }

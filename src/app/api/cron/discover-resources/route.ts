@@ -33,6 +33,12 @@ export async function GET(request: NextRequest) {
     console.log('[CRON] Starting resource discovery...');
 
     try {
+        // Step 0: Clear existing resources if manual trigger (fresh start requested)
+        if (isManualTrigger) {
+            console.log('[CRON] Manual trigger: Clearing all existing resources...');
+            await prisma.educationalResource.deleteMany({});
+        }
+
         // Step 1: Discover resources
         console.log('[CRON] Searching for resources...');
         const resources = await discoverAutismResources();
