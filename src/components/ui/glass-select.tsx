@@ -10,23 +10,25 @@ export interface GlassSelectProps
 const GlassSelect = React.forwardRef<HTMLSelectElement, GlassSelectProps>(
     ({ className, children, label, ...props }, ref) => {
         return (
-            <div className="relative">
+            <div className="relative w-full group">
                 {label && (
-                    <label className="absolute -top-5 left-1 text-xs font-medium text-muted-foreground">
+                    <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 ml-1">
                         {label}
                     </label>
                 )}
-                <select
-                    className={cn(
-                        "flex h-10 w-full appearance-none items-center justify-between rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 backdrop-blur-md dark:bg-black/10 dark:border-white/10 text-foreground transition-all duration-300 hover:bg-white/20 dark:hover:bg-black/20 cursor-pointer",
-                        className
-                    )}
-                    ref={ref}
-                    {...props}
-                >
-                    {children}
-                </select>
-                <ChevronDown className="absolute right-3 top-3 h-4 w-4 opacity-50 pointer-events-none" />
+                <div className="relative">
+                    <select
+                        className={cn(
+                            "flex h-11 w-full appearance-none items-center justify-between rounded-xl border border-white/20 bg-background/50 px-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 backdrop-blur-md transition-all duration-300 hover:bg-background/70 cursor-pointer shadow-sm",
+                            className
+                        )}
+                        ref={ref}
+                        {...props}
+                    >
+                        {children}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50 pointer-events-none group-hover:opacity-100 transition-opacity" />
+                </div>
             </div>
         )
     }

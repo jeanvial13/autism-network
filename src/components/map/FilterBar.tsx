@@ -35,9 +35,11 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
     };
 
     return (
+    return (
         <div className="w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-10 transition-all duration-300">
-            <div className="p-4 flex flex-col sm:flex-row gap-8 sm:gap-4 items-end">
-                <div className="flex-1 w-full sm:w-auto">
+            <div className="p-4 grid grid-cols-12 gap-4 items-end">
+                {/* Services & Distance - Side by Side on Mobile, flexible on Desktop */}
+                <div className="col-span-12 lg:col-span-8 grid grid-cols-2 sm:grid-cols-[2fr_1fr] gap-4">
                     <GlassSelect
                         label={t('services')}
                         value={filters.services[0] || ""}
@@ -53,9 +55,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                             </option>
                         ))}
                     </GlassSelect>
-                </div>
 
-                <div className="w-full sm:w-32">
                     <GlassSelect
                         label="Distancia"
                         value={filters.distance}
@@ -70,17 +70,32 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                     </GlassSelect>
                 </div>
 
-                <div className="w-full sm:w-auto">
-                    <GlassButton
-                        variant={filters.verifiedOnly ? "primary" : "outline"}
-                        className="w-full justify-center h-10"
-                        onClick={() => onFilterChange({ ...filters, verifiedOnly: !filters.verifiedOnly })}
-                    >
-                        {filters.verifiedOnly && <Check className="mr-2 h-4 w-4" />}
-                        {t('verifiedOnly')}
-                    </GlassButton>
+                {/* Verified Toggle - Full width on mobile, auto on desktop */}
+                <div className="col-span-12 lg:col-span-4">
+                    <div className="relative w-full group">
+                        <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 ml-1 opacity-0 lg:opacity-100">
+                            Filtro
+                        </label>
+                        <GlassButton
+                            variant={filters.verifiedOnly ? "primary" : "outline"}
+                            className={`w-full justify-between h-11 px-4 transition-all duration-300 ${filters.verifiedOnly
+                                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 border-primary"
+                                    : "bg-background/50 hover:bg-background/80 border-white/20"
+                                }`}
+                            onClick={() => onFilterChange({ ...filters, verifiedOnly: !filters.verifiedOnly })}
+                        >
+                            <span className="text-sm font-medium">{t('verifiedOnly')}</span>
+                            <div className={`
+                                h-5 w-5 rounded-full border flex items-center justify-center transition-all duration-300
+                                ${filters.verifiedOnly ? "bg-white border-white text-primary scale-110" : "border-muted-foreground/50 text-transparent"}
+                            `}>
+                                <Check className="h-3 w-3" strokeWidth={3} />
+                            </div>
+                        </GlassButton>
+                    </div>
                 </div>
             </div>
         </div>
+    );
     );
 }
