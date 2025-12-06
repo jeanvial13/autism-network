@@ -124,11 +124,11 @@ export async function discoverAutismResources(): Promise<
     Array<DiscoveredResource & ResourceDetails>
 > {
     const queries = [
-        'autism visual schedule printable',
-        'autism social story free',
-        'autism communication board',
-        'autism worksheet free download',
-        'autism sensory activities printable',
+        'site:.org OR site:.edu OR site:.gov "autism" visual schedule free filetype:pdf',
+        'site:.org OR site:.edu "autism" social story free pdf',
+        'site:.org "autism" communication board printable free -price -shop',
+        'site:.edu "autism" strategies teacher guide free',
+        'site:.gov "autism" sensory activities guide free',
     ];
 
     const allResources: DiscoveredResource[] = [];
@@ -138,39 +138,57 @@ export async function discoverAutismResources(): Promise<
         allResources.push(...resources);
     }
 
-    // FALLBACK: If no resources found (e.g. API keys missing), use curated list
+    // FALLBACK: Verified High-Quality Non-Profit Resources
     if (allResources.length === 0) {
-        console.log('No resources found via API, using fallback curated list');
+        console.log('No resources found via API, using verified non-profit curated list');
         allResources.push(
             {
-                title: 'Autism Speaks Tool Kits',
-                url: 'https://www.autismspeaks.org/tool-kit',
+                title: 'CDC: Autism Milestones Tracker',
+                url: 'https://www.cdc.gov/ncbddd/autism/access/early-intervention.html',
                 fileType: 'webpage',
-                rawDescription: 'A comprehensive collection of tool kits for families and adults.'
+                rawDescription: 'Official CDC guide for tracking developmental milestones and early intervention.'
             },
             {
-                title: 'National Autistic Society Resources',
-                url: 'https://www.autism.org.uk/advice-and-guidance/topics',
+                title: 'WHO: Autism Spectrum Disorders',
+                url: 'https://www.who.int/news-room/fact-sheets/detail/autism-spectrum-disorders',
                 fileType: 'webpage',
-                rawDescription: 'Advice and guidance on a wide range of autism-related topics.'
+                rawDescription: 'World Health Organization comprehensive fact sheet and global standards on autism.'
             },
             {
-                title: 'Visual Schedule Printable',
-                url: 'https://www.teacherspayteachers.com/Browse/Price-Range/Free/Search:visual+schedule+autism',
-                fileType: 'PDF',
-                rawDescription: 'Free printable visual schedules for daily routines.'
-            },
-            {
-                title: 'Social Stories Creator',
-                url: 'https://www.autism.org.uk/advice-and-guidance/topics/communication/communication-tools/social-stories-and-comic-strip-conversations',
+                title: 'Autism Speaks: 100 Day Kit',
+                url: 'https://www.autismspeaks.org/tool-kit/100-day-kit-young-children',
                 fileType: 'guide',
-                rawDescription: 'Guide on how to create and use social stories.'
+                rawDescription: 'A free, comprehensive guide for families of children recently diagnosed with autism.'
             },
             {
-                title: 'Sensory Processing Guide',
-                url: 'https://childmind.org/article/sensory-processing-issues-explained/',
+                title: 'UNESCO: Digital Inclusion for Autism',
+                url: 'https://unesdoc.unesco.org/ark:/48223/pf0000375276',
+                fileType: 'PDF',
+                rawDescription: 'UNESCO policy guide on using digital solutions to empower people with autism.'
+            },
+            {
+                title: 'OCALI: Autism Internet Modules',
+                url: 'https://autisminternetmodules.org/',
                 fileType: 'webpage',
-                rawDescription: 'Understanding sensory processing issues in children.'
+                rawDescription: 'Free high-quality training modules for parents and professionals from OCALI.'
+            },
+            {
+                title: 'Reading Rockets: Literacy for Autism',
+                url: 'https://www.readingrockets.org/article/literacy-instruction-students-autism-spectrum-disorder',
+                fileType: 'guide',
+                rawDescription: 'Evidence-based strategies for teaching reading to children with ASD.'
+            },
+            {
+                title: 'Do2Learn: Free Visual Schedules',
+                url: 'https://do2learn.com/picturecards/VisualSchedules/index.htm',
+                fileType: 'image',
+                rawDescription: 'Free printable visual schedules and behavioral charts for daily routines.'
+            },
+            {
+                title: 'VCU-ACE: Evidence-Based Practices',
+                url: 'https://vcuautismcenter.org/resources/evidence_based_practices.cfm',
+                fileType: 'webpage',
+                rawDescription: 'Virginia Commonwealth University list of evidence-based practices for autism.'
             }
         );
     }
